@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+<!--    <style name="Theme.CodeVocab" parent="android:Theme.Material.Light.NoActionBar" />-->
+    <!-- Base application theme -->
+    <style name="Theme.CodeVocab" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your colors -->
+        <item name="colorPrimary">@android:color/holo_blue_dark</item>
+        <item name="colorSecondary">@android:color/holo_green_light</item>
+        <!-- Nếu muốn toàn màn hình (Edge-to-Edge) -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/black</item>
+    </style>
+</resources>

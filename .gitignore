@@ -1,0 +1,34 @@
+# Built application files
+*.apk
+*.ap_
+*.aab
+
+# Gradle
+.gradle/
+build/
+*/build/
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# IntelliJ
+.idea/
+*.iml
+*.iws
+
+# keystore (IMPORTANT: NEVER commit)
+*.jks
+keystore.jks
+
+# Android Studio captures
+captures/
+
+# Kotlin/Java build
+*.class
+
+# Generated files
+build/
+
+# OS files
+.DS_Store
+Thumbs.db
