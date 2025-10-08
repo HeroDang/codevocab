@@ -6,10 +6,23 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/tvProfile"
-        android:layout_width="wrap_content"
+        android:text="@string/choose_language"
+        android:textSize="18sp"
+        android:layout_marginBottom="8dp"
         android:layout_height="wrap_content"
-        android:text="Profile Screen"
-        android:textSize="20sp"
-        android:textStyle="bold" />
+        android:layout_width="wrap_content"/>
+
+    <Button
+        android:id="@+id/btnEnglish"
+        android:text="@string/english"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"/>
+
+    <Button
+        android:id="@+id/btnVietnamese"
+        android:text="@string/vietnamese"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"/>
 </LinearLayout>

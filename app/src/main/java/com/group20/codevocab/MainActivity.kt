@@ -1,11 +1,13 @@
 package com.group20.codevocab
 
+import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.group20.codevocab.databinding.ActivityMainBinding
+import com.group20.codevocab.utils.LocaleHelper
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,5 +29,11 @@ class MainActivity : AppCompatActivity() {
 
         // Kết nối BottomNavigationView với NavController
         binding.bottomNav.setupWithNavController(navController)
+    }
+
+    override fun attachBaseContext(newBase: Context?) {
+        val lang = LocaleHelper.getLanguage(newBase!!)
+        val context = LocaleHelper.setLocale(newBase, lang)
+        super.attachBaseContext(context)
     }
 }
