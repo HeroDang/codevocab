@@ -6,18 +6,24 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/tvHome"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Home Screen"
+        android:id="@+id/tvWelcome"
+        android:text="Xin chào!"
         android:textSize="20sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"/>
 
     <TextView
-        android:id="@+id/textWelcome"
-        android:text="@string/welcome_message"
-        android:layout_width="wrap_content"
+        android:id="@+id/tvProgress"
+        android:text="Bạn đã học 0/100 từ."
+        android:layout_marginTop="8dp"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:padding="16dp" />
+        android:layout_width="wrap_content"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvModules"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="16dp"
+        android:importantForAccessibility="no"/>
 </LinearLayout>
