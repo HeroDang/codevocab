@@ -11,4 +11,10 @@ interface ModuleDao {
 
     @Query("SELECT * FROM modules WHERE id = :id")
     suspend fun getModuleById(id: Int): ModuleEntity
+
+    @Query("SELECT * FROM modules WHERE parent_id ISNULL")
+    suspend fun getGeneralModules(): List<ModuleEntity>
+
+    @Query("SELECT * FROM modules WHERE parent_id = :parentId")
+    suspend fun getSubModules(parentId: Int): List<ModuleEntity>
 }

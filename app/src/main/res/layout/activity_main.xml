@@ -14,7 +14,7 @@
         android:layout_height="match_parent"
         app:navGraph="@navigation/nav_graph"
         app:defaultNavHost="true"
-        tools:layout="@layout/fragment_home"/>
+        tools:layout="@layout/fragment_module_list"/>
 
     <!-- Bottom Navigation -->
     <com.google.android.material.bottomnavigation.BottomNavigationView

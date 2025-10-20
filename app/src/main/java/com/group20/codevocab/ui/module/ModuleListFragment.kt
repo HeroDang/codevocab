@@ -1,5 +1,6 @@
-package com.group20.codevocab.ui.home
+package com.group20.codevocab.ui.module
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,14 +10,15 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
+import com.group20.codevocab.R
 import com.group20.codevocab.data.local.AppDatabase
 import com.group20.codevocab.data.repository.ModuleRepository
-import com.group20.codevocab.databinding.FragmentHomeBinding
+import com.group20.codevocab.databinding.FragmentModuleListBinding
 import com.group20.codevocab.viewmodel.ModuleViewModel
 import com.group20.codevocab.viewmodel.ModuleViewModelFactory
 
-class HomeFragment : Fragment() {
-    private var _binding: FragmentHomeBinding? = null
+class ModuleListFragment : Fragment() {
+    private var _binding: FragmentModuleListBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var viewModel: ModuleViewModel
@@ -26,7 +28,7 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        _binding = FragmentModuleListBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -46,8 +48,11 @@ class HomeFragment : Fragment() {
         viewModel = ViewModelProvider(this, factory)[ModuleViewModel::class.java]
 
         // 3️⃣ Setup RecyclerView
-        adapter = ModuleAdapter(emptyList()) { module ->
+        adapter = ModuleAdapter(emptyList(), R.layout.item_module_list) { module ->
             Toast.makeText(requireContext(), "Clicked: ${module.name}", Toast.LENGTH_SHORT).show()
+            val intent = Intent(requireContext(), ModuleDetailActivity::class.java)
+            intent.putExtra("module_id", module.id)
+            startActivity(intent)
         }
         binding.rvModules.layoutManager = LinearLayoutManager(requireContext())
         binding.rvModules.adapter = adapter
@@ -58,7 +63,7 @@ class HomeFragment : Fragment() {
         }
 
         // 5️⃣ Gọi load data
-        viewModel.loadModules()
+        viewModel.loadGeneralModules()
     }
 
     override fun onDestroyView() {

@@ -1,4 +1,4 @@
-package com.group20.codevocab.ui.home
+package com.group20.codevocab.ui.module
 
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +10,7 @@ import com.group20.codevocab.data.local.entity.ModuleEntity
 
 class ModuleAdapter(
     private var modules: List<ModuleEntity>,
+    private val layoutId: Int,
     private val onItemClick: (ModuleEntity) -> Unit
 ) : RecyclerView.Adapter<ModuleAdapter.ModuleViewHolder>() {
 
@@ -20,7 +21,7 @@ class ModuleAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ModuleViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_module, parent, false)
+            .inflate(layoutId, parent, false)
         return ModuleViewHolder(view)
     }
 
