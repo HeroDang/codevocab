@@ -8,7 +8,7 @@ import androidx.room.OnConflictStrategy
 import com.group20.codevocab.data.local.entity.FlashcardProgressEntity
 
 @Dao
-interface FlashcardDao {
+interface FlashcardProgressDao {
 
     @Query("SELECT * FROM flashcard_progress WHERE id = :id")
     suspend fun getById(id: Int): FlashcardProgressEntity?

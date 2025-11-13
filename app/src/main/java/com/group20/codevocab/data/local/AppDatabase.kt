@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.group20.codevocab.data.local.dao.FlashcardDao
+import com.group20.codevocab.data.local.dao.FlashcardProgressDao
 import com.group20.codevocab.data.local.dao.ModuleDao
 import com.group20.codevocab.data.local.dao.VocabDao
 import com.group20.codevocab.data.local.dao.WordDao
@@ -23,7 +23,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun wordDao(): WordDao
     abstract fun moduleDao(): ModuleDao
     abstract fun vocabDao(): VocabDao
-    abstract fun flashcardDao(): FlashcardDao
+    abstract fun flashcardDao(): FlashcardProgressDao
 
     companion object {
         @Volatile private var INSTANCE: AppDatabase? = null

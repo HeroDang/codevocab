@@ -1,9 +1,9 @@
 package com.group20.codevocab.data.repository
 
-import com.group20.codevocab.data.local.dao.FlashcardDao
+import com.group20.codevocab.data.local.dao.FlashcardProgressDao
 import com.group20.codevocab.data.local.entity.FlashcardProgressEntity
 
-class FlashcardProgressRepository(private val dao: FlashcardDao) {
+class FlashcardProgressRepository(private val dao: FlashcardProgressDao) {
 
     suspend fun getByVocabId(vocabId: Int): FlashcardProgressEntity? = dao.getByVocabId(vocabId)
 
