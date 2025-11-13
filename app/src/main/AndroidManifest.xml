@@ -40,6 +40,10 @@
             android:name=".ui.module.ModuleDetailActivity"
             android:label="Chi tiết Module"
             android:exported="false" />
+
+        <activity
+            android:name=".ui.flashcard.FlashcardActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

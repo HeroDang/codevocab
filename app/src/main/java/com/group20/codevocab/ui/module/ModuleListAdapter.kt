@@ -8,11 +8,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.group20.codevocab.R
 import com.group20.codevocab.data.local.entity.ModuleEntity
 
-class ModuleAdapter(
+class ModuleListAdapter(
     private var modules: List<ModuleEntity>,
     private val layoutId: Int,
     private val onItemClick: (ModuleEntity) -> Unit
-) : RecyclerView.Adapter<ModuleAdapter.ModuleViewHolder>() {
+) : RecyclerView.Adapter<ModuleListAdapter.ModuleViewHolder>() {
 
     inner class ModuleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvName: TextView = itemView.findViewById(R.id.tvModuleName)

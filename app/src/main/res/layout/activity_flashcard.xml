@@ -1,0 +1,106 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="#FAFAFA"
+    android:padding="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Flashcard container -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardFlash"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="8dp"
+        android:clickable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:layout_marginBottom="24dp">
+
+        <LinearLayout
+            android:id="@+id/flashContent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="24dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <!-- Mặt trước: Word -->
+            <TextView
+                android:id="@+id/tvWord"
+                android:text="Inheritance"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:visibility="visible"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <!-- Mặt sau: Nghĩa + ví dụ -->
+            <LinearLayout
+                android:id="@+id/backSide"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tvMeaning"
+                    android:text="(n) tính kế thừa"
+                    android:textSize="20sp"
+                    android:gravity="center"
+                    android:layout_marginBottom="8dp"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"/>
+
+                <TextView
+                    android:id="@+id/tvExample"
+                    android:text="Inheritance allows a class to reuse code."
+                    android:textSize="16sp"
+                    android:gravity="center"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"/>
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Buttons -->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/btnHard"
+            android:text="❗ Hard"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/btnReview"
+            android:text="🔁 Review"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp" />
+
+        <Button
+            android:id="@+id/btnKnow"
+            android:text="✅ Know"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/btnBackCard"
+            android:text="⬅️ Quay lại"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+</LinearLayout>

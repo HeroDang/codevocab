@@ -12,6 +12,7 @@ import com.group20.codevocab.R
 import com.group20.codevocab.data.local.AppDatabase
 import com.group20.codevocab.data.repository.ModuleRepository
 import com.group20.codevocab.databinding.ActivityModuleDetailBinding
+import com.group20.codevocab.ui.flashcard.FlashcardActivity
 import com.group20.codevocab.viewmodel.ModuleViewModel
 import com.group20.codevocab.viewmodel.ModuleViewModelFactory
 
@@ -53,13 +54,25 @@ class ModuleDetailActivity : AppCompatActivity() {
 
         // Load danh sách module con
         viewModel.getSubModules(moduleId).observe(this, Observer { list ->
-            binding.rvSubModules.adapter = ModuleAdapter(list, R.layout.item_module_detail) { sub ->
-            Toast.makeText(applicationContext, "Clicked: ${sub.name}", Toast.LENGTH_SHORT).show()
-                // Mở tiếp detail nếu có tầng con nữa
-//                val intent = Intent(this, ModuleDetailActivity::class.java)
-//                intent.putExtra("module_id", sub.id)
-//                startActivity(intent)
-            }
+            binding.rvSubModules.adapter = ModuleDetailAdapter(
+                list,
+                onStartLearningClick = { subModule ->
+                    Toast.makeText(applicationContext, "onStartLearningClick: ${subModule.name}", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, FlashcardActivity::class.java)
+                    intent.putExtra("module_id", subModule.id)
+                    startActivity(intent)
+                },
+                onQuizClick = { subModule ->
+                    Toast.makeText(
+                        applicationContext,
+                        "onQuizClick: ${subModule.name}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+//                    val intent = Intent(this, QuizActivity::class.java)
+//                    intent.putExtra("module_id", subModule.id)
+//                    startActivity(intent)
+                }
+            )
         })
     }
 }

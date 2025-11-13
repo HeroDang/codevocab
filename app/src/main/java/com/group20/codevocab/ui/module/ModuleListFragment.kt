@@ -22,7 +22,7 @@ class ModuleListFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var viewModel: ModuleViewModel
-    private lateinit var adapter: ModuleAdapter
+    private lateinit var adapter: ModuleListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,7 +48,7 @@ class ModuleListFragment : Fragment() {
         viewModel = ViewModelProvider(this, factory)[ModuleViewModel::class.java]
 
         // 3️⃣ Setup RecyclerView
-        adapter = ModuleAdapter(emptyList(), R.layout.item_module_list) { module ->
+        adapter = ModuleListAdapter(emptyList(), R.layout.item_module_list) { module ->
             Toast.makeText(requireContext(), "Clicked: ${module.name}", Toast.LENGTH_SHORT).show()
             val intent = Intent(requireContext(), ModuleDetailActivity::class.java)
             intent.putExtra("module_id", module.id)
