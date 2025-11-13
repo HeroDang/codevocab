@@ -35,16 +35,7 @@ class ModuleListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 1️⃣ Khởi tạo database
-        val db = Room.databaseBuilder(
-            requireContext(),
-            AppDatabase::class.java,
-            "vocab.db"
-        ).createFromAsset("databases/vocab.db").build()
-
-        // 2️⃣ Repository + ViewModel
-        val repository = ModuleRepository(db.moduleDao())
-        val factory = ModuleViewModelFactory(repository)
+        val factory = ModuleViewModelFactory(requireContext())
         viewModel = ViewModelProvider(this, factory)[ModuleViewModel::class.java]
 
         // 3️⃣ Setup RecyclerView

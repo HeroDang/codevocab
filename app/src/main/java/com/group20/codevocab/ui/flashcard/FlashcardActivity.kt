@@ -41,18 +41,7 @@ class FlashcardActivity : AppCompatActivity() {
             return
         }
 
-        // 🔹 Khởi tạo Room, Repository, ViewModel (không dùng Hilt)
-        // 1️⃣ Khởi tạo database
-        val db = Room.databaseBuilder(
-            applicationContext,
-            AppDatabase::class.java,
-            "vocab.db"
-        ).createFromAsset("databases/vocab.db").build()
-
-        // 2️⃣ Repository + ViewModel
-        val vocabRepo = VocabularyRepository(db.vocabDao())
-        val flashRepo = FlashcardProgressRepository(db.flashcardDao())
-        val factory = FlashcardViewModelFactory(vocabRepo, flashRepo)
+        val factory = FlashcardViewModelFactory(applicationContext)
         viewModel = ViewModelProvider(this, factory)[FlashcardViewModel::class.java]
 
         // 🔹 Thiết lập RecyclerView hoặc ViewPager2 để hiển thị flashcard
@@ -112,7 +101,7 @@ class FlashcardActivity : AppCompatActivity() {
     private fun submitAnswer(isKnown: Boolean) {
         val current = vocabList.getOrNull(currentIndex) ?: return
         val vocab = current.first
-//        viewModel.markKnown(vocab.id, isKnown, moduleId)
+        viewModel.markKnown(vocab.id, isKnown, moduleId)
 
         currentIndex++
         if (currentIndex < vocabList.size) {

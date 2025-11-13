@@ -26,16 +26,7 @@ class ModuleDetailActivity : AppCompatActivity() {
         binding = ActivityModuleDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // 1️⃣ Khởi tạo database
-        val db = Room.databaseBuilder(
-            applicationContext,
-            AppDatabase::class.java,
-            "vocab.db"
-        ).createFromAsset("databases/vocab.db").build()
-
-        // 2️⃣ Repository + ViewModel
-        val repository = ModuleRepository(db.moduleDao())
-        val factory = ModuleViewModelFactory(repository)
+        val factory = ModuleViewModelFactory(applicationContext)
         viewModel = ViewModelProvider(this, factory)[ModuleViewModel::class.java]
 
         val moduleId = intent.getIntExtra("module_id", -1)
