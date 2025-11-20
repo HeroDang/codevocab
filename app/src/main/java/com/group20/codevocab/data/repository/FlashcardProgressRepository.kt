@@ -16,15 +16,15 @@ class FlashcardProgressRepository(private val dao: FlashcardProgressDao) {
     suspend fun update(flashcard: FlashcardProgressEntity) = dao.update(flashcard)
 
 //    suspend fun markKnown(id: Int, isKnown: Boolean, ts: Long) = dao.markKnown(id, isKnown, ts)
-suspend fun markKnown(vocabId: Int, moduleId: Int, isKnown: Boolean) {
-    val entity = FlashcardProgressEntity(
-        vocabId = vocabId,
-        moduleId = moduleId,
-        isKnown = isKnown,
-        lastReviewed = System.currentTimeMillis()
-    )
-    dao.insertOrUpdate(entity)
-}
+    suspend fun markKnown(vocabId: Int, moduleId: Int, isKnown: Boolean) {
+        val entity = FlashcardProgressEntity(
+            vocabId = vocabId,
+            moduleId = moduleId,
+            isKnown = isKnown,
+            lastReviewed = System.currentTimeMillis()
+        )
+        dao.insertOrUpdate(entity)
+    }
 
     suspend fun ensureFlashcardForVocab(vocabId: Int, moduleId: Int) {
         val exists = dao.getByVocabId(vocabId)

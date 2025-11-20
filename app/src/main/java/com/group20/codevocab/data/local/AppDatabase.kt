@@ -30,14 +30,32 @@ abstract class AppDatabase : RoomDatabase() {
 
         fun getDatabase(context: Context): AppDatabase =
             INSTANCE ?: synchronized(this) {
-                val instance = Room.databaseBuilder(
+                val dbFile = context.getDatabasePath("vocab.db")
+
+                val builder = Room.databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,
                     "vocab.db"
                 )
-                    .createFromAsset("databases/vocab.db") // preload data
+
+//                val instance = Room.databaseBuilder(
+//                    context.applicationContext,
+//                    AppDatabase::class.java,
+//                    "vocab.db"
+//                )
+//                    .createFromAsset("databases/vocab.db") // preload data
+//                    .fallbackToDestructiveMigration()
+//                    .build()
+
+                // ✅ Chỉ tạo từ asset nếu DB chưa tồn tại
+                if (!dbFile.exists()) {
+                    builder.createFromAsset("databases/vocab.db")
+                }
+
+                val instance = builder
                     .fallbackToDestructiveMigration()
                     .build()
+
                 INSTANCE = instance
                 instance
             }

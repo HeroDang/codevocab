@@ -43,7 +43,7 @@ class FlashcardViewModel(
     fun markKnown(flashcardId: Int, isKnown: Boolean, moduleId: Int) {
         viewModelScope.launch {
             flashRepo.markKnown(flashcardId, moduleId, isKnown)
-            loadVocabWithProgress(moduleId)
+//            loadVocabWithProgress(moduleId)
         }
     }
 
