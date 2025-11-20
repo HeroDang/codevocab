@@ -17,4 +17,7 @@ interface VocabDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(vocabList: List<VocabularyEntity>)
+
+    @Query("SELECT meaning_vi FROM vocabulary WHERE meaning_vi != :correct ORDER BY RANDOM() LIMIT :count")
+    suspend fun getRandomMeaningsExcept(correct: String, count: Int): List<String>
 }

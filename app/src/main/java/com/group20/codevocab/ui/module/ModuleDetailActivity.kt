@@ -10,9 +10,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
 import com.group20.codevocab.R
 import com.group20.codevocab.data.local.AppDatabase
+import com.group20.codevocab.data.local.entity.QuizResultEntity
 import com.group20.codevocab.data.repository.ModuleRepository
 import com.group20.codevocab.databinding.ActivityModuleDetailBinding
 import com.group20.codevocab.ui.flashcard.FlashcardActivity
+import com.group20.codevocab.ui.quiz.QuizActivity
 import com.group20.codevocab.viewmodel.ModuleViewModel
 import com.group20.codevocab.viewmodel.ModuleViewModelFactory
 
@@ -59,9 +61,9 @@ class ModuleDetailActivity : AppCompatActivity() {
                         "onQuizClick: ${subModule.name}",
                         Toast.LENGTH_SHORT
                     ).show()
-//                    val intent = Intent(this, QuizActivity::class.java)
-//                    intent.putExtra("module_id", subModule.id)
-//                    startActivity(intent)
+                    val intent = Intent(this, QuizActivity::class.java)
+                    intent.putExtra("module_id", subModule.id)
+                    startActivity(intent)
                 }
             )
         })
