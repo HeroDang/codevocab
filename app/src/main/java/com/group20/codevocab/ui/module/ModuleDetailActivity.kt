@@ -39,6 +39,10 @@ class ModuleDetailActivity : AppCompatActivity() {
 
         binding.rvSubModules.layoutManager = LinearLayoutManager(this)
 
+        // back button -> close this activity and return to MainActivity (previous screen)
+        binding.btnBack.setOnClickListener {
+            finish()
+        }
         // Load module chính
         viewModel.getModuleById(moduleId).observe(this, Observer { module ->
             binding.tvModuleName.text = module.name
