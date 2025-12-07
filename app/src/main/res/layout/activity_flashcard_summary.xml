@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gray_50">
+
+    <!-- Toolbar -->
+    <ImageView
+        android:id="@+id/btnBack"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/ic_arrow_back"
+        app:tint="@color/black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Study Summary"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/btnBack"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/btnBack" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:clipToPadding="false"
+        android:paddingBottom="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="16dp">
+
+            <!-- Success Section -->
+            <FrameLayout
+                android:id="@+id/layoutSuccessIcon"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:background="@drawable/bg_circle_success"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_check"
+                    app:tint="@color/success_check" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/tvGreatJob"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Great Job!"
+                android:textColor="@color/black"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layoutSuccessIcon" />
+
+            <TextView
+                android:id="@+id/tvSubtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="You've completed your flashcard session"
+                android:textColor="@color/gray_700"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvGreatJob" />
+
+            <!-- Session Overview Card -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cardOverview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/bg_card_summary"
+                android:padding="16dp"
+                app:layout_constraintTop_toBottomOf="@id/tvSubtitle">
+
+                <TextView
+                    android:id="@+id/tvOverviewTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Session Overview"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <!-- Stats -->
+                <TextView
+                    android:id="@+id/tvTotalCardsVal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="24"
+                    android:textColor="@color/black"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toStartOf="@id/tvAccuracyVal"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvOverviewTitle" />
+
+                <TextView
+                    android:id="@+id/tvTotalCardsLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Total Cards"
+                    android:textColor="@color/gray_700"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toEndOf="@id/tvTotalCardsVal"
+                    app:layout_constraintStart_toStartOf="@id/tvTotalCardsVal"
+                    app:layout_constraintTop_toBottomOf="@id/tvTotalCardsVal" />
+
+                <TextView
+                    android:id="@+id/tvAccuracyVal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="92%"
+                    android:textColor="@color/blue_600"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/tvTotalCardsVal"
+                    app:layout_constraintTop_toBottomOf="@id/tvOverviewTitle" />
+
+                <TextView
+                    android:id="@+id/tvAccuracyLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Accuracy"
+                    android:textColor="@color/gray_700"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toEndOf="@id/tvAccuracyVal"
+                    app:layout_constraintStart_toStartOf="@id/tvAccuracyVal"
+                    app:layout_constraintTop_toBottomOf="@id/tvAccuracyVal" />
+
+                <!-- Chart Placeholder -->
+                <FrameLayout
+                    android:id="@+id/chartContainer"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_marginTop="24dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tvTotalCardsLabel">
+
+                    <!-- Ring Background -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/circle_progress_bg" />
+                    
+                    <!-- This is where a real chart would go (e.g. MPAndroidChart or custom view) -->
+                    <!-- Placeholder for segments -->
+                </FrameLayout>
+
+                <!-- Stats List -->
+                <!-- Know -->
+                <LinearLayout
+                    android:id="@+id/layoutKnow"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:background="@drawable/bg_status_know"
+                    android:gravity="center_vertical"
+                    android:padding="12dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintTop_toBottomOf="@id/chartContainer">
+
+                    <View
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
+                        android:background="@drawable/bg_circle_success" 
+                        android:backgroundTint="@color/status_green"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_weight="1"
+                        android:text="Know"
+                        android:textColor="@color/gray_900"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/tvKnowCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="16 cards"
+                        android:textColor="@color/status_green"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- Review -->
+                <LinearLayout
+                    android:id="@+id/layoutReview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/bg_status_review"
+                    android:gravity="center_vertical"
+                    android:padding="12dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintTop_toBottomOf="@id/layoutKnow">
+
+                    <View
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
+                        android:background="@drawable/bg_circle_success"
+                        android:backgroundTint="@color/status_yellow"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_weight="1"
+                        android:text="Review"
+                        android:textColor="@color/gray_900"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/tvReviewCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="5 cards"
+                        android:textColor="@color/status_yellow"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- Hard -->
+                <LinearLayout
+                    android:id="@+id/layoutHard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/bg_status_hard"
+                    android:gravity="center_vertical"
+                    android:padding="12dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintTop_toBottomOf="@id/layoutReview">
+
+                    <View
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
+                        android:background="@drawable/bg_circle_success"
+                        android:backgroundTint="@color/status_red"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_weight="1"
+                        android:text="Hard"
+                        android:textColor="@color/gray_900"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/tvHardCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="3 cards"
+                        android:textColor="@color/status_red"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- Study Tip -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cardTip"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/bg_tip_box"
+                android:padding="16dp"
+                app:layout_constraintTop_toBottomOf="@id/cardOverview">
+
+                <ImageView
+                    android:id="@+id/ivTip"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_launcher_foreground" 
+                    app:tint="@color/blue_600"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" 
+                    tools:src="@drawable/ic_launcher_foreground"/>
+                <!-- Note: using ic_launcher_foreground as placeholder for lightbulb -->
+
+                <TextView
+                    android:id="@+id/tvTipTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:text="Study Tip"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@id/ivTip"
+                    app:layout_constraintStart_toEndOf="@id/ivTip"
+                    app:layout_constraintTop_toTopOf="@id/ivTip" />
+
+                <TextView
+                    android:id="@+id/tvTipDesc"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="You have 8 cards that need more practice. Consider reviewing them again to improve retention."
+                    android:textColor="@color/gray_700"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/tvTipTitle"
+                    app:layout_constraintTop_toBottomOf="@id/tvTipTitle" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- Buttons -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnRetry"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="24dp"
+                android:text="Retry Hard &amp; Review Cards"
+                android:textColor="@color/gray_900"
+                android:textAllCaps="false"
+                android:backgroundTint="@color/white"
+                app:icon="@drawable/ic_launcher_foreground"
+                app:iconTint="@color/gray_900"
+                app:iconGravity="textStart"
+                app:strokeColor="@color/gray_200"
+                app:strokeWidth="1dp"
+                app:cornerRadius="12dp"
+                app:layout_constraintTop_toBottomOf="@id/cardTip" />
+            <!-- Note: using ic_launcher_foreground as placeholder for ic_refresh -->
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnFinish"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="12dp"
+                android:text="Finish Session"
+                android:textColor="@color/white"
+                android:textAllCaps="false"
+                android:backgroundTint="@color/blue_600"
+                app:cornerRadius="12dp"
+                app:icon="@drawable/ic_check"
+                app:iconGravity="textStart"
+                app:layout_constraintTop_toBottomOf="@id/btnRetry" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
