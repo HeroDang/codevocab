@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clickable="true"
+    android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground">
 
     <LinearLayout
@@ -112,32 +113,5 @@
                     android:layout_height="wrap_content"/>
             </LinearLayout>
         </LinearLayout>
-
-        <!-- Hàng nút điều khiển -->
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_marginTop="8dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="end">
-
-            <Button
-                android:id="@+id/btnStartLearning"
-                android:text="Flashcards"
-                android:backgroundTint="#DDDDDD"
-                android:textColor="#333333"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"/>
-
-            <Button
-                android:id="@+id/btnQuiz"
-                android:text="Quiz"
-                android:backgroundTint="#635BFF"
-                android:textColor="@android:color/white"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
-
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

@@ -7,14 +7,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.room.Room
-import com.group20.codevocab.R
-import com.group20.codevocab.data.local.AppDatabase
-import com.group20.codevocab.data.local.entity.QuizResultEntity
-import com.group20.codevocab.data.repository.ModuleRepository
+import com.group20.codevocab.data.local.entity.ModuleEntity
 import com.group20.codevocab.databinding.ActivityModuleDetailBinding
-import com.group20.codevocab.ui.flashcard.FlashcardActivity
-import com.group20.codevocab.ui.quiz.QuizActivity
 import com.group20.codevocab.viewmodel.ModuleViewModel
 import com.group20.codevocab.viewmodel.ModuleViewModelFactory
 
@@ -52,24 +46,13 @@ class ModuleDetailActivity : AppCompatActivity() {
         // Load danh sách module con
         viewModel.getSubModules(moduleId).observe(this, Observer { list ->
             binding.rvSubModules.adapter = ModuleDetailAdapter(
-                list,
-                onStartLearningClick = { subModule ->
-                    Toast.makeText(applicationContext, "onStartLearningClick: ${subModule.name}", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this, FlashcardActivity::class.java)
-                    intent.putExtra("module_id", subModule.id)
-                    startActivity(intent)
-                },
-                onQuizClick = { subModule ->
-                    Toast.makeText(
-                        applicationContext,
-                        "onQuizClick: ${subModule.name}",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    val intent = Intent(this, QuizActivity::class.java)
-                    intent.putExtra("module_id", subModule.id)
-                    startActivity(intent)
-                }
-            )
+                list
+            ) { subModule ->
+                // Khi click vào item module con -> Chuyển sang màn hình WordList
+                val intent = Intent(this, WordListActivity::class.java)
+                intent.putExtra("module_id", subModule.id)
+                startActivity(intent)
+            }
         })
     }
 }

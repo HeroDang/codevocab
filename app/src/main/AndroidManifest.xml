@@ -44,8 +44,19 @@
         <activity
             android:name=".ui.flashcard.FlashcardActivity"
             android:exported="false" />
+            
         <activity
             android:name=".ui.quiz.QuizActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.module.WordListActivity"
+            android:label="Danh sách từ vựng"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.flashcard.FlashcardSummaryActivity"
+            android:label="Kết quả học tập"
             android:exported="false" />
     </application>
 
