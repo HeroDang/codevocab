@@ -199,8 +199,7 @@
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:src="@drawable/ic_warning"
-                    app:tint="#F59E0B" />
+                    android:src="@drawable/ic_warning" />
 
                 <TextView
                     android:layout_width="wrap_content"
