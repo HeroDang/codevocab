@@ -1,10 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="blue_50">#E3F2FD</color>
+    <color name="blue_100">#BBDEFB</color>
+    <color name="blue_200">#90CAF9</color>
+    <color name="blue_300">#64B5F6</color>
+    <color name="blue_400">#42A5F5</color>
+    <color name="blue_500">#2196F3</color>  <!-- Primary -->
+    <color name="blue_600">#1E88E5</color>
+    <color name="blue_700">#1976D2</color>
+    <color name="blue_800">#1565C0</color>
+    <color name="blue_900">#0D47A1</color>
+
+    <color name="teal_200">#80CBC4</color>
+    <color name="teal_500">#009688</color>
+
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="gray_50">#FAFAFA</color>
+    <color name="gray_100">#F5F5F5</color>
+    <color name="gray_200">#EEEEEE</color>
+    <color name="gray_500">#9E9E9E</color>
+    <color name="gray_700">#616161</color>
+    <color name="gray_900">#212121</color>
+
+    <!-- Status Colors -->
+    <color name="status_green">#2ECC71</color>
+    <color name="status_green_bg">#E8F8F5</color>
+    <color name="status_yellow">#F1C40F</color>
+    <color name="status_yellow_bg">#FEF9E7</color>
+    <color name="status_red">#E74C3C</color>
+    <color name="status_red_bg">#FDEDEC</color>
+    
+    <color name="success_circle_bg">#E8F5E9</color>
+    <color name="success_check">#4CAF50</color>
+
+    <color name="colorPrimary">@color/blue_500</color>
+    <color name="colorOnPrimary">@color/white</color>
+
+    <color name="colorSecondary">@color/blue_300</color>
+    <color name="colorOnSecondary">@color/white</color>
+
+    <color name="colorSurface">@color/white</color>
+    <color name="colorOnSurface">@color/gray_900</color>
+
+    <color name="colorBackground">@color/gray_50</color>
+    <color name="colorOnBackground">@color/gray_900</color>
+
+    <color name="colorAccent">@color/teal_500</color>
+    <color name="colorError">#D32F2F</color>
 </resources>
