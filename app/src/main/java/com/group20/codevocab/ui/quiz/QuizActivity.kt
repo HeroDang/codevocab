@@ -47,17 +47,17 @@ class QuizActivity : AppCompatActivity() {
         viewModel.currentQuestion.observe(this) { q ->
             binding.tvQuestion.text = q.question
 
-            binding.tvOption1.text = q.options[0]
-            binding.tvOption2.text = q.options[1]
-            binding.tvOption3.text = q.options[2]
-            binding.tvOption4.text = q.options[3]
+//            binding.tvOption1.text = q.options[0]
+//            binding.tvOption2.text = q.options[1]
+//            binding.tvOption3.text = q.options[2]
+//            binding.tvOption4.text = q.options[3]
 
             resetOptionUI()
         }
 
         // Điểm
         viewModel.score.observe(this) {
-            binding.tvScore.text = "Score: $it"
+//            binding.tvScore.text = "Score: $it"
         }
 
         // Tiến trình
@@ -77,14 +77,14 @@ class QuizActivity : AppCompatActivity() {
     }
 
     private fun setupListeners() {
-        binding.cardOption1.setOnClickListener { selectAnswer(0) }
-        binding.cardOption2.setOnClickListener { selectAnswer(1) }
-        binding.cardOption3.setOnClickListener { selectAnswer(2) }
-        binding.cardOption4.setOnClickListener { selectAnswer(3) }
-
-        binding.btnNext.setOnClickListener {
-            viewModel.nextQuestion()
-        }
+//        binding.cardOption1.setOnClickListener { selectAnswer(0) }
+//        binding.cardOption2.setOnClickListener { selectAnswer(1) }
+//        binding.cardOption3.setOnClickListener { selectAnswer(2) }
+//        binding.cardOption4.setOnClickListener { selectAnswer(3) }
+//
+//        binding.btnNext.setOnClickListener {
+//            viewModel.nextQuestion()
+//        }
     }
 
     private fun selectAnswer(index: Int) {
@@ -97,23 +97,23 @@ class QuizActivity : AppCompatActivity() {
         val correctColor = ContextCompat.getColor(this, R.color.blue_600)
         val wrongColor = ContextCompat.getColor(this, R.color.colorError)
 
-        val card = when (index) {
-            0 -> binding.cardOption1
-            1 -> binding.cardOption2
-            2 -> binding.cardOption3
-            else -> binding.cardOption4
-        }
+//        val card = when (index) {
+//            0 -> binding.cardOption1
+//            1 -> binding.cardOption2
+//            2 -> binding.cardOption3
+//            else -> binding.cardOption4
+//        }
 
-        card.setCardBackgroundColor(if (isCorrect) correctColor else wrongColor)
+//        card.setCardBackgroundColor(if (isCorrect) correctColor else wrongColor)
     }
 
     @SuppressLint("SuspiciousIndentation")
     private fun resetOptionUI() {
         val defaultColor = ContextCompat.getColor(this, R.color.white)
 
-            binding.cardOption1.setCardBackgroundColor(defaultColor)
-        binding.cardOption2.setCardBackgroundColor(defaultColor)
-        binding.cardOption3.setCardBackgroundColor(defaultColor)
-        binding.cardOption4.setCardBackgroundColor(defaultColor)
+//        binding.cardOption1.setCardBackgroundColor(defaultColor)
+//        binding.cardOption2.setCardBackgroundColor(defaultColor)
+//        binding.cardOption3.setCardBackgroundColor(defaultColor)
+//        binding.cardOption4.setCardBackgroundColor(defaultColor)
     }
 }

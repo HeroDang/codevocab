@@ -108,9 +108,9 @@ class FlashcardActivity : AppCompatActivity() {
             showFlashcard(currentIndex)
         } else {
             // Chuyển sang màn hình tổng kết
-//            startActivity(Intent(this, FlashcardSummaryActivity::class.java))
-//            finish()
             Toast.makeText(applicationContext, "Chuyển sang màn hình tổng kết", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, FlashcardSummaryActivity::class.java))
+            finish()
         }
     }
 
