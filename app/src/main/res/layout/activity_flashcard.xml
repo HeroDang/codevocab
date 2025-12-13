@@ -1,106 +1,267 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:background="#FAFAFA"
-    android:padding="16dp"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#F0F4F8"
+    tools:context=".ui.flashcard.FlashcardActivity">
 
-    <!-- Flashcard container -->
+    <!-- Header -->
+    <ImageView
+        android:id="@+id/btnBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:padding="8dp"
+        android:src="@drawable/ic_arrow_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:text="Flashcards"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/btnBack"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/btnBack" />
+
+    <TextView
+        android:id="@+id/tvModule"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:text="Module: Advanced Vocabulary"
+        app:layout_constraintEnd_toEndOf="@id/tvTitle"
+        app:layout_constraintStart_toStartOf="@id/tvTitle"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle" />
+
+    <ImageView
+        android:id="@+id/btnMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:padding="8dp"
+        android:src="@drawable/ic_more_vert"
+        app:layout_constraintBottom_toBottomOf="@id/btnBack"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/btnBack" />
+
+    <!-- Progress -->
+    <TextView
+        android:id="@+id/tvProgressLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:text="Progress"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvModule" />
+
+    <ProgressBar
+        android:id="@+id/thanhTienDo"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="0dp"
+        android:layout_height="8dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp"
+        android:max="20"
+        android:progress="3"
+        android:progressDrawable="@drawable/progress_blue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvProgressLabel" />
+
+    <TextView
+        android:id="@+id/tvProgressCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="3 of 20"
+        app:layout_constraintBottom_toBottomOf="@id/tvProgressLabel"
+        app:layout_constraintEnd_toEndOf="@id/thanhTienDo"
+        app:layout_constraintTop_toTopOf="@id/tvProgressLabel" />
+
+    <!-- Main Content -->
+    <TextView
+        android:id="@+id/btnBackCard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:alpha="0.5"
+        android:drawablePadding="4dp"
+        android:gravity="center"
+        android:text="Back"
+        app:drawableStartCompat="@drawable/ic_arrow_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/thanhTienDo" />
+
     <androidx.cardview.widget.CardView
         android:id="@+id/cardFlash"
-        android:layout_width="match_parent"
-        android:layout_height="350dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="8dp"
-        android:clickable="true"
-        android:foreground="?android:attr/selectableItemBackground"
-        android:layout_marginBottom="24dp">
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="16dp"
+        app:cardBackgroundColor="#E6EFFF"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="0dp"
+        app:layout_constraintBottom_toTopOf="@id/tvSwipeHint"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnBackCard">
 
-        <LinearLayout
-            android:id="@+id/flashContent"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:padding="24dp"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <!-- Mặt trước: Word -->
+            <!-- Front Side -->
             <TextView
                 android:id="@+id/tvWord"
-                android:text="Inheritance"
-                android:textSize="28sp"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:visibility="visible"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <!-- Mặt sau: Nghĩa + ví dụ -->
-            <LinearLayout
-                android:id="@+id/backSide"
-                android:orientation="vertical"
-                android:visibility="gone"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:gravity="center"
+                android:padding="24dp"
+                android:textColor="@android:color/black"
+                android:textSize="32sp"
+                android:textStyle="bold"
+                android:visibility="visible"
+                tools:text="Serendipity" />
+
+            <!-- Back Side -->
+            <LinearLayout
+                android:id="@+id/cardBackLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:padding="24dp"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_lightbulb"
+                    app:tint="#FFC107" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Definition"
+                    android:textColor="@android:color/black"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tvMeaning"
-                    android:text="(n) tính kế thừa"
-                    android:textSize="20sp"
-                    android:gravity="center"
-                    android:layout_marginBottom="8dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"/>
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:text="The occurrence of events by chance in a happy or beneficial way"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp" />
 
-                <TextView
-                    android:id="@+id/tvExample"
-                    android:text="Inheritance allows a class to reuse code."
-                    android:textSize="16sp"
-                    android:gravity="center"
+                <LinearLayout
+                    android:id="@+id/backSide"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"/>
+                    android:layout_marginTop="24dp"
+                    android:background="@drawable/bg_card_inner"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Example:"
+                        android:textColor="@android:color/darker_gray" />
+
+                    <TextView
+                        android:id="@+id/tvExample"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:textColor="@android:color/black"
+                        tools:text="'''It was pure serendipity that led me to discover this amazing café.'''" />
+                </LinearLayout>
+
             </LinearLayout>
-
-        </LinearLayout>
+        </FrameLayout>
     </androidx.cardview.widget.CardView>
 
-    <!-- Buttons -->
+    <TextView
+        android:id="@+id/tvSwipeHint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:drawablePadding="8dp"
+        android:text="Swipe left/right or tap to interact"
+        app:layout_constraintBottom_toTopOf="@id/khoiNut"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- Bottom Buttons -->
     <LinearLayout
-        android:orientation="horizontal"
-        android:gravity="center"
+        android:id="@+id/khoiNut"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <Button
             android:id="@+id/btnHard"
-            android:text="❗ Hard"
-            android:layout_weight="1"
             android:layout_width="0dp"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_btn_hard"
+            android:padding="12dp"
+            android:text="Hard"
+            android:textAllCaps="false"
+            android:textColor="#F44336"
+            app:backgroundTint="@null"
+            app:drawableStartCompat="@drawable/ic_close" />
 
         <Button
             android:id="@+id/btnReview"
-            android:text="🔁 Review"
-            android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="8dp" />
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_btn_review"
+            android:padding="12dp"
+            android:text="Review"
+            android:textAllCaps="false"
+            android:textColor="@android:color/black"
+            app:backgroundTint="@null"
+            app:drawableStartCompat="@drawable/ic_refresh" />
 
         <Button
             android:id="@+id/btnKnow"
-            android:text="✅ Know"
-            android:layout_weight="1"
             android:layout_width="0dp"
-            android:layout_height="wrap_content" />
-
-        <Button
-            android:id="@+id/btnBackCard"
-            android:text="⬅️ Quay lại"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/bg_btn_know"
+            android:padding="12dp"
+            android:text="Know"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            app:backgroundTint="@null"
+            app:drawableStartCompat="@drawable/ic_check" />
     </LinearLayout>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

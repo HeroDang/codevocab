@@ -7,7 +7,7 @@
 
     <TextView
         android:id="@+id/tvWelcome"
-        android:text="Xin chào!"
+        android:text="Modules!"
         android:textSize="20sp"
         android:textStyle="bold"
         android:layout_height="wrap_content"
