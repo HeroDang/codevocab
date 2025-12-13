@@ -44,7 +44,7 @@
                 android:gravity="center_vertical">
 
                 <ImageView
-                    android:src="@drawable/ic_book"
+                    android:src="@drawable/ic_book1"
                     android:layout_width="16dp"
                     android:layout_height="16dp"
                     android:layout_marginEnd="4dp"
