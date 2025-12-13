@@ -1,7 +1,9 @@
 package com.group20.codevocab.viewmodel
 
-import androidx.lifecycle.*
-import com.group20.codevocab.data.local.entity.QuizResultEntity
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.group20.codevocab.data.repository.QuizRepository
 import com.group20.codevocab.model.QuizQuestion
 import kotlinx.coroutines.launch
@@ -11,77 +13,64 @@ class QuizViewModel(
     private val moduleId: Int
 ) : ViewModel() {
 
-    private var questions: List<QuizQuestion> = emptyList()
-    private var currentIndex = 0
+    private val _questions = MutableLiveData<List<QuizQuestion>>()
+    val questions: LiveData<List<QuizQuestion>> = _questions
 
     private val _currentQuestion = MutableLiveData<QuizQuestion>()
-    val currentQuestion: LiveData<QuizQuestion> get() = _currentQuestion
+    val currentQuestion: LiveData<QuizQuestion> = _currentQuestion
 
-    private val _score = MutableLiveData(0)
-    val score: LiveData<Int> get() = _score
+    private val _score = MutableLiveData<Int>(0)
+    val score: LiveData<Int> = _score
 
-    private val _progress = MutableLiveData(0)
-    val progress: LiveData<Int> get() = _progress
+    private val _progress = MutableLiveData<Int>(0)
+    val progress: LiveData<Int> = _progress
 
-    private val _quizFinished = MutableLiveData(false)
-    val quizFinished: LiveData<Boolean> get() = _quizFinished
+    private val _totalQuestions = MutableLiveData<Int>(0)
+    val totalQuestions: LiveData<Int> = _totalQuestions
+
+    private val _quizFinished = MutableLiveData<Boolean>(false)
+    val quizFinished: LiveData<Boolean> = _quizFinished
+
+    // Pair of <selectedIndex, isCorrect>
+    private val _selectedAnswer = MutableLiveData<Pair<Int, Boolean>?>(null)
+    val selectedAnswer: LiveData<Pair<Int, Boolean>?> = _selectedAnswer
+
+    private var currentIndex = 0
 
     init {
-        loadQuiz()
+        loadQuestions()
     }
 
-    private fun loadQuiz() {
+    private fun loadQuestions() {
         viewModelScope.launch {
-            questions = repository.generateQuiz(moduleId)
-
-            if (questions.isEmpty()) {
-                _quizFinished.postValue(true)
-                return@launch
-            }
-
-            _currentQuestion.postValue(questions[0])
-            updateProgress()
+            val loadedQuestions = repository.getQuizQuestions(moduleId)
+            _questions.value = loadedQuestions
+            _totalQuestions.value = loadedQuestions.size
+            _currentQuestion.value = loadedQuestions.getOrNull(0)
+            _progress.value = if (loadedQuestions.isEmpty()) 0 else 1
         }
     }
 
-    fun checkAnswer(optionIndex: Int): Boolean {
-        val q = questions[currentIndex]
-        val selected = q.options[optionIndex]
-        val correct = q.correctAnswer
+    fun checkAnswer(selectedIndex: Int): Boolean {
+        val question = _currentQuestion.value ?: return false
+        val isCorrect = question.correctAnswerIndex == selectedIndex
 
-        val result = selected == correct
-
-        if (result) {
+        if (isCorrect) {
             _score.value = (_score.value ?: 0) + 1
         }
-
-        return result
+        _selectedAnswer.value = Pair(selectedIndex, isCorrect)
+        return isCorrect
     }
 
     fun nextQuestion() {
-        if (currentIndex + 1 < questions.size) {
-            currentIndex++
-            _currentQuestion.postValue(questions[currentIndex])
-            updateProgress()
+        _selectedAnswer.value = null // Reset highlight
+        currentIndex++
+        val questionList = _questions.value
+        if (questionList != null && currentIndex < questionList.size) {
+            _currentQuestion.value = questionList[currentIndex]
+            _progress.value = currentIndex + 1
         } else {
-            finishQuiz()
+            _quizFinished.value = true
         }
-    }
-
-    private fun updateProgress() {
-        val p = (((currentIndex + 1).toFloat() / questions.size) * 100).toInt()
-        _progress.postValue(p)
-    }
-
-    private fun finishQuiz() {
-        viewModelScope.launch {
-            repository.saveQuizResult(
-                moduleId = moduleId,
-                score = score.value ?: 0,
-                total = questions.size
-            )
-        }
-
-        _quizFinished.postValue(true)
     }
 }

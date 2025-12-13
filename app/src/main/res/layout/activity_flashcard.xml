@@ -152,8 +152,7 @@
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:src="@drawable/ic_lightbulb"
-                    app:tint="#FFC107" />
+                    android:src="@drawable/ic_lightbulb" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -170,7 +169,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:gravity="center"
-                    android:text="The occurrence of events by chance in a happy or beneficial way"
+                    android:text="(n) tính kế thừa"
                     android:textColor="@android:color/black"
                     android:textSize="18sp" />
 

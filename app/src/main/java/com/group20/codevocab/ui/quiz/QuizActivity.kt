@@ -111,7 +111,7 @@ class QuizActivity : AppCompatActivity() {
     private fun resetOptionUI() {
         val defaultColor = ContextCompat.getColor(this, R.color.white)
 
-            binding.cardOption1.setCardBackgroundColor(defaultColor)
+        binding.cardOption1.setCardBackgroundColor(defaultColor)
         binding.cardOption2.setCardBackgroundColor(defaultColor)
         binding.cardOption3.setCardBackgroundColor(defaultColor)
         binding.cardOption4.setCardBackgroundColor(defaultColor)
