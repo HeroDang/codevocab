@@ -68,7 +68,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:text='@{viewModel.totalQuestions > 0 ? String.format("%d%% Complete", (int)(viewModel.progress * 100.0 / viewModel.totalQuestions)) : "0% Complete"}'
+            android:text='@{viewModel.totalQuestions > 0 ? String.format("%d%% Complete", (int)((float)viewModel.progress * 100f / viewModel.totalQuestions)) : "0% Complete"}'
             android:textColor="@android:color/darker_gray"
             app:layout_constraintBottom_toBottomOf="@+id/tvProgressLabel"
             app:layout_constraintEnd_toEndOf="parent"

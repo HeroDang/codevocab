@@ -42,7 +42,8 @@ class QuizRepository(
                 vocabId = vocab.id,
                 question = vocab.word ?: "",
                 correctAnswer = vocab.meaningVi ?: "",
-                options = options
+                options = options,
+                correctAnswerIndex = 0
             )
         }
     }

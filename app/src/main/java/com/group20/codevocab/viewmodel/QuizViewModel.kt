@@ -43,7 +43,8 @@ class QuizViewModel(
 
     private fun loadQuestions() {
         viewModelScope.launch {
-            val loadedQuestions = repository.getQuizQuestions(moduleId)
+//            val loadedQuestions = repository.getQuizQuestions(moduleId)
+            val loadedQuestions = repository.generateQuiz(moduleId)
             _questions.value = loadedQuestions
             _totalQuestions.value = loadedQuestions.size
             _currentQuestion.value = loadedQuestions.getOrNull(0)
