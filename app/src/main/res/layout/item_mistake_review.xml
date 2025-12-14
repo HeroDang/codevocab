@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardBackgroundColor="#FEE2E2"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="0dp"
+    app:contentPadding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipQuestionNum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Question 3"
+            android:textColor="#B91C1C"
+            app:chipBackgroundColor="#FCCACA"
+            app:chipCornerRadius="6dp"
+            app:chipMinHeight="24dp" />
+
+        <TextView
+            android:id="@+id/tvMistakeQuestion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="What is the capital of Australia?"
+            android:textColor="@android:color/black"
+            android:textStyle="bold" />
+
+        <!-- Your Answer -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_close"
+                app:tint="#DC2626" />
+
+            <TextView
+                android:id="@+id/tvYourAnswer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Your answer: Sydney"
+                android:textColor="#DC2626" />
+        </LinearLayout>
+
+        <!-- Correct Answer -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_check"
+                app:tint="#16A34A" />
+
+            <TextView
+                android:id="@+id/tvCorrectAnswer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Correct answer: Canberra"
+                android:textColor="#16A34A" />
+        </LinearLayout>
+
+
+        <!-- Explanation Box -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_explanation_box"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="12dp">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_lightbulb"
+                app:tint="#2563EB" />
+
+            <TextView
+                android:id="@+id/tvExplanation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Canberra is the capital city of Australia, located in the Australian Capital Territory."
+                android:textColor="#1E40AF" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

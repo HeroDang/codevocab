@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.group20.codevocab.viewmodel.QuizViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#F0F4F8">
+
+        <!-- Header -->
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:padding="8dp"
+            android:src="@drawable/ic_arrow_back"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvQuestionCounter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text='@{"Question " + viewModel.progress + "/" + viewModel.totalQuestions}'
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/btnBack"
+            app:layout_constraintEnd_toStartOf="@id/btnMenu"
+            app:layout_constraintStart_toEndOf="@id/btnBack"
+            app:layout_constraintTop_toTopOf="@id/btnBack"
+            tools:text="Question 3/10" />
+
+        <ImageView
+            android:id="@+id/btnMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:padding="8dp"
+            android:src="@drawable/ic_more_vert"
+            app:layout_constraintBottom_toBottomOf="@id/btnBack"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/btnBack" />
+
+        <!-- Progress Bar -->
+        <TextView
+            android:id="@+id/tvProgressLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp"
+            android:text="Progress"
+            android:textColor="@android:color/darker_gray"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnBack" />
+
+        <TextView
+            android:id="@+id/tvProgressPercent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:text='@{viewModel.totalQuestions > 0 ? String.format("%d%% Complete", (int)((float)viewModel.progress * 100f / viewModel.totalQuestions)) : "0% Complete"}'
+            android:textColor="@android:color/darker_gray"
+            app:layout_constraintBottom_toBottomOf="@+id/tvProgressLabel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tvProgressLabel"
+            tools:text="30% Complete" />
+
+        <ProgressBar
+            android:id="@+id/progressQuiz"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:layout_width="0dp"
+            android:layout_height="8dp"
+            android:layout_marginTop="8dp"
+            android:max="@{viewModel.totalQuestions}"
+            android:progress="@{viewModel.progress}"
+            android:progressDrawable="@drawable/progress_blue"
+            app:layout_constraintEnd_toEndOf="@+id/tvProgressPercent"
+            app:layout_constraintStart_toStartOf="@+id/tvProgressLabel"
+            app:layout_constraintTop_toBottomOf="@+id/tvProgressLabel" />
+
+        <!-- Question -->
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipQuestionType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp"
+            android:text="Multiple Choice"
+            android:textColor="#1D4ED8"
+            app:chipBackgroundColor="#DBEAFE"
+            app:chipCornerRadius="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/progressQuiz" />
+
+        <TextView
+            android:id="@+id/tvQuestion"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@{viewModel.currentQuestion.question}"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/tvProgressPercent"
+            app:layout_constraintStart_toStartOf="@+id/chipQuestionType"
+            app:layout_constraintTop_toBottomOf="@+id/chipQuestionType"
+            tools:text="Which of the following is the correct syntax for declaring a variable in JavaScript?" />
+
+
+        <!-- Answer Options -->
+        <RadioGroup
+            android:id="@+id/radioGroupOptions"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toEndOf="@+id/tvQuestion"
+            app:layout_constraintStart_toStartOf="@+id/tvQuestion"
+            app:layout_constraintTop_toBottomOf="@+id/tvQuestion">
+
+            <RadioButton
+                android:id="@+id/option1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_radio_option"
+                android:padding="16dp"
+                android:text="@{viewModel.currentQuestion.options[0]}"
+                tools:text="var x = 10;" />
+
+            <RadioButton
+                android:id="@+id/option2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/bg_radio_option"
+                android:padding="16dp"
+                android:text="@{viewModel.currentQuestion.options[1]}"
+                tools:text="let x = 10;" />
+
+            <RadioButton
+                android:id="@+id/option3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/bg_radio_option"
+                android:padding="16dp"
+                android:text="@{viewModel.currentQuestion.options[2]}"
+                tools:text="const x = 10;" />
+
+            <RadioButton
+                android:id="@+id/option4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/bg_radio_option"
+                android:padding="16dp"
+                android:text="@{viewModel.currentQuestion.options[3]}"
+                tools:text="All of the above" />
+
+        </RadioGroup>
+
+        <!-- Bottom Buttons -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSubmit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:padding="16dp"
+            android:text="Submit Answer"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            app:backgroundTint="#2962FF"
+            app:cornerRadius="12dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/radioGroupOptions"
+            app:layout_constraintStart_toStartOf="@+id/radioGroupOptions" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnHint"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:padding="16dp"
+            android:text="Show Hint"
+            android:textAllCaps="false"
+            android:textColor="#B45309"
+            app:cornerRadius="12dp"
+            app:icon="@drawable/ic_lightbulb"
+            app:iconGravity="textStart"
+            app:iconTint="#FCD34D"
+            app:layout_constraintBottom_toTopOf="@+id/btnSubmit"
+            app:layout_constraintEnd_toEndOf="@+id/btnSubmit"
+            app:layout_constraintStart_toStartOf="@+id/btnSubmit"
+            app:strokeColor="#FCD34D" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">CodeVocab</string>
+    <string name="welcome_message">Chào mừng đến CodeVocab!</string>
+    <string name="language">Ngôn ngữ</string>
+    <string name="theme">Giao diện</string>
+    <string name="choose_language">Chọn ngôn ngữ</string>
+    <string name="english">Tiếng Anh</string>
+    <string name="vietnamese">Tiếng Việt</string>
+    <string name="save">Lưu</string>
+    <string name="cancel">Hủy</string>
+</resources>
