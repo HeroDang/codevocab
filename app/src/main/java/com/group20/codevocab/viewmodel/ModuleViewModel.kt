@@ -7,7 +7,17 @@ import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.group20.codevocab.data.local.entity.ModuleEntity
 import com.group20.codevocab.data.repository.ModuleRepository
+import com.group20.codevocab.model.ModuleItem
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+
+
+sealed class ModulesState {
+    data object Loading : ModulesState()
+    data class Success(val items: List<ModuleItem>) : ModulesState()
+    data class Error(val message: String) : ModulesState()
+}
 
 class ModuleViewModel(
     private val repository: ModuleRepository
@@ -15,6 +25,8 @@ class ModuleViewModel(
 
     private val _modules = MutableLiveData<List<ModuleEntity>>()
     val modules: LiveData<List<ModuleEntity>> get() = _modules
+    private val _state = MutableStateFlow<ModulesState>(ModulesState.Loading)
+    val state: StateFlow<ModulesState> = _state
 
     fun loadModules() {
         viewModelScope.launch {
@@ -36,5 +48,17 @@ class ModuleViewModel(
 
     fun getSubModules(parentId: Int) = liveData {
         emit(repository.getSubModules(parentId))
+    }
+
+    fun loadModulesFromServer() {
+        viewModelScope.launch {
+            _state.value = ModulesState.Loading
+            try {
+                val items = repository.getModulesRemote()
+                _state.value = ModulesState.Success(items)
+            } catch (e: Exception) {
+                _state.value = ModulesState.Error(e.message ?: "Failed to load modules")
+            }
+        }
     }
 }
