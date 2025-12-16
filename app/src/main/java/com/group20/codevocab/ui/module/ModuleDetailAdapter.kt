@@ -7,17 +7,18 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.group20.codevocab.R
 import com.group20.codevocab.data.local.entity.ModuleEntity
+import com.group20.codevocab.model.SubModuleItem
 
 class ModuleDetailAdapter(
-    private val modules: List<ModuleEntity>,
-    private val onItemClick: (ModuleEntity) -> Unit
+    private var modules: List<SubModuleItem>,
+    private val onItemClick: (SubModuleItem) -> Unit
 ) : RecyclerView.Adapter<ModuleDetailAdapter.ViewHolder>() {
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tvName = view.findViewById<TextView>(R.id.tvModuleName)
         val tvDesc = view.findViewById<TextView>(R.id.tvModuleDescription)
         
-        fun bind(module: ModuleEntity) {
+        fun bind(module: SubModuleItem) {
             tvName.text = module.name
             tvDesc.text = module.description
             itemView.setOnClickListener { onItemClick(module) }
@@ -35,4 +36,10 @@ class ModuleDetailAdapter(
     }
 
     override fun getItemCount() = modules.size
+
+    fun updateData(newItems: List<SubModuleItem>) {
+        modules = newItems
+        notifyDataSetChanged()
+    }
+
 }
