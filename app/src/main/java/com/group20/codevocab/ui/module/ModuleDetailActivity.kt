@@ -32,6 +32,7 @@ class ModuleDetailActivity : AppCompatActivity() {
         adapter = ModuleDetailAdapter(emptyList()) { subModule ->
             val intent = Intent(this, WordListActivity::class.java)
             intent.putExtra("module_id", subModule.id)
+            intent.putExtra("module_name", subModule.name)
             startActivity(intent)
         }
         binding.rvSubModules.adapter = adapter
