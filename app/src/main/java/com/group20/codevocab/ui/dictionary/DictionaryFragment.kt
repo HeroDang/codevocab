@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
@@ -60,12 +59,10 @@ class DictionaryFragment : Fragment() {
         popup.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.action_create_module -> {
-                    Toast.makeText(context, "Create module clicked", Toast.LENGTH_SHORT).show()
-                    // TODO: Handle Create module action
+                    showCreateModuleDialog()
                     true
                 }
                 R.id.action_add_word -> {
-                    Toast.makeText(context, "Add Word clicked", Toast.LENGTH_SHORT).show()
                     // TODO: Handle Add Word action
                     true
                 }
@@ -73,6 +70,11 @@ class DictionaryFragment : Fragment() {
             }
         }
         popup.show()
+    }
+
+    private fun showCreateModuleDialog() {
+        val dialogFragment = CreateModuleDialogFragment()
+        dialogFragment.show(childFragmentManager, "CreateModuleDialog")
     }
 
     override fun onDestroyView() {
