@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-<!--    <style name="Theme.CodeVocab" parent="android:Theme.Material.Light.NoActionBar" />-->
     <!-- Base application theme -->
     <style name="Theme.CodeVocab" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your colors -->
@@ -11,10 +10,32 @@
         <item name="colorOnSurface">@color/colorOnSurface</item>
         <item name="colorOnBackground">@color/colorBackground</item>
 
+        <!-- Font -->
+        <!-- <item name="android:fontFamily">@font/poppins</item> -->
 
-<!--        <item name="android:fontFamily">@font/poppins</item>-->
-        <!-- Nếu muốn toàn màn hình (Edge-to-Edge) -->
+        <!-- Edge-to-Edge -->
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/black</item>
+
+        <!-- Set the default bottom sheet theme for the app -->
+        <item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>
     </style>
+
+    <!-- Custom BottomSheetDialog Theme -->
+    <style name="AppBottomSheetDialogTheme" parent="Theme.Material3.DayNight.BottomSheetDialog">
+        <!-- You can add customizations here if needed in the future -->
+    </style>
+
+    <!-- Style for the bottom sheet dialog (Legacy - can be removed if not used) -->
+    <style name="FullScreenDialog" parent="Theme.Material3.DayNight.Dialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowAnimationStyle">@style/DialogAnimation</item>
+    </style>
+
+    <style name="DialogAnimation">
+        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
+    </style>
+
 </resources>
