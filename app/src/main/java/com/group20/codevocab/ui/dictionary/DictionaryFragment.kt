@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
 import com.group20.codevocab.R
@@ -63,7 +64,7 @@ class DictionaryFragment : Fragment() {
                     true
                 }
                 R.id.action_add_word -> {
-                    // TODO: Handle Add Word action
+                    findNavController().navigate(R.id.action_dictionaryFragment_to_addWordFragment)
                     true
                 }
                 else -> false

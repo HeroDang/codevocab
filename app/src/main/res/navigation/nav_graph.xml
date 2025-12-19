@@ -21,7 +21,11 @@
         android:id="@+id/dictionaryFragment"
         android:name="com.group20.codevocab.ui.dictionary.DictionaryFragment"
         android:label="Dictionary"
-        tools:layout="@layout/fragment_dictionary" />
+        tools:layout="@layout/fragment_dictionary">
+        <action
+            android:id="@+id/action_dictionaryFragment_to_addWordFragment"
+            app:destination="@id/addWordFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/marketFragment"
@@ -34,5 +38,11 @@
         android:name="com.group20.codevocab.ui.group.GroupFragment"
         android:label="Group"
         tools:layout="@layout/fragment_group" />
+        
+    <fragment
+        android:id="@+id/addWordFragment"
+        android:name="com.group20.codevocab.ui.dictionary.AddWordFragment"
+        android:label="Add Word"
+        tools:layout="@layout/fragment_add_word" />
 
 </navigation>
