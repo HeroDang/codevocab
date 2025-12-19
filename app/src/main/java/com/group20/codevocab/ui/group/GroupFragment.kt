@@ -5,8 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.group20.codevocab.R
 import com.group20.codevocab.databinding.FragmentGroupBinding
 import com.group20.codevocab.databinding.ItemGroupBinding
 
@@ -26,7 +28,7 @@ class GroupFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+
         setupRecyclerView()
 
         binding.fab.setOnClickListener {
@@ -35,7 +37,9 @@ class GroupFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        val groupAdapter = GroupAdapter(createDummyData())
+        val groupAdapter = GroupAdapter(createDummyData()) {
+            findNavController().navigate(R.id.action_groupFragment_to_groupDetailFragment)
+        }
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = groupAdapter
@@ -65,12 +69,14 @@ class GroupFragment : Fragment() {
 }
 
 // Simple adapter for the Group screen
-class GroupAdapter(private val items: List<Pair<String, Int>>) : 
-    RecyclerView.Adapter<GroupAdapter.ViewHolder>() {
+class GroupAdapter(
+    private val items: List<Pair<String, Int>>,
+    private val onItemClick: () -> Unit
+) : RecyclerView.Adapter<GroupAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemGroupBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ViewHolder(binding)
+        return ViewHolder(binding, onItemClick)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -79,8 +85,16 @@ class GroupAdapter(private val items: List<Pair<String, Int>>) :
 
     override fun getItemCount() = items.size
 
-    class ViewHolder(private val binding: ItemGroupBinding) : 
-        RecyclerView.ViewHolder(binding.root) {
+    class ViewHolder(
+        private val binding: ItemGroupBinding,
+        private val onItemClick: () -> Unit
+    ) : RecyclerView.ViewHolder(binding.root) {
+        init {
+            itemView.setOnClickListener {
+                onItemClick()
+            }
+        }
+
         fun bind(item: Pair<String, Int>) {
             binding.tvGroupName.text = item.first
             binding.tvMemberCount.text = "${item.second} members"
