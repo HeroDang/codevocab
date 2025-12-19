@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="12dp">
+
+    <TextView
+        android:id="@+id/tvModuleName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="Essential Business Vocabulary"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@+id/ivArrow"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/ivBookIcon"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/ic_book1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvModuleName"
+        app:tint="#8A8A8A" />
+
+    <TextView
+        android:id="@+id/tvWordCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="245 words"
+        android:textColor="#8A8A8A"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/ivBookIcon"
+        app:layout_constraintStart_toEndOf="@+id/ivBookIcon"
+        app:layout_constraintTop_toTopOf="@+id/ivBookIcon" />
+
+    <ImageView
+        android:id="@+id/ivPersonIcon"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:layout_marginStart="16dp"
+        android:src="@drawable/ic_account"
+        app:layout_constraintBottom_toBottomOf="@+id/ivBookIcon"
+        app:layout_constraintStart_toEndOf="@+id/tvWordCount"
+        app:layout_constraintTop_toTopOf="@+id/ivBookIcon"
+        app:tint="#8A8A8A" 
+        tools:src="@drawable/ic_account"/>
+
+    <TextView
+        android:id="@+id/tvAuthor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="Sarah Johnson"
+        android:textColor="#8A8A8A"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/ivPersonIcon"
+        app:layout_constraintStart_toEndOf="@+id/ivPersonIcon"
+        app:layout_constraintTop_toTopOf="@+id/ivPersonIcon" />
+
+    <ImageView
+        android:id="@+id/ivArrow"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/ic_arrow_back"
+        android:rotation="180"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="#BDBDBD" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="12dp"
+        android:background="#F0F0F0"
+        app:layout_constraintTop_toBottomOf="@+id/ivBookIcon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

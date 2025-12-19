@@ -85,7 +85,7 @@
                     android:textAllCaps="false"
                     android:textColor="#5E35B1"
                     app:cornerRadius="20dp"
-                    app:icon="@drawable/ic_filter"
+                    app:icon="@drawable/ic_alphabetical_sorting"
                     app:iconSize="16dp"
                     app:iconTint="#5E35B1" />
 
@@ -98,7 +98,7 @@
                     android:textAllCaps="false"
                     android:textColor="#424242"
                     app:cornerRadius="20dp"
-                    app:icon="@drawable/ic_time"
+                    app:icon="@drawable/ic_calendar"
                     app:iconSize="16dp"
                     app:iconTint="#424242"
                     app:strokeWidth="0dp" />
@@ -112,7 +112,7 @@
                     android:textAllCaps="false"
                     android:textColor="#424242"
                     app:cornerRadius="20dp"
-                    app:icon="@drawable/ic_launcher_foreground"
+                    app:icon="@drawable/ic_account"
                     app:iconSize="16dp"
                     app:iconTint="#424242"
                     app:strokeWidth="0dp" />
