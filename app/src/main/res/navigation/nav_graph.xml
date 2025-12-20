@@ -1,27 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/learningFragment">
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.group20.codevocab.ui.home.HomeFragment"
+        android:label="Home"
+        tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/learningFragment"
         android:name="com.group20.codevocab.ui.module.ModuleListFragment"
-        android:label="Home" />
+        android:label="Learning"
+        tools:layout="@layout/fragment_module_list" />
 
     <fragment
         android:id="@+id/dictionaryFragment"
         android:name="com.group20.codevocab.ui.dictionary.DictionaryFragment"
-        android:label="Dictionary" />
+        android:label="Dictionary"
+        tools:layout="@layout/fragment_dictionary" />
 
     <fragment
-        android:id="@+id/flashcardFragment"
-        android:name="com.group20.codevocab.ui.flashcard.FlashcardFragment"
-        android:label="Flashcard" />
+        android:id="@+id/marketFragment"
+        android:name="com.group20.codevocab.ui.market.MarketFragment"
+        android:label="Market"
+        tools:layout="@layout/fragment_market" />
 
     <fragment
-        android:id="@+id/profileFragment"
-        android:name="com.group20.codevocab.ui.profile.ProfileFragment"
-        android:label="Profile" />
+        android:id="@+id/groupFragment"
+        android:name="com.group20.codevocab.ui.group.GroupFragment"
+        android:label="Group"
+        tools:layout="@layout/fragment_group" />
 
 </navigation>
