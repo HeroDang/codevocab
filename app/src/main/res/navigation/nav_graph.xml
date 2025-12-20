@@ -47,8 +47,18 @@
         android:id="@+id/addWordFragment"
         android:name="com.group20.codevocab.ui.dictionary.AddWordFragment"
         android:label="Add Word"
-        tools:layout="@layout/fragment_add_word" />
-        
+        tools:layout="@layout/fragment_add_word" >
+        <action
+            android:id="@+id/action_addWordFragment_to_importImageDicFragment"
+            app:destination="@id/importImageDicFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/importImageDicFragment"
+        android:name="com.group20.codevocab.ui.dictionary.ImportImageDicFragment"
+        android:label="Import Vocabulary"
+        tools:layout="@layout/fragment_import_image_dic" />
+
     <fragment
         android:id="@+id/groupDetailFragment"
         android:name="com.group20.codevocab.ui.group.GroupDetailFragment"

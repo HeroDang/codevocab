@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.group20.codevocab.R
 import com.group20.codevocab.databinding.FragmentAddWordBinding
 
 class AddWordFragment : Fragment() {
@@ -27,6 +28,7 @@ class AddWordFragment : Fragment() {
 
         setupToolbar()
         setupModuleSpinner()
+        setupButtons()
     }
 
     private fun setupToolbar() {
@@ -40,6 +42,12 @@ class AddWordFragment : Fragment() {
         val modules = arrayOf("User Authentication", "API Handling", "Database Management", "UI Components")
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, modules)
         binding.autoCompleteModule.setAdapter(adapter)
+    }
+
+    private fun setupButtons() {
+        binding.btnImport.setOnClickListener {
+            findNavController().navigate(R.id.action_addWordFragment_to_importImageDicFragment)
+        }
     }
 
     override fun onDestroyView() {
