@@ -33,6 +33,8 @@ class DictionaryModuleAdapter(private val isSharedTab: Boolean)
     inner class ModuleViewHolder(private val binding: ItemModuleDetailDicBinding, private val isSharedTab: Boolean)
         : RecyclerView.ViewHolder(binding.root) {
 
+        private var currentModuleName: String? = null
+
         init {
             // Set click listener for the whole item
             itemView.setOnClickListener {
@@ -44,11 +46,23 @@ class DictionaryModuleAdapter(private val isSharedTab: Boolean)
 
             // Set click listener for the menu icon
             binding.ivShare.setOnClickListener { view ->
-                showPopupMenu(view, binding.tvModuleName.text.toString())
+                currentModuleName?.let { showPopupMenu(view, it) }
+            }
+
+            // Set click listener for the Accept button
+            binding.btnAccept.setOnClickListener { view ->
+                currentModuleName?.let { moduleName ->
+                    val context = view.context
+                    if (context is AppCompatActivity) {
+                        AcceptModuleDialogFragment.newInstance(moduleName)
+                            .show(context.supportFragmentManager, AcceptModuleDialogFragment.TAG)
+                    }
+                }
             }
         }
 
         fun bind(moduleName: String) {
+            currentModuleName = moduleName
             binding.tvModuleName.text = moduleName
 
             // Handle UI variations based on the tab
