@@ -2,9 +2,14 @@ package com.group20.codevocab.ui.module
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
 import com.group20.codevocab.R
@@ -13,13 +18,16 @@ import com.group20.codevocab.data.repository.VocabRepository
 import com.group20.codevocab.databinding.ActivityWordListBinding
 import com.group20.codevocab.ui.flashcard.FlashcardActivity
 import com.group20.codevocab.ui.quiz.QuizActivity
+import com.group20.codevocab.viewmodel.DebugApiViewModel
 import com.group20.codevocab.viewmodel.WordViewModel
 import com.group20.codevocab.viewmodel.WordViewModelFactory
+import kotlinx.coroutines.launch
 
 class WordListActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityWordListBinding
     private lateinit var viewModel: WordViewModel
+    private val debugApiViewModel: DebugApiViewModel by viewModels()
     private lateinit var adapter: WordListAdapter
     private var moduleId: Int = -1
 
@@ -74,6 +82,7 @@ class WordListActivity : AppCompatActivity() {
         binding.btnPractice.setOnClickListener {
             // TODO: Implement Practice Activity navigation
              Toast.makeText(this, "Practice feature coming soon", Toast.LENGTH_SHORT).show()
+            debugApiViewModel.ping()
         }
     }
 
@@ -82,5 +91,16 @@ class WordListActivity : AppCompatActivity() {
             adapter.updateData(wordList)
             binding.tvSubtitle.text = "${wordList.size} words"
         }
+
+        // ✅ Collect StateFlow đúng cách (chạy theo lifecycle STARTED)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                debugApiViewModel.text.collect { msg ->
+                    Toast.makeText(this@WordListActivity, msg, Toast.LENGTH_SHORT).show()
+                    Log.d("API_PING", msg)
+                }
+            }
+        }
+
     }
 }
