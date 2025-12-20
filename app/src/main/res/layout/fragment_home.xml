@@ -161,7 +161,8 @@
                         android:text="Continue Learning"
                         android:textColor="@android:color/white"
                         android:textSize="18sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:ignore="MissingConstraints" />
 
                     <TextView
                         android:id="@+id/tvBannerSubtitle"
@@ -171,12 +172,13 @@
                         android:text="Lesson 12: Advanced Vocabulary"
                         android:textColor="#E0E7FF"
                         android:textSize="14sp"
-                        app:layout_constraintTop_toBottomOf="@id/tvBannerTitle" />
+                        app:layout_constraintTop_toBottomOf="@id/tvBannerTitle"
+                        tools:ignore="MissingConstraints" />
 
                     <ImageView
                         android:layout_width="32dp"
                         android:layout_height="32dp"
-                        android:src="@drawable/ic_play_arrow"
+                        android:src="@drawable/ic_code"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"

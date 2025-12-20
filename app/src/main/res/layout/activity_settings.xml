@@ -111,7 +111,7 @@
                     <ImageView
                         android:layout_width="16dp"
                         android:layout_height="16dp"
-                        android:src="@drawable/ic_edit"
+                        android:src="@drawable/ic_code"
                         app:tint="#3B82F6" />
 
                     <TextView
@@ -305,7 +305,9 @@
                                 android:text="Daily"
                                 android:checked="true"
                                 app:chipBackgroundColor="#DBEAFE"
-                                app:textColor="#2563EB" />
+                                android:buttonTint="#2563EB"
+                                />
+                            <!--app:textColor="#2563EB"-->
                             <com.google.android.material.chip.Chip
                                 android:id="@+id/chipWeekly"
                                 style="@style/Widget.MaterialComponents.Chip.Choice"
@@ -458,8 +460,8 @@
                         android:background="@drawable/bg_theme_selection"
                         android:gravity="center"
                         android:padding="12dp"
-                        android:orientation="vertical"
-                        android:selected="true">
+                        android:orientation="vertical">
+<!--                        android:selected="true"-->
                         <View
                             android:layout_width="40dp"
                             android:layout_height="24dp"
