@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#F8FAFC"
+        android:fillViewport="true"
+        tools:context=".ui.pronunciation.PronunciationActivity">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="24dp">
+
+            <!-- Header -->
+            <ImageView
+                android:id="@+id/btnBack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:padding="8dp"
+                android:src="@drawable/ic_arrow_back"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pronunciation Practice"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@id/btnBack"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/btnBack" />
+
+            <!-- Progress -->
+            <TextView
+                android:id="@+id/tvProgressLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="24dp"
+                android:text="Progress"
+                android:textColor="#4F46E5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btnBack" />
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="0dp"
+                android:layout_height="8dp"
+                android:layout_marginTop="8dp"
+                android:progress="12"
+                android:progressDrawable="@drawable/progress_blue"
+                app:layout_constraintEnd_toEndOf="@+id/tvProgressCount"
+                app:layout_constraintStart_toStartOf="@id/tvProgressLabel"
+                app:layout_constraintTop_toBottomOf="@id/tvProgressLabel" />
+
+            <TextView
+                android:id="@+id/tvProgressCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                android:text="3/24"
+                android:textColor="@android:color/black"
+                app:layout_constraintBottom_toBottomOf="@id/tvProgressLabel"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tvProgressLabel" />
+
+            <!-- Word Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardWord"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="24dp"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/progressBar"
+                app:strokeColor="#E5E7EB"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:padding="24dp">
+
+                    <TextView
+                        android:id="@+id/tvWordToPractice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Beautiful"
+                        android:textColor="#1E293B"
+                        android:textSize="36sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvPhonetics"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="/'bju:.tɪ.fəl/"
+                        android:textColor="#64748B"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/tvDefinition"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="having beauty; pleasing to the senses"
+                        android:textColor="#475569" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Audio Controls Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardAudioControls"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:layout_constraintEnd_toEndOf="@id/cardWord"
+                app:layout_constraintStart_toStartOf="@id/cardWord"
+                app:layout_constraintTop_toBottomOf="@+id/cardWord"
+                app:strokeColor="#E5E7EB"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp">
+
+                    <!-- Sample Audio -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Sample Audio"
+                                android:textColor="@android:color/black" />
+
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:layout_marginStart="8dp"
+                                android:src="@drawable/ic_speaker" />
+                        </LinearLayout>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnPlaySample"
+                            android:layout_width="wrap_content"
+                            android:layout_height="64dp"
+                            android:layout_marginTop="8dp"
+                            android:text="Play Sample"
+                            android:textAllCaps="false"
+                            app:backgroundTint="#4F46E5"
+                            app:cornerRadius="8dp"
+                            app:icon="@drawable/ic_play" />
+                    </LinearLayout>
+
+                    <!-- Recording -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Your Recording"
+                                android:textColor="@android:color/black" />
+
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:layout_marginStart="8dp"
+                                android:src="@drawable/ic_mic" />
+                        </LinearLayout>
+
+                        <ImageButton
+                            android:id="@+id/btnRecord"
+                            android:layout_width="64dp"
+                            android:layout_height="64dp"
+                            android:layout_marginTop="8dp"
+                            android:background="@drawable/bg_record_button"
+                            android:src="@drawable/ic_mic"
+                            app:tint="@android:color/white" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Tap to record"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/tvRecordingTime"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="00:00" />
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Score Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardScore"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardBackgroundColor="#DCFCE7"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:layout_constraintEnd_toEndOf="@id/cardAudioControls"
+                app:layout_constraintStart_toStartOf="@id/cardAudioControls"
+                app:layout_constraintTop_toBottomOf="@+id/cardAudioControls"
+                app:strokeColor="#86EFAC"
+                app:strokeWidth="1dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:id="@+id/layoutScoreLeft"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="bottom"
+                        android:orientation="horizontal"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <TextView
+                            android:id="@+id/tvScore"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="82"
+                            android:textColor="#15803D"
+                            android:textSize="48sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvScoreTotal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:text="/100"
+                            android:textColor="#15803D"
+                            android:textSize="18sp" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/ivScoreCheck"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/bg_green_circle"
+                        android:padding="4dp"
+                        android:src="@drawable/ic_check"
+                        app:layout_constraintBottom_toBottomOf="@+id/layoutScoreLeft"
+                        app:layout_constraintStart_toEndOf="@+id/layoutScoreLeft"
+                        app:layout_constraintTop_toTopOf="@+id/layoutScoreLeft"
+                        app:tint="@android:color/white" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="start"
+                        android:orientation="vertical"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <TextView
+                            android:id="@+id/tvScoreFeedback1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Great job!"
+                            android:textColor="#15803D"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvScoreFeedback2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Your pronunciation is excellent"
+                            android:textColor="#15803D" />
+                    </LinearLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Action Buttons -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnNextWord"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:padding="16dp"
+                android:text="Next Word"
+                android:textAllCaps="false"
+                app:backgroundTint="#4F46E5"
+                app:cornerRadius="12dp"
+                app:icon="@drawable/ic_arrow_forward"
+                app:iconGravity="textEnd"
+                app:layout_constraintEnd_toEndOf="@id/cardScore"
+                app:layout_constraintStart_toStartOf="@id/cardScore"
+                app:layout_constraintTop_toBottomOf="@+id/cardScore" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnTryAgain"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:padding="16dp"
+                android:text="Try Again"
+                android:textAllCaps="false"
+                android:textColor="@android:color/black"
+                app:cornerRadius="12dp"
+                app:icon="@drawable/ic_refresh"
+                app:iconGravity="textStart"
+                app:layout_constraintEnd_toEndOf="@+id/btnNextWord"
+                app:layout_constraintStart_toStartOf="@+id/btnNextWord"
+                app:layout_constraintTop_toBottomOf="@+id/btnNextWord"
+                app:strokeColor="#E5E7EB" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+</layout>

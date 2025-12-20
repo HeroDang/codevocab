@@ -1,8 +1,29 @@
 package com.group20.codevocab.data.remote
 
+import com.google.gson.annotations.SerializedName
 import retrofit2.http.GET
 
 interface ApiService {
     @GET("words")
-    suspend fun getWords(): List<String>
+    suspend fun getWords(): List<WordsDto>
 }
+
+data class WordsDto(
+    @SerializedName("text_en")
+    val textEn: String? = null,
+
+    @SerializedName("meaning_vi")
+    val meaningVi: String? = null,
+
+    @SerializedName("part_of_speech")
+    val partOfSpeech: String? = null,
+
+    @SerializedName("ipa")
+    val ipa: String? = null,
+
+    @SerializedName("example_sentence")
+    val exampleSentence: String? = null,
+
+    @SerializedName("id")
+    val id: String? = null
+)
