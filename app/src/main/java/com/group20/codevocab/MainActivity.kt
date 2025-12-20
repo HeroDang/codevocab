@@ -28,7 +28,8 @@ class MainActivity : AppCompatActivity() {
                 R.id.addWordFragment,
                 R.id.groupDetailFragment,
                 R.id.importImageDicFragment,
-                R.id.reviewWordFragment -> {
+                R.id.reviewWordFragment,
+                R.id.editWordFragment -> {
                     navView.visibility = View.GONE
                 }
                 else -> {

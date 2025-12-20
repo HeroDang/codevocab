@@ -2,9 +2,11 @@ package com.group20.codevocab.ui.dictionary
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.group20.codevocab.R
 import com.group20.codevocab.databinding.ItemReviewWordBinding
 
 data class ReviewableWord(val word: String, val meaning: String, var isChecked: Boolean = true)
@@ -31,7 +33,7 @@ class ReviewWordAdapter : ListAdapter<ReviewableWord, ReviewWordAdapter.ViewHold
             }
 
             binding.ivEdit.setOnClickListener {
-                // TODO: Handle edit action, maybe open a dialog to edit word/meaning
+                it.findNavController().navigate(R.id.action_reviewWordFragment_to_editWordFragment)
             }
         }
     }

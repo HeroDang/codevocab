@@ -67,7 +67,17 @@
         android:id="@+id/reviewWordFragment"
         android:name="com.group20.codevocab.ui.dictionary.ReviewWordFragment"
         android:label="Review Word"
-        tools:layout="@layout/fragment_review_word" />
+        tools:layout="@layout/fragment_review_word">
+        <action
+            android:id="@+id/action_reviewWordFragment_to_editWordFragment"
+            app:destination="@id/editWordFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/editWordFragment"
+        android:name="com.group20.codevocab.ui.dictionary.EditWordFragment"
+        android:label="Edit Word"
+        tools:layout="@layout/fragment_edit_word" />
 
     <fragment
         android:id="@+id/groupDetailFragment"
