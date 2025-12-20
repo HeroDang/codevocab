@@ -1,11 +1,29 @@
 package com.group20.codevocab.data.remote
 
+
 import com.google.gson.annotations.SerializedName
+import com.group20.codevocab.data.remote.dto.ModuleDetailDto
+import com.group20.codevocab.data.remote.dto.ModuleDto
+import com.group20.codevocab.data.remote.dto.WordDto
 import retrofit2.http.GET
+import retrofit2.http.Path
 
 interface ApiService {
     @GET("words")
     suspend fun getWords(): List<WordsDto>
+
+    @GET("modules")
+    suspend fun getModules(): List<ModuleDto>
+
+    @GET("modules/{moduleId}")
+    suspend fun getModuleDetail(
+        @Path("moduleId") moduleId: String
+    ): ModuleDetailDto
+
+    @GET("modules/{moduleId}/words")
+    suspend fun getWordsBySubmodule(
+        @Path("moduleId") subModuleId: String
+    ): List<WordDto>
 }
 
 data class WordsDto(

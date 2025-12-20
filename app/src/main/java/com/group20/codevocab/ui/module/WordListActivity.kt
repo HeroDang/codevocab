@@ -15,10 +15,12 @@ import androidx.room.Room
 import com.group20.codevocab.R
 import com.group20.codevocab.data.local.AppDatabase
 import com.group20.codevocab.data.repository.VocabRepository
+import com.group20.codevocab.data.repository.WordRepository
 import com.group20.codevocab.databinding.ActivityWordListBinding
 import com.group20.codevocab.ui.flashcard.FlashcardActivity
 import com.group20.codevocab.ui.quiz.QuizActivity
 import com.group20.codevocab.viewmodel.DebugApiViewModel
+import com.group20.codevocab.viewmodel.WordListState
 import com.group20.codevocab.viewmodel.WordViewModel
 import com.group20.codevocab.viewmodel.WordViewModelFactory
 import kotlinx.coroutines.launch
@@ -29,29 +31,33 @@ class WordListActivity : AppCompatActivity() {
     private lateinit var viewModel: WordViewModel
     private val debugApiViewModel: DebugApiViewModel by viewModels()
     private lateinit var adapter: WordListAdapter
-    private var moduleId: Int = -1
+    private var moduleId: String? = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityWordListBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        moduleId = intent.getIntExtra("module_id", -1)
-        if (moduleId == -1) {
+        moduleId = intent.getStringExtra("module_id")
+        val subModuleName = intent.getStringExtra("module_name")
+        if (moduleId == null) {
             Toast.makeText(this, "Module not found", Toast.LENGTH_SHORT).show()
             finish()
             return
         }
 
         // Initialize ViewModel
-        val db = AppDatabase.getDatabase(this)
-        val repo = VocabRepository(db.vocabDao())
-        val factory = WordViewModelFactory(repo)
+        val factory = WordViewModelFactory(applicationContext)
         viewModel = ViewModelProvider(this, factory)[WordViewModel::class.java]
 
         setupUI()
         observeData()
-        viewModel.loadWords(moduleId)
+//        viewModel.loadWords(moduleId)
+
+        viewModel.loadWordsFromServer(
+            subModuleId = moduleId.toString(),
+            subModuleName = subModuleName
+        )
     }
 
     private fun setupUI() {
@@ -87,12 +93,47 @@ class WordListActivity : AppCompatActivity() {
     }
 
     private fun observeData() {
-        viewModel.words.observe(this) { wordList ->
-            adapter.updateData(wordList)
-            binding.tvSubtitle.text = "${wordList.size} words"
-        }
+//        viewModel.words.observe(this) { wordList ->
+//            adapter.updateData(wordList)
+//            binding.tvSubtitle.text = "${wordList.size} words"
+//        }
 
         // ✅ Collect StateFlow đúng cách (chạy theo lifecycle STARTED)
+//        lifecycleScope.launch {
+//            repeatOnLifecycle(Lifecycle.State.STARTED) {
+//                debugApiViewModel.text.collect { msg ->
+//                    Toast.makeText(this@WordListActivity, msg, Toast.LENGTH_SHORT).show()
+//                    Log.d("API_PING", msg)
+//                }
+//            }
+//        }
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.state.collect { state ->
+                    when (state) {
+                        is WordListState.Loading -> {
+                            // TODO: show loading nếu muốn
+                        }
+
+                        is WordListState.Success -> {
+                            adapter.updateData(state.items)
+                            binding.tvTitle.text = state.title ?: "Word List"
+                            binding.tvSubtitle.text = "${state.items.size} words"
+                        }
+
+                        is WordListState.Error -> {
+                            Toast.makeText(
+                                this@WordListActivity,
+                                state.message,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                }
+            }
+        }
+
+        // Debug API – giữ nguyên
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 debugApiViewModel.text.collect { msg ->

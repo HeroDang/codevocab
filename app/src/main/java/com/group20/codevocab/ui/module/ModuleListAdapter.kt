@@ -7,11 +7,14 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.group20.codevocab.R
 import com.group20.codevocab.data.local.entity.ModuleEntity
+import com.group20.codevocab.model.ModuleItem
 
 class ModuleListAdapter(
-    private var modules: List<ModuleEntity>,
+//    private var modules: List<ModuleEntity>,
+    private var modules: List<ModuleItem>,
     private val layoutId: Int,
-    private val onItemClick: (ModuleEntity) -> Unit
+//    private val onItemClick: (ModuleEntity) -> Unit
+    private val onItemClick: (ModuleItem) -> Unit
 ) : RecyclerView.Adapter<ModuleListAdapter.ModuleViewHolder>() {
 
     inner class ModuleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -34,7 +37,8 @@ class ModuleListAdapter(
 
     override fun getItemCount() = modules.size
 
-    fun updateData(newList: List<ModuleEntity>) {
+//    fun updateData(newList: List<ModuleEntity>) {
+    fun updateData(newList: List<ModuleItem>) {
         modules = newList
         notifyDataSetChanged()
     }

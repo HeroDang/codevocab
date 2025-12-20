@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
 import com.group20.codevocab.R
@@ -16,6 +17,8 @@ import com.group20.codevocab.data.repository.ModuleRepository
 import com.group20.codevocab.databinding.FragmentModuleListBinding
 import com.group20.codevocab.viewmodel.ModuleViewModel
 import com.group20.codevocab.viewmodel.ModuleViewModelFactory
+import com.group20.codevocab.viewmodel.ModulesState
+import kotlinx.coroutines.launch
 
 class ModuleListFragment : Fragment() {
     private var _binding: FragmentModuleListBinding? = null
@@ -49,12 +52,37 @@ class ModuleListFragment : Fragment() {
         binding.rvModules.adapter = adapter
 
         // 4️⃣ Quan sát dữ liệu
-        viewModel.modules.observe(viewLifecycleOwner) { list ->
-            adapter.updateData(list)
+        //viewModel.modules.observe(viewLifecycleOwner) { list ->
+        //    adapter.updateData(list)
+        //}
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.state.collect { state ->
+                when (state) {
+                    is ModulesState.Loading -> {
+                        binding.progressBar.visibility = View.VISIBLE
+                    }
+
+                    is ModulesState.Success -> {
+                        binding.progressBar.visibility = View.GONE
+                        adapter.updateData(state.items)
+                    }
+
+                    is ModulesState.Error -> {
+                        binding.progressBar.visibility = View.GONE
+                        Toast.makeText(
+                            requireContext(),
+                            state.message,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
         }
 
+
         // 5️⃣ Gọi load data
-        viewModel.loadGeneralModules()
+        viewModel.loadModulesFromServer()
     }
 
     override fun onDestroyView() {

@@ -7,8 +7,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.group20.codevocab.R
 import com.group20.codevocab.data.local.entity.VocabularyEntity
+import com.group20.codevocab.model.WordItem
 
-class WordListAdapter(private var words: List<VocabularyEntity>) :
+class WordListAdapter(private var words: List<WordItem>) :
     RecyclerView.Adapter<WordListAdapter.WordViewHolder>() {
 
     inner class WordViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -24,14 +25,14 @@ class WordListAdapter(private var words: List<VocabularyEntity>) :
 
     override fun onBindViewHolder(holder: WordViewHolder, position: Int) {
         val word = words[position]
-        holder.tvWord.text = word.word
+        holder.tvWord.text = word.textEn
         holder.tvMeaning.text = word.meaningVi
-        holder.tvPhonetic.text = word.phonetic ?: ""
+        holder.tvPhonetic.text = word.ipa ?: ""
     }
 
     override fun getItemCount(): Int = words.size
 
-    fun updateData(newWords: List<VocabularyEntity>) {
+    fun updateData(newWords: List<WordItem>) {
         words = newWords
         notifyDataSetChanged()
     }
