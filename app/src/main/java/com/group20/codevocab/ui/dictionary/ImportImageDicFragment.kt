@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.group20.codevocab.R
 import com.group20.codevocab.databinding.FragmentImportImageDicBinding
 
 class ImportImageDicFragment : Fragment() {
@@ -54,8 +55,7 @@ class ImportImageDicFragment : Fragment() {
         }
 
         binding.btnReview.setOnClickListener {
-            // TODO: Handle image processing and navigation to review screen
-            findNavController().navigateUp() // Go back for now
+            findNavController().navigate(R.id.action_importImageDicFragment_to_reviewWordFragment)
         }
     }
 
