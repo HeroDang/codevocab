@@ -1,5 +1,6 @@
 package com.group20.codevocab.ui.group
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -63,6 +64,12 @@ class GroupDetailFragment : Fragment() {
                 }
             }
         })
+
+        // Mở màn hình Create Post khi nhấn FAB
+        binding.fab.setOnClickListener {
+            val intent = Intent(requireContext(), CreatePostActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     override fun onDestroyView() {

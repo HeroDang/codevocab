@@ -86,6 +86,14 @@
             android:name=".ui.profile.EditProfileActivity"
             android:exported="false" />
 
+        <!-- Group Features -->
+        <activity
+            android:name=".ui.group.CommentListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.group.CreatePostActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>

@@ -45,7 +45,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        android:src="@drawable/ic_edit"
+        android:src="@drawable/ic_share2"
         android:visibility="gone"
         app:backgroundTint="@color/colorPrimary"
         app:tint="@android:color/white" />
