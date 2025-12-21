@@ -1,30 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:background="@color/white">
+    android:background="#F8FAFC">
 
+    <!-- Outer Blue Circle -->
+    <View
+        android:id="@+id/viewOuterCircle"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:background="@drawable/bg_splash_circle"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.4" />
+
+    <!-- Inner Purple Circle -->
+    <View
+        android:id="@+id/viewInnerCircle"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@drawable/bg_splash_inner_circle"
+        app:layout_constraintBottom_toBottomOf="@id/viewOuterCircle"
+        app:layout_constraintEnd_toEndOf="@id/viewOuterCircle"
+        app:layout_constraintStart_toStartOf="@id/viewOuterCircle"
+        app:layout_constraintTop_toTopOf="@id/viewOuterCircle" />
+
+    <!-- Logo Graduation Cap -->
     <ImageView
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:src="@mipmap/ic_launcher"
-        android:contentDescription="@string/app_name"/>
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/ic_graduation_cap"
+        app:layout_constraintBottom_toBottomOf="@id/viewInnerCircle"
+        app:layout_constraintEnd_toEndOf="@id/viewInnerCircle"
+        app:layout_constraintStart_toStartOf="@id/viewInnerCircle"
+        app:layout_constraintTop_toTopOf="@id/viewInnerCircle"
+        app:tint="@android:color/white" />
 
+    <!-- App Name -->
     <TextView
+        android:id="@+id/tvAppName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="CodeVocab"
-        android:textSize="24sp"
+        android:layout_marginTop="32dp"
+        android:text="EnglishIT"
+        android:textColor="#1E293B"
+        android:textSize="28sp"
         android:textStyle="bold"
-        android:paddingTop="16dp"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/viewOuterCircle" />
+
+    <!-- Slogan -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Learn English for IT"
+        android:textColor="#64748B"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvAppName" />
+
+    <!-- Loading UI at bottom -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="64dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tvLoading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="Loading..."
+        android:textColor="#64748B"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@id/progressBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Learn English for IT"
-        android:textSize="14sp"
-        android:textColor="@android:color/darker_gray"
-        android:paddingTop="4dp"/>
-</LinearLayout>
+        android:layout_marginBottom="32dp"
+        android:text="Version 1.0.0"
+        android:textColor="#94A3B8"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
