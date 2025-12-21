@@ -52,13 +52,12 @@ class ModuleViewModel(
         }
     }
 
-    fun getModuleById(id: Int) = liveData {
+    fun getModuleById(id: String) = liveData {
         emit(repository.getModuleById(id))
     }
-
-    fun getSubModules(parentId: Int) = liveData {
-        emit(repository.getSubModules(parentId))
-    }
+    
+    // Removing getSubModules as it was based on Int parentId which is no longer applicable with new Entity structure
+    // If needed, implement new logic based on String ID or relationships
 
     fun loadModulesFromServer() {
         viewModelScope.launch {
@@ -104,6 +103,30 @@ class ModuleViewModel(
                     ModuleDetailState.Error(
                         e.message ?: "Failed to load module detail"
                     )
+            }
+        }
+    }
+
+    fun createModuleLocal(name: String) {
+        viewModelScope.launch {
+            repository.createModuleLocal(name)
+            loadModules() // Refresh local modules
+        }
+    }
+
+    fun updateModule(item: ModuleItem) {
+        viewModelScope.launch {
+            try {
+                repository.updateModule(item)
+                
+                if (item.isLocal) {
+                    loadModules() // Refresh local
+                } else {
+                    // Refresh remote list
+                    loadUserModulesFromServer("9150dfe1-0758-4716-9d0e-99fc0fbe3a63")
+                }
+            } catch (e: Exception) {
+                 _state.value = ModulesState.Error("Failed to update: ${e.message}")
             }
         }
     }

@@ -35,7 +35,7 @@
                 android:layout_centerVertical="true"
                 android:background="@drawable/bg_close_button"
                 android:padding="8dp"
-                android:src="@android:drawable/ic_menu_close_clear_cancel" 
+                android:src="@android:drawable/ic_menu_close_clear_cancel"
                 app:tint="#8A8A8A" />
 
         </RelativeLayout>
@@ -74,7 +74,9 @@
             app:boxCornerRadiusTopEnd="12dp"
             app:boxCornerRadiusTopStart="12dp">
 
+            <!-- Đã thêm ID etModuleName ở đây -->
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etModuleName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="e.g., User Authentication"
