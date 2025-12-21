@@ -24,6 +24,9 @@ interface ApiService {
     suspend fun getWordsBySubmodule(
         @Path("moduleId") subModuleId: String
     ): List<WordDto>
+
+    @GET("modules/")
+    suspend fun getAllModules(): List<ModuleDto>
 }
 
 data class WordsDto(

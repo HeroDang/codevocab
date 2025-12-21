@@ -4,16 +4,29 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.group20.codevocab.databinding.FragmentMarketBinding
 import com.group20.codevocab.databinding.ItemModuleDetailMarketBinding
+import com.group20.codevocab.model.ModuleItem
+import com.group20.codevocab.ui.market.MarketModulesState
+import com.group20.codevocab.ui.market.MarketViewModel
+import kotlinx.coroutines.launch
 
 class MarketFragment : Fragment() {
 
     private var _binding: FragmentMarketBinding? = null
     private val binding get() = _binding!!
+
+    // Use the new MarketViewModel
+    private val marketViewModel: MarketViewModel by viewModels()
+    private lateinit var marketAdapter: MarketAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -26,25 +39,39 @@ class MarketFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
-        val marketAdapter = MarketAdapter(createDummyData())
+
+        setupRecyclerView()
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                marketViewModel.state.collect { state ->
+                    when (state) {
+                        is MarketModulesState.Success -> {
+                            binding.progressBar.visibility = View.GONE
+                            marketAdapter.submitList(state.items)
+                        }
+                        is MarketModulesState.Loading -> {
+                            binding.progressBar.visibility = View.VISIBLE
+                        }
+                        is MarketModulesState.Error -> {
+                            binding.progressBar.visibility = View.GONE
+                            Toast.makeText(context, state.message, Toast.LENGTH_LONG).show()
+                        }
+                    }
+                }
+            }
+        }
+
+        // Trigger the ViewModel to fetch the data
+        marketViewModel.loadMarketModules()
+    }
+
+    private fun setupRecyclerView() {
+        marketAdapter = MarketAdapter(emptyList())
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = marketAdapter
         }
-    }
-
-    private fun createDummyData(): List<Pair<String, String>> {
-        return listOf(
-            "Essential Business Vocabulary" to "Sarah Johnson",
-            "Spanish Travel Phrases" to "Carlos Martinez",
-            "Medical Terminology Basics" to "Dr. Emily Chen",
-            "Programming Fundamentals" to "Alex Thompson",
-            "French Cuisine Terms" to "Marie Dubois",
-            "Japanese Hiragana Guide" to "Yuki Tanaka",
-            "SAT Vocabulary Mastery" to "Michael Brown",
-            "German Grammar Essentials" to "Hans Mueller"
-        )
     }
 
     override fun onDestroyView() {
@@ -53,8 +80,7 @@ class MarketFragment : Fragment() {
     }
 }
 
-// A simple adapter for the market screen
-class MarketAdapter(private val items: List<Pair<String, String>>) : 
+class MarketAdapter(private var items: List<ModuleItem>) : 
     RecyclerView.Adapter<MarketAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -68,11 +94,23 @@ class MarketAdapter(private val items: List<Pair<String, String>>) :
 
     override fun getItemCount() = items.size
 
+    fun submitList(newItems: List<ModuleItem>) {
+        items = newItems
+        notifyDataSetChanged()
+    }
+
     class ViewHolder(private val binding: ItemModuleDetailMarketBinding) : 
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: Pair<String, String>) {
-            binding.tvModuleName.text = item.first
-            binding.tvAuthor.text = item.second
+        fun bind(item: ModuleItem) {
+            binding.tvModuleName.text = item.name
+            
+            // Set hardcoded text for author and word count as requested
+            binding.tvAuthor.text = "Sarah Johnson"
+            binding.tvWordCount.text = "150 words" // Hardcoded word count
+
+            // Display the description from the API if the TextView exists
+            // This check ensures the app won't crash if the ID is missing
+            binding.tvModuleDescription?.text = item.description
         }
     }
 }
