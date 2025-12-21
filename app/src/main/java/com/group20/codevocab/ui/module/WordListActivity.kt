@@ -11,6 +11,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.group20.codevocab.ui.common.speaker.Speaker
+import com.group20.codevocab.ui.common.speaker.SpeakerFactory
 import androidx.room.Room
 import com.group20.codevocab.R
 import com.group20.codevocab.data.local.AppDatabase
@@ -18,6 +20,7 @@ import com.group20.codevocab.data.repository.VocabRepository
 import com.group20.codevocab.data.repository.WordRepository
 import com.group20.codevocab.databinding.ActivityWordListBinding
 import com.group20.codevocab.ui.flashcard.FlashcardActivity
+import com.group20.codevocab.ui.pronunciation.PronunciationActivity
 import com.group20.codevocab.ui.quiz.QuizActivity
 import com.group20.codevocab.viewmodel.DebugApiViewModel
 import com.group20.codevocab.viewmodel.WordListState
@@ -32,11 +35,14 @@ class WordListActivity : AppCompatActivity() {
     private val debugApiViewModel: DebugApiViewModel by viewModels()
     private lateinit var adapter: WordListAdapter
     private var moduleId: String? = ""
+    private lateinit var speaker: Speaker
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityWordListBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        speaker = SpeakerFactory.create(this)
 
         moduleId = intent.getStringExtra("module_id")
         val subModuleName = intent.getStringExtra("module_name")
@@ -60,6 +66,11 @@ class WordListActivity : AppCompatActivity() {
         )
     }
 
+    override fun onDestroy() {
+        speaker.shutdown()
+        super.onDestroy()
+    }
+
     private fun setupUI() {
         // Back Button
         binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
@@ -68,7 +79,10 @@ class WordListActivity : AppCompatActivity() {
         }
 
         // RecyclerView
-        adapter = WordListAdapter(emptyList())
+        adapter = WordListAdapter(emptyList()) { word ->
+            speaker.speak(word.textEn)
+        }
+
         binding.rvWords.layoutManager = LinearLayoutManager(this)
         binding.rvWords.adapter = adapter
 
@@ -87,8 +101,12 @@ class WordListActivity : AppCompatActivity() {
 
         binding.btnPractice.setOnClickListener {
             // TODO: Implement Practice Activity navigation
-             Toast.makeText(this, "Practice feature coming soon", Toast.LENGTH_SHORT).show()
-            debugApiViewModel.ping()
+            val intent = Intent(this, PronunciationActivity::class.java)
+            intent.putExtra("module_id", moduleId)
+            Toast.makeText(this, "Practice feature coming soon", Toast.LENGTH_SHORT).show()
+            startActivity(intent)
+
+//            debugApiViewModel.ping()
         }
     }
 

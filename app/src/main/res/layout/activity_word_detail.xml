@@ -127,7 +127,7 @@
                     app:chipBackgroundColor="#A7F3D0"
                     app:chipCornerRadius="8dp"
                     app:chipMinHeight="32dp"
-                    app:textColor="#047857" />
+                    app:rippleColor="#047857" />
 
                 <TextView
                     android:id="@+id/tvProgress"
@@ -198,7 +198,7 @@
                     app:chipMinHeight="28dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:textColor="#4338CA" />
+                    app:rippleColor="#4338CA" />
 
                 <TextView
                     android:id="@+id/tvDefinition1"
@@ -258,7 +258,7 @@
                     app:chipMinHeight="28dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:textColor="#047857" />
+                    app:rippleColor="#047857" />
 
                 <TextView
                     android:id="@+id/tvDefinition2"

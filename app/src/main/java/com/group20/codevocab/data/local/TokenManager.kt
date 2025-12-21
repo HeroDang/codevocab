@@ -1,3 +1,3 @@
 object TokenManager {
-    var accessToken: String? = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJyb290dXNlckBleGFtcGxlLmNvbSIsInVzZXJfaWQiOiI5MTUwZGZlMS0wNzU4LTQ3MTYtOWQwZS05OWZjMGZiZTNhNjMiLCJyb2xlIjoidXNlciIsImV4cCI6MTc2NjA4NTA2OH0.ecZLsQ2elG3KM-foGb69Zg0Se-qylbFKtS2TCu-rlfc"
+    var accessToken: String? = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJyb290dXNlckBleGFtcGxlLmNvbSIsInVzZXJfaWQiOiI5MTUwZGZlMS0wNzU4LTQ3MTYtOWQwZS05OWZjMGZiZTNhNjMiLCJyb2xlIjoidXNlciIsImV4cCI6MTc2NjMwMDE4MX0.4jttS7_Cqhgi9v1V2NLC4jHQguOv2ZuxAAoElSZoQ2o"
 }
