@@ -167,6 +167,7 @@
                 android:layout_height="0dp"/>
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnImport"
                 style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
