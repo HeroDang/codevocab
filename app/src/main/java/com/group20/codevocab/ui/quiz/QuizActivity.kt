@@ -23,10 +23,11 @@ class QuizActivity : AppCompatActivity() {
         binding = ActivityQuizBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val moduleId = intent.getIntExtra("module_id", -1)
-        if (moduleId == -1) {
+        val moduleId = intent.getStringExtra("module_id")
+        if (moduleId.isNullOrEmpty()) {
             Toast.makeText(this, "ModuleId missing!", Toast.LENGTH_SHORT).show()
             finish()
+            return
         }
 
         setupViewModel(moduleId)
@@ -34,9 +35,9 @@ class QuizActivity : AppCompatActivity() {
         setupListeners()
     }
 
-    private fun setupViewModel(moduleId: Int) {
+    private fun setupViewModel(moduleId: String) {
         val db = AppDatabase.getDatabase(this)
-        val repo = QuizRepository(db.vocabDao(), db.quizResultDao())
+        val repo = QuizRepository(db.wordDao(), db.quizResultDao())
 
         val factory = QuizViewModelFactory(repo, moduleId)
         viewModel = factory.create(QuizViewModel::class.java)

@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.group20.codevocab.data.local.entity.FlashcardProgressEntity
-import com.group20.codevocab.data.local.entity.VocabularyEntity
+import com.group20.codevocab.data.local.entity.WordEntity
 import com.group20.codevocab.data.repository.FlashcardProgressRepository
 import com.group20.codevocab.data.repository.VocabularyRepository
 import kotlinx.coroutines.launch
@@ -15,16 +15,16 @@ class FlashcardViewModel(
     private val flashRepo: FlashcardProgressRepository
 ) : ViewModel() {
 
-    private val _vocabList = MutableLiveData<List<Pair<VocabularyEntity, FlashcardProgressEntity?>>>()
-    val vocabList: LiveData<List<Pair<VocabularyEntity, FlashcardProgressEntity?>>> get() = _vocabList
+    private val _vocabList = MutableLiveData<List<Pair<WordEntity, FlashcardProgressEntity?>>>()
+    val vocabList: LiveData<List<Pair<WordEntity, FlashcardProgressEntity?>>> get() = _vocabList
 
-    fun loadVocabWithProgress(moduleId: Int) {
+    fun loadVocabWithProgress(moduleId: String) {
         viewModelScope.launch {
             val vocabList = vocabRepo.getVocabByModule(moduleId)
 
             // Tạo flashcard nếu vocab chưa có
             vocabList.forEach { v ->
-                v.id?.let { flashRepo.ensureFlashcardForVocab(it, moduleId = v.moduleId) }
+                flashRepo.ensureFlashcardForVocab(v.id, moduleId = v.moduleId)
             }
 
             val flashList = flashRepo.getByModule(moduleId)
@@ -40,7 +40,7 @@ class FlashcardViewModel(
     /**
      * Đánh dấu 1 flashcard là đã học (isKnown = true/false)
      */
-    fun markKnown(flashcardId: Int, isKnown: Boolean, moduleId: Int) {
+    fun markKnown(flashcardId: Int, isKnown: Boolean, moduleId: String) {
         viewModelScope.launch {
             flashRepo.markKnown(flashcardId, moduleId, isKnown)
 //            loadVocabWithProgress(moduleId)
@@ -50,7 +50,7 @@ class FlashcardViewModel(
     /**
      * Tính % tiến độ học của module (đã học / tổng)
      */
-    fun getProgressPercent(moduleId: Int, callback: (Int) -> Unit) {
+    fun getProgressPercent(moduleId: String, callback: (Int) -> Unit) {
         viewModelScope.launch {
             val total = flashRepo.countByModule(moduleId)
             val known = flashRepo.countKnownByModule(moduleId)

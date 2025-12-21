@@ -7,7 +7,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.group20.codevocab.R
-import com.group20.codevocab.data.local.entity.VocabularyEntity
 import com.group20.codevocab.model.WordItem
 
 class WordListAdapter(

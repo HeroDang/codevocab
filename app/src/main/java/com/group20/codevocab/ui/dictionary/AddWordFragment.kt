@@ -14,15 +14,23 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.group20.codevocab.R
+import com.group20.codevocab.data.local.entity.ModuleEntity
 import com.group20.codevocab.databinding.FragmentAddWordBinding
+import com.group20.codevocab.viewmodel.ModuleViewModel
+import com.group20.codevocab.viewmodel.ModuleViewModelFactory
 
 class AddWordFragment : Fragment() {
 
     private var _binding: FragmentAddWordBinding? = null
     private val binding get() = _binding!!
     private var photoUri: Uri? = null
+
+    private lateinit var viewModel: ModuleViewModel
+    private var localModules: List<ModuleEntity> = emptyList()
+    private var selectedModuleId: String? = null
 
     private val requestCameraPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -60,9 +68,16 @@ class AddWordFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Initialize ViewModel
+        val factory = ModuleViewModelFactory(requireContext())
+        viewModel = ViewModelProvider(this, factory)[ModuleViewModel::class.java]
+
         setupToolbar()
         setupModuleSpinner()
         setupButtons()
+
+        // Load local modules
+        viewModel.loadModules()
     }
 
     private fun setupToolbar() {
@@ -72,10 +87,18 @@ class AddWordFragment : Fragment() {
     }
 
     private fun setupModuleSpinner() {
-        // Dummy data for modules - replace with your actual data
-        val modules = arrayOf("User Authentication", "API Handling", "Database Management", "UI Components")
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, modules)
-        binding.autoCompleteModule.setAdapter(adapter)
+        viewModel.modules.observe(viewLifecycleOwner) { modules ->
+            localModules = modules
+            val moduleNames = modules.map { it.name }
+            val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, moduleNames)
+            binding.autoCompleteModule.setAdapter(adapter)
+
+            binding.autoCompleteModule.setOnItemClickListener { _, _, position, _ ->
+                if (position < localModules.size) {
+                    selectedModuleId = localModules[position].id
+                }
+            }
+        }
     }
 
     private fun setupButtons() {

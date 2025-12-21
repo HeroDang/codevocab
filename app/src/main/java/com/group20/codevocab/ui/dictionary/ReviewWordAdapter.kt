@@ -2,45 +2,61 @@ package com.group20.codevocab.ui.dictionary
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.group20.codevocab.R
 import com.group20.codevocab.databinding.ItemReviewWordBinding
+import com.group20.codevocab.model.ReviewableWord
 
-data class ReviewableWord(val word: String, val meaning: String, var isChecked: Boolean = true)
+class ReviewWordAdapter(
+    private val onEditClick: (ReviewableWord) -> Unit
+) : ListAdapter<ReviewableWord, ReviewWordAdapter.ReviewWordViewHolder>(DiffCallback()) {
 
-class ReviewWordAdapter : ListAdapter<ReviewableWord, ReviewWordAdapter.ViewHolder>(DiffCallback()) {
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReviewWordViewHolder {
         val binding = ItemReviewWordBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ViewHolder(binding)
+        return ReviewWordViewHolder(binding, onEditClick)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ReviewWordViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
-    inner class ViewHolder(private val binding: ItemReviewWordBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: ReviewableWord) {
-            binding.tvWord.text = item.word
-            binding.tvMeaning.text = item.meaning
-            binding.checkbox.isChecked = item.isChecked
+    inner class ReviewWordViewHolder(
+        private val binding: ItemReviewWordBinding,
+        private val onEditClick: (ReviewableWord) -> Unit
+    ) : RecyclerView.ViewHolder(binding.root) {
+        
+        private var currentWord: ReviewableWord? = null
 
-            binding.checkbox.setOnCheckedChangeListener { _, isChecked ->
-                item.isChecked = isChecked
-            }
-
+        init {
             binding.ivEdit.setOnClickListener {
-                it.findNavController().navigate(R.id.action_reviewWordFragment_to_editWordFragment)
+                currentWord?.let { word ->
+                    onEditClick(word)
+                }
+            }
+        }
+
+        fun bind(item: ReviewableWord) {
+            currentWord = item
+            binding.tvWord.text = item.textEn ?: "[No Word]"
+            binding.tvMeaning.text = item.meaningVi ?: ""
+            binding.tvIpa.text = item.ipa ?: ""
+            binding.tvPartOfSpeech.text = item.partOfSpeech ?: ""
+            
+            // Unset listener to avoid triggering it during binding
+            binding.checkbox.setOnCheckedChangeListener(null)
+            binding.checkbox.isChecked = item.isChecked
+            
+            // Set listener to update model
+            binding.checkbox.setOnCheckedChangeListener { _, isChecked ->
+                currentWord?.isChecked = isChecked
             }
         }
     }
 
     private class DiffCallback : DiffUtil.ItemCallback<ReviewableWord>() {
         override fun areItemsTheSame(oldItem: ReviewableWord, newItem: ReviewableWord): Boolean {
-            return oldItem.word == newItem.word
+            return oldItem.textEn == newItem.textEn && oldItem.meaningVi == newItem.meaningVi
         }
 
         override fun areContentsTheSame(oldItem: ReviewableWord, newItem: ReviewableWord): Boolean {

@@ -1,14 +1,14 @@
 package com.group20.codevocab.data.repository
 
-import com.group20.codevocab.data.local.dao.VocabDao
-import com.group20.codevocab.data.local.entity.VocabularyEntity
+import com.group20.codevocab.data.local.dao.WordDao
+import com.group20.codevocab.data.local.entity.WordEntity
 
-class VocabRepository(private val vocabDao: VocabDao) {
-    suspend fun getVocabByModule(moduleId: Int): List<VocabularyEntity> {
-        return vocabDao.getVocabByModule(moduleId)
+class VocabRepository(private val wordDao: WordDao) {
+    suspend fun getVocabByModule(moduleId: String): List<WordEntity> {
+        return wordDao.getWordsByModule(moduleId)
     }
 
-    suspend fun getVocabById(id: Int): VocabularyEntity {
-        return vocabDao.getVocabById(id)
+    suspend fun getVocabById(id: String): WordEntity? {
+        return wordDao.getWordById(id)
     }
 }

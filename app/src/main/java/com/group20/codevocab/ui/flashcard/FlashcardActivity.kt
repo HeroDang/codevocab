@@ -13,13 +13,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
 import com.group20.codevocab.data.local.AppDatabase
 import com.group20.codevocab.data.local.entity.FlashcardProgressEntity
-import com.group20.codevocab.data.local.entity.VocabularyEntity
+// import com.group20.codevocab.data.local.entity.VocabularyEntity // Removed
 import com.group20.codevocab.data.repository.FlashcardProgressRepository
-import com.group20.codevocab.data.repository.VocabularyRepository
+// import com.group20.codevocab.data.repository.VocabularyRepository // Removed
 import com.group20.codevocab.databinding.ActivityFlashcardBinding
 import com.group20.codevocab.model.WordItem
-import com.group20.codevocab.viewmodel.FlashcardViewModel
-import com.group20.codevocab.viewmodel.FlashcardViewModelFactory
 import com.group20.codevocab.viewmodel.WordListState
 import com.group20.codevocab.viewmodel.WordViewModel
 import com.group20.codevocab.viewmodel.WordViewModelFactory
@@ -158,9 +156,10 @@ class FlashcardActivity : AppCompatActivity() {
             showFlashcard(currentIndex)
         } else {
             // Chuyển sang màn hình tổng kết
-            Toast.makeText(applicationContext, "Chuyển sang màn hình tổng kết", Toast.LENGTH_SHORT).show()
-            startActivity(Intent(this, FlashcardSummaryActivity::class.java))
-            finish()
+            // Assuming FlashcardSummaryActivity exists or will be created
+             Toast.makeText(applicationContext, "Finish", Toast.LENGTH_SHORT).show()
+             // startActivity(Intent(this, FlashcardSummaryActivity::class.java))
+             finish()
         }
     }
 

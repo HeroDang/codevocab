@@ -14,18 +14,18 @@ interface FlashcardProgressDao {
     suspend fun getById(id: Int): FlashcardProgressEntity?
 
     @Query("SELECT * FROM flashcard_progress WHERE vocab_id = :vocabId LIMIT 1")
-    suspend fun getByVocabId(vocabId: Int): FlashcardProgressEntity?
+    suspend fun getByVocabId(vocabId: String): FlashcardProgressEntity?
 
-    // Get flashcards for a module (join vocabulary -> module_id)
+    // Get flashcards for a module (join words -> module_id)
     @Query("""
         SELECT f.* FROM flashcard_progress f
-        JOIN vocabulary v ON v.id = f.vocab_id
-        WHERE v.module_id = :moduleId
+        JOIN words w ON w.id = f.vocab_id
+        WHERE w.module_id = :moduleId
         ORDER BY
             CASE WHEN f.last_reviewed IS NULL THEN 0 ELSE 1 END, 
             f.last_reviewed ASC
     """)
-    suspend fun getByModule(moduleId: Int): List<FlashcardProgressEntity>
+    suspend fun getByModule(moduleId: String): List<FlashcardProgressEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(flashcard: FlashcardProgressEntity): Long
@@ -48,15 +48,15 @@ interface FlashcardProgressDao {
     // Statistics
     @Query("""
         SELECT COUNT(*) FROM flashcard_progress f
-        JOIN vocabulary v ON v.id = f.vocab_id
-        WHERE v.module_id = :moduleId
+        JOIN words w ON w.id = f.vocab_id
+        WHERE w.module_id = :moduleId
     """)
-    suspend fun countByModule(moduleId: Int): Int
+    suspend fun countByModule(moduleId: String): Int
 
     @Query("""
         SELECT COUNT(*) FROM flashcard_progress f
-        JOIN vocabulary v ON v.id = f.vocab_id
-        WHERE v.module_id = :moduleId AND f.is_known = 1
+        JOIN words w ON w.id = f.vocab_id
+        WHERE w.module_id = :moduleId AND f.is_known = 1
     """)
-    suspend fun countKnownByModule(moduleId: Int): Int
+    suspend fun countKnownByModule(moduleId: String): Int
 }

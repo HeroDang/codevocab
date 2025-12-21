@@ -10,10 +10,10 @@ data class FlashcardProgressEntity(
     val id: Int = 0,
 
     @ColumnInfo(name = "vocab_id")
-    val vocabId: Int,
+    val vocabId: String,
 
     @ColumnInfo(name = "module_id")
-    val moduleId: Int = 0,
+    val moduleId: String, // Kept for quick access or redundancy, changed to String to match ModuleEntity
 
     @ColumnInfo(name = "is_known")
     val isKnown: Boolean = false,

@@ -9,7 +9,7 @@ data class QuizResultEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     @ColumnInfo(name = "module_id")
-    val moduleId: Int,
+    val moduleId: String, // Changed to String to match ModuleEntity
     @ColumnInfo(name = "score")
     val score: Int,
     @ColumnInfo(name = "correct_count")

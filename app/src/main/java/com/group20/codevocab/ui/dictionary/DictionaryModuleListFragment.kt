@@ -58,7 +58,7 @@ class DictionaryModuleListFragment : Fragment() {
         // 3. Observe Data (Local & Remote)
         observeViewModel()
 
-        // 4. Lắng nghe kết quả từ Rename Dialog
+        // 4. Lắng nghe kết quả từ Rename & Create Dialog
         setupFragmentResultListeners()
 
         // 5. Trigger Loads
@@ -99,6 +99,7 @@ class DictionaryModuleListFragment : Fragment() {
     private var currentEditingModuleId: String? = null
 
     private fun setupFragmentResultListeners() {
+        // Rename Listener
         setFragmentResultListener(RenameModuleDialogFragment.REQUEST_KEY) { _, bundle ->
             val newName = bundle.getString(RenameModuleDialogFragment.BUNDLE_KEY_NEW_NAME)
             val moduleId = currentEditingModuleId
@@ -114,6 +115,14 @@ class DictionaryModuleListFragment : Fragment() {
 
                 // Reset ID tạm
                 currentEditingModuleId = null
+            }
+        }
+
+        // Create Module Listener
+        setFragmentResultListener(CreateModuleDialogFragment.REQUEST_KEY) { _, bundle ->
+            val moduleName = bundle.getString(CreateModuleDialogFragment.BUNDLE_KEY_NAME)
+            if (!moduleName.isNullOrEmpty()) {
+                viewModel.createModuleLocal(moduleName)
             }
         }
     }

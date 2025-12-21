@@ -17,11 +17,19 @@ fun isEmulator(): Boolean {
 }
 
 object ApiConfig {
+    // Main Backend URLs
     private const val EMULATOR_URL = "http://10.0.2.2:8000/"
-    private const val REAL_DEVICE_URL = "http://192.168.0.215:8000/"
+    private const val REAL_DEVICE_URL = "http://172.16.20.102:8000/"
 
-    // Emulator AVD -> host machine
+    // OCR Service URLs
+    private const val EMULATOR_OCR_URL = "http://10.0.2.2:8001/"
+    private const val REAL_DEVICE_OCR_URL = "http://172.16.20.102:8001/"
+
+    // Dynamic Base URL for the main backend
     val BASE_URL: String
         get() = if (isEmulator()) EMULATOR_URL else REAL_DEVICE_URL
-    // Máy thật (nếu cần): "http://192.168.1.10:8000/"
+
+    // Dynamic Base URL for the OCR service
+    val OCR_BASE_URL: String
+        get() = if (isEmulator()) EMULATOR_OCR_URL else REAL_DEVICE_OCR_URL
 }

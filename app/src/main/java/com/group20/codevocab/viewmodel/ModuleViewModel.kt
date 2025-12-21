@@ -38,10 +38,19 @@ class ModuleViewModel(
         MutableStateFlow<ModuleDetailState>(ModuleDetailState.Loading)
     val moduleDetailState: StateFlow<ModuleDetailState> = _moduleDetailState
 
-    fun loadModules() {
-        viewModelScope.launch {
+    // Helper suspend function to fetch data sequentially
+    private suspend fun fetchLocalModules() {
+        try {
             val data = repository.getAllModules()
             _modules.postValue(data)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    fun loadModules() {
+        viewModelScope.launch {
+            fetchLocalModules()
         }
     }
 
@@ -56,9 +65,6 @@ class ModuleViewModel(
         emit(repository.getModuleById(id))
     }
     
-    // Removing getSubModules as it was based on Int parentId which is no longer applicable with new Entity structure
-    // If needed, implement new logic based on String ID or relationships
-
     fun loadModulesFromServer() {
         viewModelScope.launch {
             _state.value = ModulesState.Loading
@@ -91,14 +97,6 @@ class ModuleViewModel(
                 _moduleDetailState.value =
                     ModuleDetailState.Success(detail)
             } catch (e: Exception) {
-
-                // 🔁 fallback local – GIỮ CODE CŨ (nếu có)
-                /*
-                val local = repository.getModuleDetailLocal(moduleId)
-                _moduleDetailState.value =
-                    ModuleDetailState.Success(local)
-                */
-
                 _moduleDetailState.value =
                     ModuleDetailState.Error(
                         e.message ?: "Failed to load module detail"
@@ -110,7 +108,8 @@ class ModuleViewModel(
     fun createModuleLocal(name: String) {
         viewModelScope.launch {
             repository.createModuleLocal(name)
-            loadModules() // Refresh local modules
+            // Ensure we fetch AFTER creation in the same coroutine scope sequence
+            fetchLocalModules()
         }
     }
 
@@ -120,7 +119,7 @@ class ModuleViewModel(
                 repository.updateModule(item)
                 
                 if (item.isLocal) {
-                    loadModules() // Refresh local
+                    fetchLocalModules() // Refresh local sequentially
                 } else {
                     // Refresh remote list
                     loadUserModulesFromServer("9150dfe1-0758-4716-9d0e-99fc0fbe3a63")

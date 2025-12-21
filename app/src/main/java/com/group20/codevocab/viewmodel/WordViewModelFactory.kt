@@ -14,7 +14,7 @@ class WordViewModelFactory(private val context: Context) : BaseViewModelFactory<
 //        if (modelClass.isAssignableFrom(WordViewModel::class.java)) {
 //            val db = AppDatabase.getDatabase(context)
 //            val repoWord = WordRepository(ApiClient.api ,db.wordDao())
-//            val repoVocab = VocabRepository(db.vocabDao())
+//            val repoVocab = VocabRepository(db.wordDao())
 //
 //            @Suppress("UNCHECKED_CAST")
 //            return WordViewModel(repoVocab, repoWord) as T
@@ -30,7 +30,7 @@ class WordViewModelFactory(private val context: Context) : BaseViewModelFactory<
         )
 
         val repoVocab = VocabRepository(
-            db.vocabDao()
+            db.wordDao()
         )
 
         return WordViewModel(repoVocab, repoWord)

@@ -7,17 +7,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.setFragmentResult
 import com.group20.codevocab.databinding.DialogCreateModuleBinding
-import com.group20.codevocab.viewmodel.ModuleViewModel
-import com.group20.codevocab.viewmodel.ModuleViewModelFactory
 
 class CreateModuleDialogFragment : DialogFragment() {
 
     private var _binding: DialogCreateModuleBinding? = null
     private val binding get() = _binding!!
-    private lateinit var viewModel: ModuleViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,10 +31,6 @@ class CreateModuleDialogFragment : DialogFragment() {
         // Make the dialog background transparent to show the CardView's rounded corners
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         
-        // Initialize ViewModel
-        val factory = ModuleViewModelFactory(requireContext())
-        viewModel = ViewModelProvider(this, factory)[ModuleViewModel::class.java]
-
         binding.ivClose.setOnClickListener {
             dismiss()
         }
@@ -44,7 +38,8 @@ class CreateModuleDialogFragment : DialogFragment() {
         binding.btnCreateModule.setOnClickListener {
             val moduleName = binding.etModuleName.text.toString().trim()
             if (moduleName.isNotEmpty()) {
-                viewModel.createModuleLocal(moduleName)
+                // Pass the module name back to the fragment via FragmentResult API
+                setFragmentResult(REQUEST_KEY, bundleOf(BUNDLE_KEY_NAME to moduleName))
                 dismiss()
             } else {
                 Toast.makeText(context, "Please enter module name", Toast.LENGTH_SHORT).show()
@@ -55,5 +50,10 @@ class CreateModuleDialogFragment : DialogFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    companion object {
+        const val REQUEST_KEY = "request_create_module"
+        const val BUNDLE_KEY_NAME = "bundle_key_module_name"
     }
 }
