@@ -78,6 +78,14 @@
             android:name=".ui.pronunciation.PronunciationActivity"
             android:exported="false" />
 
+        <!-- Profile & Settings -->
+        <activity
+            android:name=".ui.theme.SettingsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.profile.EditProfileActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>
