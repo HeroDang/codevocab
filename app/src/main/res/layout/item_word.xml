@@ -67,14 +67,14 @@
 
         <ImageView
             android:id="@+id/ivArrow"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_arrow_back"
+            android:layout_width="15dp"
+            android:layout_height="16dp"
             android:rotation="180"
-            app:tint="#BDBDBD"
+            android:src="@drawable/ic_menu_point"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="#000000" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>
