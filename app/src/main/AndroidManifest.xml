@@ -3,6 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28"/>
 
     <application
         android:allowBackup="true"
@@ -15,7 +20,17 @@
         android:theme="@style/Theme.CodeVocab"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-        <!-- Splash Screen -->
+        
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
         <activity
             android:name=".SplashActivity"
             android:exported="true"
@@ -25,43 +40,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <!-- Main Activity -->
-        <activity
-            android:name=".MainActivity"
-            android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.CodeVocab">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
-        </activity>
-
-        <activity
-            android:name=".ui.module.ModuleDetailActivity"
-            android:label="Chi tiết Module"
-            android:exported="false" />
-
-        <activity
-            android:name=".ui.flashcard.FlashcardActivity"
-            android:exported="false" />
-            
-        <activity
-            android:name=".ui.flashcard.FlashcardSummaryActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.quiz.QuizActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.pronunciation.PronunciationActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".ui.module.WordListActivity"
-            android:label="Danh sách từ vựng"
-            android:exported="false" />
+        <activity android:name=".MainActivity" />
+        <activity android:name=".ui.module.WordListActivity" />
+        <activity android:name=".ui.module.ModuleDetailActivity" />
+        <activity android:name=".ui.flashcard.FlashcardActivity" />
+        <activity android:name=".ui.quiz.QuizActivity" />
+        <activity android:name=".ui.pronunciation.PronunciationActivity" />
     </application>
 
 </manifest>

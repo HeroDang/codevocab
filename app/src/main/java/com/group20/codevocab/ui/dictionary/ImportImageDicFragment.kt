@@ -39,6 +39,18 @@ class ImportImageDicFragment : Fragment() {
 
         setupToolbar()
         setupButtons()
+
+        // Kiểm tra xem có URI được gửi từ màn hình Scan sang không
+        arguments?.getString("image_uri")?.let { uriString ->
+            val imageUri = android.net.Uri.parse(uriString)
+
+            // Hiển thị ảnh
+            binding.ivPreview.setImageURI(imageUri)
+
+            // Ẩn khu vực upload, hiện ảnh preview
+            binding.ivPreview.visibility = View.VISIBLE
+            binding.llUploadContainer.visibility = View.GONE
+        }
     }
 
     private fun setupToolbar() {
