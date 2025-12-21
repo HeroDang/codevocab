@@ -1,15 +1,33 @@
 package com.group20.codevocab.data.remote
 
-
 import com.google.gson.annotations.SerializedName
-import com.group20.codevocab.data.remote.dto.ModuleDetailDto
-import com.group20.codevocab.data.remote.dto.ModuleDto
-import com.group20.codevocab.data.remote.dto.WordDto
-import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Query
+import com.group20.codevocab.data.remote.dto.*
+import retrofit2.Response
+import retrofit2.http.*
 
 interface ApiService {
+    
+    @FormUrlEncoded
+    @POST("auth/token")
+    suspend fun login(
+        @Field("username") username: String,
+        @Field("password") password: String
+    ): Response<LoginResponse>
+
+    @POST("auth/register")
+    suspend fun register(
+        @Body request: RegisterRequest
+    ): Response<RegisterResponse>
+
+    @GET("auth/me")
+    suspend fun getCurrentUser(): Response<UserDto>
+
+    // API Cập nhật thông tin profile
+    @PATCH("auth/me")
+    suspend fun updateProfile(
+        @Body request: Map<String, String>
+    ): Response<UserDto>
+
     @GET("words")
     suspend fun getWords(): List<WordsDto>
 
@@ -30,6 +48,11 @@ interface ApiService {
     suspend fun getWordsBySubmodule(
         @Path("moduleId") subModuleId: String
     ): List<WordDto>
+
+    @POST("study/sessions")
+    suspend fun saveStudySession(
+        @Body request: StudySessionRequest
+    ): Response<StudySessionResponse>
 }
 
 data class WordsDto(

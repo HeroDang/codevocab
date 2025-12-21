@@ -15,41 +15,37 @@ class FlashcardViewModel(
     private val flashRepo: FlashcardProgressRepository
 ) : ViewModel() {
 
-    private val _vocabList = MutableLiveData<List<Pair<VocabularyEntity, FlashcardProgressEntity?>>>()
-    val vocabList: LiveData<List<Pair<VocabularyEntity, FlashcardProgressEntity?>>> get() = _vocabList
+    private val _knowCount = MutableLiveData(0)
+    val knowCount: LiveData<Int> = _knowCount
 
-    fun loadVocabWithProgress(moduleId: Int) {
+    private val _hardCount = MutableLiveData(0)
+    val hardCount: LiveData<Int> = _hardCount
+
+    private val _reviewCount = MutableLiveData(0)
+    val reviewCount: LiveData<Int> = _reviewCount
+
+    fun updateStatus(vocabId: String, moduleId: String, status: FlashcardStatus) {
+        val vocabIdInt = vocabId.toIntOrNull() ?: return
+        val moduleIdInt = moduleId.toIntOrNull() ?: 0
+
         viewModelScope.launch {
-            val vocabList = vocabRepo.getVocabByModule(moduleId)
+            // isKnown = true nếu chọn Know, false nếu chọn Hard/Review
+            val isKnown = status == FlashcardStatus.KNOW
+            flashRepo.markKnown(vocabIdInt, moduleIdInt, isKnown)
 
-            // Tạo flashcard nếu vocab chưa có
-            vocabList.forEach { v ->
-                v.id?.let { flashRepo.ensureFlashcardForVocab(it, moduleId = v.moduleId) }
+            when (status) {
+                FlashcardStatus.KNOW -> _knowCount.value = (_knowCount.value ?: 0) + 1
+                FlashcardStatus.HARD -> _hardCount.value = (_hardCount.value ?: 0) + 1
+                FlashcardStatus.REVIEW -> _reviewCount.value = (_reviewCount.value ?: 0) + 1
             }
-
-            val flashList = flashRepo.getByModule(moduleId)
-            val combined = vocabList.map { vocab ->
-                val flash = flashList.find { it.vocabId == vocab.id }
-                vocab to flash
-            }
-
-            _vocabList.postValue(combined)
         }
     }
 
-    /**
-     * Đánh dấu 1 flashcard là đã học (isKnown = true/false)
-     */
-    fun markKnown(flashcardId: Int, isKnown: Boolean, moduleId: Int) {
-        viewModelScope.launch {
-            flashRepo.markKnown(flashcardId, moduleId, isKnown)
-//            loadVocabWithProgress(moduleId)
-        }
+    enum class FlashcardStatus {
+        KNOW, HARD, REVIEW
     }
 
-    /**
-     * Tính % tiến độ học của module (đã học / tổng)
-     */
+    // Các hàm cũ giữ lại nếu cần
     fun getProgressPercent(moduleId: Int, callback: (Int) -> Unit) {
         viewModelScope.launch {
             val total = flashRepo.countByModule(moduleId)

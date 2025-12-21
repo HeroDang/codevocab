@@ -81,7 +81,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:text="Sarah Johnson"
+                    android:text="Loading..."
                     android:textColor="#1E293B"
                     android:textSize="18sp"
                     android:textStyle="bold"
@@ -92,7 +92,7 @@
                     android:id="@+id/tvUserEmail"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="sarah.johnson@email.com"
+                    android:text="..."
                     android:textColor="#64748B"
                     android:textSize="14sp"
                     app:layout_constraintStart_toStartOf="@id/tvUserName"
@@ -168,8 +168,8 @@
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
                         android:layout_weight="1"
+                        android:layout_marginStart="12dp"
                         android:orientation="vertical">
                         <TextView
                             android:layout_width="wrap_content"
@@ -185,13 +185,6 @@
                             android:textColor="#64748B"
                             android:textSize="13sp" />
                     </LinearLayout>
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:padding="4dp"
-                        android:src="@drawable/ic_more_vert"
-                        app:tint="#94A3B8" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -213,7 +206,6 @@
                         android:checked="true" />
                 </LinearLayout>
 
-                <!-- Time and Frequency Subcard -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -283,225 +275,12 @@
                                 android:textColor="#1E293B"
                                 android:textSize="16sp" />
                         </LinearLayout>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="20dp"
-                            android:text="Frequency"
-                            android:textColor="#64748B"
-                            android:textSize="13sp" />
-
-                        <com.google.android.material.chip.ChipGroup
-                            android:id="@+id/chipGroupFrequency"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp">
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/chipDaily"
-                                style="@style/Widget.MaterialComponents.Chip.Choice"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Daily"
-                                android:checked="true"
-                                app:chipBackgroundColor="#DBEAFE"
-                                android:buttonTint="#2563EB"
-                                />
-                            <!--app:textColor="#2563EB"-->
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/chipWeekly"
-                                style="@style/Widget.MaterialComponents.Chip.Choice"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Weekly" />
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/chipWeekdays"
-                                style="@style/Widget.MaterialComponents.Chip.Choice"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Weekdays" />
-                            <com.google.android.material.chip.Chip
-                                android:id="@+id/chipCustom"
-                                style="@style/Widget.MaterialComponents.Chip.Choice"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Custom" />
-                        </com.google.android.material.chip.ChipGroup>
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Language Section -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cardLanguage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="0dp"
-            app:strokeColor="#E2E8F0"
-            app:strokeWidth="1dp"
-            app:layout_constraintTop_toBottomOf="@id/cardReminders">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="16dp">
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    app:cardBackgroundColor="#ECFDF5"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="0dp">
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:padding="8dp"
-                        android:src="@drawable/ic_filter"
-                        app:tint="#10B981" />
-                </com.google.android.material.card.MaterialCardView>
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Language"
-                        android:textColor="#1E293B"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="English (US)"
-                        android:textColor="#64748B"
-                        android:textSize="13sp" />
-                </LinearLayout>
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:padding="4dp"
-                    android:src="@drawable/ic_more_vert"
-                    app:tint="#94A3B8" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- Theme Section -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cardTheme"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="0dp"
-            app:strokeColor="#E2E8F0"
-            app:strokeWidth="1dp"
-            app:layout_constraintTop_toBottomOf="@id/cardLanguage">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        app:cardBackgroundColor="#EFF6FF"
-                        app:cardCornerRadius="20dp"
-                        app:cardElevation="0dp">
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:padding="8dp"
-                            android:src="@drawable/ic_lightbulb"
-                            app:tint="#3B82F6" />
-                    </com.google.android.material.card.MaterialCardView>
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:orientation="vertical">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="App Theme"
-                            android:textColor="#1E293B"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Choose your preferred theme"
-                            android:textColor="#64748B"
-                            android:textSize="13sp" />
-                    </LinearLayout>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:orientation="horizontal">
-                    <LinearLayout
-                        android:id="@+id/layoutThemeLight"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginEnd="8dp"
-                        android:background="@drawable/bg_theme_selection"
-                        android:gravity="center"
-                        android:padding="12dp"
-                        android:orientation="vertical">
-<!--                        android:selected="true"-->
-                        <View
-                            android:layout_width="40dp"
-                            android:layout_height="24dp"
-                            android:background="#F1F5F9" />
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:text="Light"
-                            android:textColor="#1E293B"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-                    <LinearLayout
-                        android:id="@+id/layoutThemeDark"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="8dp"
-                        android:background="@drawable/bg_theme_selection"
-                        android:gravity="center"
-                        android:padding="12dp"
-                        android:orientation="vertical">
-                        <View
-                            android:layout_width="40dp"
-                            android:layout_height="24dp"
-                            android:background="#1E293B" />
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:text="Dark"
-                            android:textColor="#64748B"
-                            android:textSize="14sp" />
-                    </LinearLayout>
-                </LinearLayout>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- Bottom Buttons -->
+        <!-- Buttons -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSetReminder"
             android:layout_width="match_parent"
@@ -512,9 +291,7 @@
             android:textAllCaps="false"
             app:backgroundTint="#2563EB"
             app:cornerRadius="12dp"
-            app:icon="@android:drawable/ic_popup_reminder"
-            app:iconGravity="textStart"
-            app:layout_constraintTop_toBottomOf="@id/cardTheme" />
+            app:layout_constraintTop_toBottomOf="@id/cardReminders" />
 
         <LinearLayout
             android:id="@+id/btnLogout"
@@ -525,19 +302,17 @@
             android:gravity="center"
             android:padding="16dp"
             app:layout_constraintTop_toBottomOf="@id/btnSetReminder">
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@android:drawable/ic_lock_power_off"
-                app:tint="#DC2626" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
                 android:text="Logout"
                 android:textColor="#DC2626"
                 android:textStyle="bold" />
         </LinearLayout>
+
+        <!-- Dummy views to prevent crashes if code refers to them -->
+        <View android:id="@+id/cardLanguage" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone" tools:ignore="MissingConstraints" />
+        <View android:id="@+id/cardTheme" android:layout_width="0dp" android:layout_height="0dp" android:visibility="gone" tools:ignore="MissingConstraints" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

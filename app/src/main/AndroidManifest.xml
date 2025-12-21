@@ -3,6 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
 
     <application
         android:allowBackup="true"
@@ -15,7 +18,9 @@
         android:theme="@style/Theme.CodeVocab"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-        <!-- Splash Screen -->
+        
+        <receiver android:name=".utils.ReminderReceiver" android:exported="false" />
+
         <activity
             android:name=".SplashActivity"
             android:exported="true"
@@ -30,7 +35,6 @@
             android:name=".ui.auth.LoginActivity"
             android:exported="false" />
 
-        <!-- Main Activity -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -38,13 +42,10 @@
             android:theme="@style/Theme.CodeVocab">
         </activity>
 
-        <!-- Auth Flow -->
         <activity android:name=".ui.auth.RegisterActivity" android:exported="false" />
         <activity android:name=".ui.auth.ResetPasswordActivity" android:exported="false" />
         <activity android:name=".ui.auth.ConfirmOtpActivity" android:exported="false" />
         <activity android:name=".ui.auth.NewPasswordActivity" android:exported="false" />
-
-        <!-- App Features -->
 
         <activity
             android:name=".ui.module.ModuleDetailActivity"
@@ -65,9 +66,6 @@
         <activity
             android:name=".ui.quiz.QuizSummaryActivity"
             android:exported="false" />
-        <activity
-            android:name=".ui.pronunciation.PronunciationActivity"
-            android:exported="false" />
 
         <activity
             android:name=".ui.module.WordListActivity"
@@ -82,15 +80,15 @@
             android:name=".ui.pronunciation.PronunciationActivity"
             android:exported="false" />
 
-        <!-- Profile & Settings -->
         <activity
             android:name=".ui.theme.SettingsActivity"
+            android:label="Settings"
             android:exported="false" />
+            
         <activity
             android:name=".ui.profile.EditProfileActivity"
             android:exported="false" />
 
-        <!-- Group Features -->
         <activity
             android:name=".ui.group.CommentListActivity"
             android:exported="false" />
