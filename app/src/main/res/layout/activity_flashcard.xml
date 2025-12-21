@@ -233,7 +233,9 @@
             android:textAllCaps="false"
             android:textColor="#F44336"
             app:backgroundTint="@null"
-            app:drawableStartCompat="@drawable/ic_close" />
+            app:icon="@drawable/ic_close"
+            app:iconGravity="textStart"
+            app:iconTint="#F44336" />
 
         <Button
             android:id="@+id/btnReview"
@@ -247,7 +249,9 @@
             android:textAllCaps="false"
             android:textColor="@android:color/black"
             app:backgroundTint="@null"
-            app:drawableStartCompat="@drawable/ic_refresh" />
+            app:icon="@drawable/ic_refresh"
+            app:iconGravity="textStart"
+            app:iconTint="@android:color/black" />
 
         <Button
             android:id="@+id/btnKnow"
@@ -260,7 +264,9 @@
             android:textAllCaps="false"
             android:textColor="@android:color/white"
             app:backgroundTint="@null"
-            app:drawableStartCompat="@drawable/ic_check" />
+            app:icon="@drawable/ic_check"
+            app:iconGravity="textStart"
+            app:iconTint="@android:color/white" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
