@@ -71,6 +71,18 @@ class ModuleViewModel(
             }
         }
     }
+    
+    fun loadUserModulesFromServer(userId: String) {
+        viewModelScope.launch {
+            _state.value = ModulesState.Loading
+            try {
+                val items = repository.getUserModulesRemote(userId)
+                _state.value = ModulesState.Success(items)
+            } catch (e: Exception) {
+                _state.value = ModulesState.Error(e.message ?: "Failed to load user modules")
+            }
+        }
+    }
 
     fun loadModuleDetailFromServer(moduleId: String) {
         viewModelScope.launch {

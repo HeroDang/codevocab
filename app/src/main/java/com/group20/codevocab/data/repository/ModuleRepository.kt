@@ -21,6 +21,10 @@ class ModuleRepository(
         return api.getModules().map { it.toModuleItem() }
     }
 
+    suspend fun getUserModulesRemote(userId: String): List<ModuleItem> {
+        return api.getUserModules(userId).map { it.toModuleItem() }
+    }
+
     suspend fun getModuleDetailRemote(
         moduleId: String
     ): ModuleDetailItem {

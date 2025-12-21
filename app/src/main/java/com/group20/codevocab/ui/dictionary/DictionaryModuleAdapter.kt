@@ -15,10 +15,11 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.group20.codevocab.R
 import com.group20.codevocab.databinding.ItemModuleDetailDicBinding
+import com.group20.codevocab.model.ModuleItem
 import com.group20.codevocab.ui.module.WordListActivity
 
 class DictionaryModuleAdapter(private val isSharedTab: Boolean)
-    : ListAdapter<String, DictionaryModuleAdapter.ModuleViewHolder>(DiffCallback()) {
+    : ListAdapter<ModuleItem, DictionaryModuleAdapter.ModuleViewHolder>(DiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ModuleViewHolder {
         val binding = ItemModuleDetailDicBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -33,37 +34,40 @@ class DictionaryModuleAdapter(private val isSharedTab: Boolean)
     inner class ModuleViewHolder(private val binding: ItemModuleDetailDicBinding, private val isSharedTab: Boolean)
         : RecyclerView.ViewHolder(binding.root) {
 
-        private var currentModuleName: String? = null
+        private var currentModule: ModuleItem? = null
 
         init {
             // Set click listener for the whole item
             itemView.setOnClickListener {
                 val context = it.context
                 val intent = Intent(context, WordListActivity::class.java)
-                intent.putExtra("module_id", -1) // TODO: Pass actual module ID
+                currentModule?.let { module ->
+                    intent.putExtra("module_id", module.id)
+                    intent.putExtra("module_name", module.name)
+                }
                 context.startActivity(intent)
             }
 
             // Set click listener for the menu icon
             binding.ivShare.setOnClickListener { view ->
-                currentModuleName?.let { showPopupMenu(view, it) }
+                currentModule?.let { showPopupMenu(view, it) }
             }
 
             // Set click listener for the Accept button
             binding.btnAccept.setOnClickListener { view ->
-                currentModuleName?.let { moduleName ->
+                currentModule?.let { module ->
                     val context = view.context
                     if (context is AppCompatActivity) {
-                        AcceptModuleDialogFragment.newInstance(moduleName)
+                        AcceptModuleDialogFragment.newInstance(module.name)
                             .show(context.supportFragmentManager, AcceptModuleDialogFragment.TAG)
                     }
                 }
             }
         }
 
-        fun bind(moduleName: String) {
-            currentModuleName = moduleName
-            binding.tvModuleName.text = moduleName
+        fun bind(module: ModuleItem) {
+            currentModule = module
+            binding.tvModuleName.text = module.name
 
             // Handle UI variations based on the tab
             if (isSharedTab) {
@@ -77,7 +81,7 @@ class DictionaryModuleAdapter(private val isSharedTab: Boolean)
             }
         }
 
-        private fun showPopupMenu(anchor: View, moduleName: String) {
+        private fun showPopupMenu(anchor: View, module: ModuleItem) {
             val context = anchor.context
             val popup = PopupMenu(context, anchor)
             popup.menuInflater.inflate(R.menu.dictionary_module_menu, popup.menu)
@@ -92,14 +96,14 @@ class DictionaryModuleAdapter(private val isSharedTab: Boolean)
                 when (item.itemId) {
                     R.id.action_rename -> {
                         if (context is AppCompatActivity) {
-                            val dialog = RenameModuleDialogFragment.newInstance(moduleName)
+                            val dialog = RenameModuleDialogFragment.newInstance(module.name)
                             dialog.show(context.supportFragmentManager, "RenameModuleDialog")
                         }
                         true
                     }
                     R.id.action_share -> {
                         if (context is AppCompatActivity) {
-                            val dialog = ShareModuleDialogFragment.newInstance(moduleName)
+                            val dialog = ShareModuleDialogFragment.newInstance(module.name)
                             dialog.show(context.supportFragmentManager, "ShareModuleDialog")
                         }
                         true
@@ -116,8 +120,8 @@ class DictionaryModuleAdapter(private val isSharedTab: Boolean)
         }
     }
 
-    private class DiffCallback : DiffUtil.ItemCallback<String>() {
-        override fun areItemsTheSame(oldItem: String, newItem: String) = oldItem == newItem
-        override fun areContentsTheSame(oldItem: String, newItem: String) = oldItem == newItem
+    private class DiffCallback : DiffUtil.ItemCallback<ModuleItem>() {
+        override fun areItemsTheSame(oldItem: ModuleItem, newItem: ModuleItem) = oldItem.id == newItem.id
+        override fun areContentsTheSame(oldItem: ModuleItem, newItem: ModuleItem) = oldItem == newItem
     }
 }

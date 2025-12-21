@@ -7,6 +7,7 @@ import com.group20.codevocab.data.remote.dto.ModuleDto
 import com.group20.codevocab.data.remote.dto.WordDto
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ApiService {
     @GET("words")
@@ -14,6 +15,11 @@ interface ApiService {
 
     @GET("modules")
     suspend fun getModules(): List<ModuleDto>
+
+    @GET("modules/user_modules")
+    suspend fun getUserModules(
+        @Query("current_user_id") userId: String
+    ): List<ModuleDto>
 
     @GET("modules/{moduleId}")
     suspend fun getModuleDetail(

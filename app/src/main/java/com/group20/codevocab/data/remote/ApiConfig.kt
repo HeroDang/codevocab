@@ -18,7 +18,7 @@ fun isEmulator(): Boolean {
 
 object ApiConfig {
     private const val EMULATOR_URL = "http://10.0.2.2:8000/"
-    private const val REAL_DEVICE_URL = "http://192.168.1.144:8000/"
+    private const val REAL_DEVICE_URL = "http://192.168.0.215:8000/"
 
     // Emulator AVD -> host machine
     val BASE_URL: String
