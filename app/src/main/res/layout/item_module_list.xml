@@ -1,119 +1,87 @@
-<com.google.android.material.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_margin="12dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="12dp"
     android:clickable="true"
     android:focusable="true"
+    app:cardBackgroundColor="@android:color/transparent"
     app:cardCornerRadius="16dp"
-    app:cardBackgroundColor="#ffffff"
-    app:cardElevation="2dp">
+    app:cardElevation="0dp"
+    app:strokeColor="#6b7280"
+    app:strokeWidth="1dp">
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:padding="16dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="16dp">
 
-        <!-- - TOP CONTENT - -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <!-- ICON -->
+        <ImageView
+            android:id="@+id/imgModuleIcon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_code"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="#2563EB" />
 
-            <!-- Title -->
-            <TextView
-                android:id="@+id/tvModuleName"
-                android:text="Basic Coding Terms"
-                android:textStyle="bold"
-                android:textSize="18sp"
-                android:textColor="#000"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/imgModuleIcon" />
-
-            <!-- Description -->
-            <TextView
-                android:id="@+id/tvModuleDescription"
-                android:text="Learn fundamental programming concepts and terminology"
-                android:textSize="14sp"
-                android:textColor="#444"
-                android:layout_marginTop="4dp"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvModuleName"
-                app:layout_constraintEnd_toStartOf="@+id/imgModuleIcon" />
-
-            <!-- Word count + icon -->
-            <LinearLayout
-                android:id="@+id/llWordCount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@id/tvModuleDescription"
-                app:layout_constraintStart_toStartOf="parent">
-
-                <ImageView
-                    android:src="@drawable/ic_book1"
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    app:tint="#555" />
-
-                <TextView
-                    android:id="@+id/tvWordCount"
-                    android:text="156 words"
-                    android:textSize="13sp"
-                    android:textColor="#555"
-                    android:layout_marginStart="4dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-
-            <!-- ICON WITHOUT BACKGROUND -->
-            <ImageView
-                android:id="@+id/imgModuleIcon"
-                android:src="@drawable/ic_code"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:tint="#2563EB" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <!-- - COMPLETED STATUS - -->
-        <LinearLayout
-            android:layout_marginTop="16dp"
-            android:background="#E5E7EB"
-            android:padding="12dp"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
+        <!-- Title -->
+        <TextView
+            android:id="@+id/tvModuleName"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="-8dp"
-            android:clipToOutline="true">
+            android:layout_marginEnd="16dp"
+            android:text="Basic Coding Terms"
+            android:textColor="#000"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/imgModuleIcon"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Description -->
+        <TextView
+            android:id="@+id/tvModuleDescription"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="16dp"
+            android:text="Learn fundamental programming concepts and terminology"
+            android:textColor="#444"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toStartOf="@+id/imgModuleIcon"
+            app:layout_constraintStart_toStartOf="@+id/tvModuleName"
+            app:layout_constraintTop_toBottomOf="@id/tvModuleName" />
+
+        <!-- Word count + icon -->
+        <LinearLayout
+            android:id="@+id/llWordCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@+id/tvModuleDescription"
+            app:layout_constraintStart_toStartOf="@+id/tvModuleName">
 
             <ImageView
-                android:src="@drawable/ic_check"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                app:tint="#333" />
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/ic_book1"
+                app:tint="#555" />
 
             <TextView
-                android:text="Completed"
-                android:textColor="#333"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                android:layout_marginStart="8dp"
+                android:id="@+id/tvWordCount"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="156 words"
+                android:textColor="#555"
+                android:textSize="13sp" />
         </LinearLayout>
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.google.android.material.card.MaterialCardView>
