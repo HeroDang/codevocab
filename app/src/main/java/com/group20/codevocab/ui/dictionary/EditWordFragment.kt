@@ -4,22 +4,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.group20.codevocab.R
-import com.group20.codevocab.databinding.FragmentAddWordBinding
+import com.group20.codevocab.databinding.FragmentEditWordBinding
 
-class AddWordFragment : Fragment() {
+class EditWordFragment : Fragment() {
 
-    private var _binding: FragmentAddWordBinding? = null
+    private var _binding: FragmentEditWordBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentAddWordBinding.inflate(inflater, container, false)
+        _binding = FragmentEditWordBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -27,7 +25,6 @@ class AddWordFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupToolbar()
-        setupModuleSpinner()
         setupButtons()
     }
 
@@ -37,16 +34,10 @@ class AddWordFragment : Fragment() {
         }
     }
 
-    private fun setupModuleSpinner() {
-        // Dummy data for modules - replace with your actual data
-        val modules = arrayOf("User Authentication", "API Handling", "Database Management", "UI Components")
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, modules)
-        binding.autoCompleteModule.setAdapter(adapter)
-    }
-
     private fun setupButtons() {
-        binding.btnImport.setOnClickListener {
-            findNavController().navigate(R.id.action_addWordFragment_to_importImageDicFragment)
+        binding.btnSaveWord.setOnClickListener {
+            // TODO: Handle saving the edited word
+            findNavController().navigateUp() // Go back for now
         }
     }
 

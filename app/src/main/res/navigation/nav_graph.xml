@@ -47,8 +47,38 @@
         android:id="@+id/addWordFragment"
         android:name="com.group20.codevocab.ui.dictionary.AddWordFragment"
         android:label="Add Word"
-        tools:layout="@layout/fragment_add_word" />
-        
+        tools:layout="@layout/fragment_add_word" >
+        <action
+            android:id="@+id/action_addWordFragment_to_importImageDicFragment"
+            app:destination="@id/importImageDicFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/importImageDicFragment"
+        android:name="com.group20.codevocab.ui.dictionary.ImportImageDicFragment"
+        android:label="Import Vocabulary"
+        tools:layout="@layout/fragment_import_image_dic" >
+        <action
+            android:id="@+id/action_importImageDicFragment_to_reviewWordFragment"
+            app:destination="@id/reviewWordFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/reviewWordFragment"
+        android:name="com.group20.codevocab.ui.dictionary.ReviewWordFragment"
+        android:label="Review Word"
+        tools:layout="@layout/fragment_review_word">
+        <action
+            android:id="@+id/action_reviewWordFragment_to_editWordFragment"
+            app:destination="@id/editWordFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/editWordFragment"
+        android:name="com.group20.codevocab.ui.dictionary.EditWordFragment"
+        android:label="Edit Word"
+        tools:layout="@layout/fragment_edit_word" />
+
     <fragment
         android:id="@+id/groupDetailFragment"
         android:name="com.group20.codevocab.ui.group.GroupDetailFragment"

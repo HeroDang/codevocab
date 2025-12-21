@@ -25,7 +25,11 @@ class MainActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.addWordFragment, R.id.groupDetailFragment -> {
+                R.id.addWordFragment,
+                R.id.groupDetailFragment,
+                R.id.importImageDicFragment,
+                R.id.reviewWordFragment,
+                R.id.editWordFragment -> {
                     navView.visibility = View.GONE
                 }
                 else -> {

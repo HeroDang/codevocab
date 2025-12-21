@@ -85,12 +85,12 @@
         <!-- Share Icon -->
         <ImageView
             android:id="@+id/ivShare"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_share"
-            app:tint="#757575"
+            android:layout_width="17dp"
+            android:layout_height="14dp"
+            android:src="@drawable/ic_menu_point"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/flIcon" />
+            app:layout_constraintTop_toTopOf="@+id/flIcon"
+            app:tint="#757575" />
 
         <!-- Shared Info (Visible only in Shared Tab) -->
         <TextView
