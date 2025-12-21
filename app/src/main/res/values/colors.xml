@@ -24,6 +24,7 @@
     <color name="gray_900">#212121</color>
 
     <!-- Status Colors -->
+    <color name="green_500">#4CAF50</color> <!-- Added for Next button -->
     <color name="status_green">#2ECC71</color>
     <color name="status_green_bg">#E8F8F5</color>
     <color name="status_yellow">#F1C40F</color>

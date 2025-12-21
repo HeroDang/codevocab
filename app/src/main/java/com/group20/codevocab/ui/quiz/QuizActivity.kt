@@ -1,119 +1,157 @@
 package com.group20.codevocab.ui.quiz
 
-import android.annotation.SuppressLint
-import android.graphics.Color
+import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.group20.codevocab.R
-import com.group20.codevocab.data.local.AppDatabase
 import com.group20.codevocab.data.repository.QuizRepository
 import com.group20.codevocab.databinding.ActivityQuizBinding
-import com.group20.codevocab.viewmodel.QuizViewModel
-import com.group20.codevocab.viewmodel.QuizViewModelFactory
+import com.group20.codevocab.model.QuizQuestion
+import com.group20.codevocab.viewmodel.WordListState
+import com.group20.codevocab.viewmodel.WordViewModel
+import com.group20.codevocab.viewmodel.WordViewModelFactory
+import kotlinx.coroutines.launch
 
 class QuizActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityQuizBinding
-    private lateinit var viewModel: QuizViewModel
+    private lateinit var wordViewModel: WordViewModel
+    private val quizRepository = QuizRepository()
+    private lateinit var quizAdapter: QuizAdapter
+
+    private var questions: List<QuizQuestion> = emptyList()
+    private var currentIndex = 0
+    private var score = 0
+    private var answerSubmitted = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityQuizBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val moduleId = intent.getIntExtra("module_id", -1)
-        if (moduleId == -1) {
-            Toast.makeText(this, "ModuleId missing!", Toast.LENGTH_SHORT).show()
+        val moduleId = intent.getStringExtra("module_id")
+        if (moduleId == null) {
+            Toast.makeText(this, "Module ID is missing!", Toast.LENGTH_SHORT).show()
             finish()
+            return
         }
 
-        setupViewModel(moduleId)
-        setupObservers()
-        setupListeners()
+        val factory = WordViewModelFactory(applicationContext)
+        wordViewModel = ViewModelProvider(this, factory)[WordViewModel::class.java]
+        quizAdapter = QuizAdapter(binding, this)
+
+        setupUI()
+        observeViewModel()
+
+        wordViewModel.loadWordsFromServer(moduleId, null) // Trigger data loading
     }
 
-    private fun setupViewModel(moduleId: Int) {
-        val db = AppDatabase.getDatabase(this)
-        val repo = QuizRepository(db.vocabDao(), db.quizResultDao())
-
-        val factory = QuizViewModelFactory(repo, moduleId)
-        viewModel = factory.create(QuizViewModel::class.java)
-    }
-
-    private fun setupObservers() {
-        // Cập nhật UI mỗi khi hiện câu hỏi mới
-        viewModel.currentQuestion.observe(this) { q ->
-            binding.tvQuestion.text = q.question
-
-//            binding.tvOption1.text = q.options[0]
-//            binding.tvOption2.text = q.options[1]
-//            binding.tvOption3.text = q.options[2]
-//            binding.tvOption4.text = q.options[3]
-
-            resetOptionUI()
-        }
-
-        // Điểm
-        viewModel.score.observe(this) {
-//            binding.tvScore.text = "Score: $it"
-        }
-
-        // Tiến trình
-        viewModel.progress.observe(this) { p ->
-            binding.progressQuiz.progress = p
-        }
-
-        // Quiz kết thúc
-        viewModel.quizFinished.observe(this) { finished ->
-            if (finished) {
-                Toast.makeText(this, "Quiz completed!", Toast.LENGTH_SHORT).show()
-
-                // TODO: Mở SummaryActivity
-                finish()
+    private fun setupUI() {
+        binding.btnBack.setOnClickListener { finish() }
+        binding.btnSubmit.setOnClickListener {
+            if (answerSubmitted) {
+                goToNextQuestion()
+            } else {
+                submitAnswer()
             }
         }
     }
 
-    private fun setupListeners() {
-//        binding.cardOption1.setOnClickListener { selectAnswer(0) }
-//        binding.cardOption2.setOnClickListener { selectAnswer(1) }
-//        binding.cardOption3.setOnClickListener { selectAnswer(2) }
-//        binding.cardOption4.setOnClickListener { selectAnswer(3) }
-//
-//        binding.btnNext.setOnClickListener {
-//            viewModel.nextQuestion()
-//        }
+    private fun observeViewModel() {
+        lifecycleScope.launch {
+            wordViewModel.state.collect { state ->
+                when (state) {
+                    is WordListState.Loading -> {
+                        binding.progressBar.visibility = View.VISIBLE
+                        binding.contentGroup.visibility = View.GONE
+                    }
+                    is WordListState.Success -> {
+                        val words = state.items
+                        questions = quizRepository.createQuizQuestions(words)
+
+                        if (questions.isEmpty()) {
+                            Toast.makeText(this@QuizActivity, "Not enough words to start a quiz (requires at least 4).", Toast.LENGTH_LONG).show()
+                            finish()
+                        } else {
+                            startQuiz()
+                        }
+                    }
+                    is WordListState.Error -> {
+                        binding.progressBar.visibility = View.GONE
+                        Toast.makeText(this@QuizActivity, state.message, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
     }
 
-    private fun selectAnswer(index: Int) {
-        val isCorrect = viewModel.checkAnswer(index)
-
-        highlightAnswer(index, isCorrect)
+    private fun startQuiz() {
+        binding.progressBar.visibility = View.GONE
+        binding.contentGroup.visibility = View.VISIBLE
+        currentIndex = 0
+        score = 0
+        showQuestion(questions[currentIndex])
     }
 
-    private fun highlightAnswer(index: Int, isCorrect: Boolean) {
-        val correctColor = ContextCompat.getColor(this, R.color.blue_600)
-        val wrongColor = ContextCompat.getColor(this, R.color.colorError)
-
-//        val card = when (index) {
-//            0 -> binding.cardOption1
-//            1 -> binding.cardOption2
-//            2 -> binding.cardOption3
-//            else -> binding.cardOption4
-//        }
-
-//        card.setCardBackgroundColor(if (isCorrect) correctColor else wrongColor)
+    private fun showQuestion(question: QuizQuestion) {
+        answerSubmitted = false
+        binding.tvQuestionCounter.text = "Question ${currentIndex + 1}/${questions.size}"
+        binding.progressQuiz.max = questions.size
+        binding.progressQuiz.progress = currentIndex + 1
+        quizAdapter.bindQuestion(question)
+        binding.btnSubmit.text = "Submit Answer"
+        // Reset button color to the default
+        binding.btnSubmit.backgroundTintList = ContextCompat.getColorStateList(this, R.color.blue_500)
     }
 
-    @SuppressLint("SuspiciousIndentation")
-    private fun resetOptionUI() {
-        val defaultColor = ContextCompat.getColor(this, R.color.white)
+    private fun submitAnswer() {
+        val selectedOptionId = binding.radioGroupOptions.checkedRadioButtonId
+        if (selectedOptionId == -1) {
+            Toast.makeText(this, "Please select an answer.", Toast.LENGTH_SHORT).show()
+            return
+        }
 
-//        binding.cardOption1.setCardBackgroundColor(defaultColor)
-//        binding.cardOption2.setCardBackgroundColor(defaultColor)
-//        binding.cardOption3.setCardBackgroundColor(defaultColor)
-//        binding.cardOption4.setCardBackgroundColor(defaultColor)
+        answerSubmitted = true
+        val currentQuestion = questions[currentIndex]
+
+        val selectedIndex = when (selectedOptionId) {
+            binding.option1.id -> 0
+            binding.option2.id -> 1
+            binding.option3.id -> 2
+            binding.option4.id -> 3
+            else -> -1
+        }
+
+        val isCorrect = selectedIndex == currentQuestion.correctAnswerIndex
+        if (isCorrect) {
+            score++
+            // Set button color to green for correct answer
+            binding.btnSubmit.backgroundTintList = ContextCompat.getColorStateList(this, R.color.green_500)
+        } else {
+            // Set button color to red for incorrect answer
+            binding.btnSubmit.backgroundTintList = ContextCompat.getColorStateList(this, R.color.status_red)
+        }
+
+        quizAdapter.showResult(currentQuestion.correctAnswerIndex, selectedIndex)
+        binding.btnSubmit.text = "Next Question"
+    }
+
+    private fun goToNextQuestion() {
+        currentIndex++
+        if (currentIndex < questions.size) {
+            showQuestion(questions[currentIndex])
+        } else {
+            val intent = Intent(this, QuizSummaryActivity::class.java).apply {
+                putExtra("EXTRA_SCORE", score)
+                putExtra("EXTRA_TOTAL_QUESTIONS", questions.size)
+            }
+            startActivity(intent)
+            finish()
+        }
     }
 }
