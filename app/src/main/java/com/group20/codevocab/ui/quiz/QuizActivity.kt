@@ -1,7 +1,9 @@
 package com.group20.codevocab.ui.quiz
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -11,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import com.group20.codevocab.R
 import com.group20.codevocab.data.repository.QuizRepository
 import com.group20.codevocab.databinding.ActivityQuizBinding
+import com.group20.codevocab.model.QuizMistake
 import com.group20.codevocab.model.QuizQuestion
 import com.group20.codevocab.viewmodel.WordListState
 import com.group20.codevocab.viewmodel.WordViewModel
@@ -25,6 +28,7 @@ class QuizActivity : AppCompatActivity() {
     private lateinit var quizAdapter: QuizAdapter
 
     private var questions: List<QuizQuestion> = emptyList()
+    private val mistakes = ArrayList<QuizMistake>()
     private var currentIndex = 0
     private var score = 0
     private var answerSubmitted = false
@@ -34,21 +38,30 @@ class QuizActivity : AppCompatActivity() {
         binding = ActivityQuizBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val moduleId = intent.getStringExtra("module_id")
-        if (moduleId == null) {
-            Toast.makeText(this, "Module ID is missing!", Toast.LENGTH_SHORT).show()
-            finish()
-            return
+        // Check if this is a retry quiz
+        val retryQuestions = getParcelableArrayList<QuizQuestion>(intent, "EXTRA_RETRY_QUESTIONS")
+
+        if (retryQuestions != null && retryQuestions.isNotEmpty()) {
+            // Start a retry quiz
+            questions = retryQuestions
+            quizAdapter = QuizAdapter(binding, this)
+            setupUI()
+            startQuiz()
+        } else {
+            // Start a normal quiz
+            val moduleId = intent.getStringExtra("module_id")
+            if (moduleId == null) {
+                Toast.makeText(this, "Module ID is missing!", Toast.LENGTH_SHORT).show()
+                finish()
+                return
+            }
+            val factory = WordViewModelFactory(applicationContext)
+            wordViewModel = ViewModelProvider(this, factory)[WordViewModel::class.java]
+            quizAdapter = QuizAdapter(binding, this)
+            setupUI()
+            observeViewModel()
+            wordViewModel.loadWordsFromServer(moduleId, null)
         }
-
-        val factory = WordViewModelFactory(applicationContext)
-        wordViewModel = ViewModelProvider(this, factory)[WordViewModel::class.java]
-        quizAdapter = QuizAdapter(binding, this)
-
-        setupUI()
-        observeViewModel()
-
-        wordViewModel.loadWordsFromServer(moduleId, null) // Trigger data loading
     }
 
     private fun setupUI() {
@@ -75,7 +88,7 @@ class QuizActivity : AppCompatActivity() {
                         questions = quizRepository.createQuizQuestions(words)
 
                         if (questions.isEmpty()) {
-                            Toast.makeText(this@QuizActivity, "Not enough words to start a quiz (requires at least 4).", Toast.LENGTH_LONG).show()
+                            Toast.makeText(this@QuizActivity, "Not enough words for a quiz.", Toast.LENGTH_LONG).show()
                             finish()
                         } else {
                             startQuiz()
@@ -95,6 +108,7 @@ class QuizActivity : AppCompatActivity() {
         binding.contentGroup.visibility = View.VISIBLE
         currentIndex = 0
         score = 0
+        mistakes.clear()
         showQuestion(questions[currentIndex])
     }
 
@@ -105,7 +119,6 @@ class QuizActivity : AppCompatActivity() {
         binding.progressQuiz.progress = currentIndex + 1
         quizAdapter.bindQuestion(question)
         binding.btnSubmit.text = "Submit Answer"
-        // Reset button color to the default
         binding.btnSubmit.backgroundTintList = ContextCompat.getColorStateList(this, R.color.blue_500)
     }
 
@@ -130,10 +143,10 @@ class QuizActivity : AppCompatActivity() {
         val isCorrect = selectedIndex == currentQuestion.correctAnswerIndex
         if (isCorrect) {
             score++
-            // Set button color to green for correct answer
             binding.btnSubmit.backgroundTintList = ContextCompat.getColorStateList(this, R.color.green_500)
         } else {
-            // Set button color to red for incorrect answer
+            val yourAnswer = currentQuestion.options.getOrNull(selectedIndex) ?: ""
+            mistakes.add(QuizMistake(currentQuestion, yourAnswer))
             binding.btnSubmit.backgroundTintList = ContextCompat.getColorStateList(this, R.color.status_red)
         }
 
@@ -149,9 +162,20 @@ class QuizActivity : AppCompatActivity() {
             val intent = Intent(this, QuizSummaryActivity::class.java).apply {
                 putExtra("EXTRA_SCORE", score)
                 putExtra("EXTRA_TOTAL_QUESTIONS", questions.size)
+                putParcelableArrayListExtra("EXTRA_MISTAKES", mistakes)
             }
             startActivity(intent)
             finish()
+        }
+    }
+
+    // Helper to get Parcelable ArrayList with SDK version check
+    private inline fun <reified T : android.os.Parcelable> getParcelableArrayList(intent: Intent, key: String): ArrayList<T>? {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableArrayListExtra(key, T::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            intent.getParcelableArrayListExtra(key)
         }
     }
 }
