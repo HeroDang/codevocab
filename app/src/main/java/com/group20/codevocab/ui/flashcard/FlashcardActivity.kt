@@ -9,15 +9,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.room.Room
-import com.group20.codevocab.data.local.AppDatabase
-import com.group20.codevocab.data.local.entity.FlashcardProgressEntity
-// import com.group20.codevocab.data.local.entity.VocabularyEntity // Removed
-import com.group20.codevocab.data.repository.FlashcardProgressRepository
-// import com.group20.codevocab.data.repository.VocabularyRepository // Removed
 import com.group20.codevocab.databinding.ActivityFlashcardBinding
 import com.group20.codevocab.model.WordItem
+import com.group20.codevocab.viewmodel.FlashcardViewModel
+import com.group20.codevocab.viewmodel.FlashcardViewModelFactory
 import com.group20.codevocab.viewmodel.WordListState
 import com.group20.codevocab.viewmodel.WordViewModel
 import com.group20.codevocab.viewmodel.WordViewModelFactory
@@ -26,22 +21,24 @@ import kotlinx.coroutines.launch
 class FlashcardActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityFlashcardBinding
-//    private lateinit var viewModel: FlashcardViewModel
+    private lateinit var flashViewModel: FlashcardViewModel
     private lateinit var wordViewModel: WordViewModel
-    private lateinit var adapter: FlashcardAdapter
 
     private var currentIndex = 0
-//    private var vocabList = listOf<Pair<VocabularyEntity, FlashcardProgressEntity?>>()
     private var vocabList = emptyList<WordItem>()
     private var showFront = true
     private var moduleId: String? = ""
+
+    // Biến đếm trong session để đảm bảo chính xác khi chuyển màn hình
+    private var sessionKnow = 0
+    private var sessionHard = 0
+    private var sessionReview = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityFlashcardBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // 🔹 Lấy moduleId được truyền sang
         moduleId = intent.getStringExtra("module_id")
         if (moduleId == null) {
             Toast.makeText(this, "Module not found", Toast.LENGTH_SHORT).show()
@@ -49,30 +46,11 @@ class FlashcardActivity : AppCompatActivity() {
             return
         }
 
-//        val factory = FlashcardViewModelFactory(applicationContext)
-//        viewModel = ViewModelProvider(this, factory)[FlashcardViewModel::class.java]
+        val flashFactory = FlashcardViewModelFactory(applicationContext)
+        flashViewModel = ViewModelProvider(this, flashFactory)[FlashcardViewModel::class.java]
 
-        val factory = WordViewModelFactory(applicationContext)
-        wordViewModel = ViewModelProvider(this, factory)[WordViewModel::class.java]
-
-        // 🔹 Thiết lập RecyclerView hoặc ViewPager2 để hiển thị flashcard
-//        adapter = FlashcardAdapter { flash ->
-//            viewModel.markKnown(flash.id, !flash.isKnown, moduleId)
-//        }
-//        binding.rvFlashcards.adapter = adapter
-//        binding.rvFlashcards.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-
-        // 🔹 Quan sát danh sách từ
-//        viewModel.vocabList.observe(this) { list ->
-//            adapter.submitList(list)
-//        }
-//        viewModel.vocabList.observe(this) {
-//            vocabList = it
-//            showFlashcard(0)
-//        }
-//
-//        // 🔹 Tải dữ liệu từ module
-//        viewModel.loadVocabWithProgress(moduleId)
+        val wordFactory = WordViewModelFactory(applicationContext)
+        wordViewModel = ViewModelProvider(this, wordFactory)[WordViewModel::class.java]
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -81,30 +59,27 @@ class FlashcardActivity : AppCompatActivity() {
                         is WordListState.Success -> {
                             vocabList = state.items
                             currentIndex = 0
-                            showFlashcard(currentIndex)
+                            if (vocabList.isNotEmpty()) {
+                                updateProgressUI()
+                                showFlashcard(currentIndex)
+                            } else {
+                                Toast.makeText(this@FlashcardActivity, "No words in this module", Toast.LENGTH_SHORT).show()
+                                finish()
+                            }
                         }
-
                         is WordListState.Loading -> {
-                            // ⚠️ CHỈ load nếu chưa có data
                             wordViewModel.loadWordsFromServer(
                                 subModuleId = moduleId.toString(),
                                 subModuleName = null
                             )
                         }
-
                         is WordListState.Error -> {
-                            Toast.makeText(
-                                this@FlashcardActivity,
-                                state.message,
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            Toast.makeText(this@FlashcardActivity, state.message, Toast.LENGTH_SHORT).show()
                         }
                     }
                 }
             }
         }
-
-
 
         setupUI()
     }
@@ -114,24 +89,32 @@ class FlashcardActivity : AppCompatActivity() {
             toggleCard()
         }
 
-        binding.btnKnow.setOnClickListener { submitAnswer(true) }
-        binding.btnReview.setOnClickListener { submitAnswer(false) }
-        binding.btnHard.setOnClickListener { submitAnswer(false) }
+        binding.btnKnow.setOnClickListener { submitAnswer(FlashcardViewModel.FlashcardStatus.KNOW) }
+        binding.btnReview.setOnClickListener { submitAnswer(FlashcardViewModel.FlashcardStatus.REVIEW) }
+        binding.btnHard.setOnClickListener { submitAnswer(FlashcardViewModel.FlashcardStatus.HARD) }
 
-        // Nút quay lại
         binding.btnBackCard.setOnClickListener {
             if (currentIndex > 0) {
                 currentIndex--
+                updateProgressUI()
                 showFlashcard(currentIndex)
             } else {
-                // Nếu đang ở thẻ đầu → quay về ModuleDetail
                 finish()
             }
         }
 
         binding.btnBack.setOnClickListener {
-                finish()
+            finish()
         }
+    }
+
+    private fun updateProgressUI() {
+        val total = vocabList.size
+        val current = currentIndex + 1
+
+        binding.thanhTienDo.max = total
+        binding.thanhTienDo.progress = current
+        binding.tvProgressCount.text = "$current of $total"
     }
 
     private fun toggleCard() {
@@ -145,37 +128,46 @@ class FlashcardActivity : AppCompatActivity() {
         showFront = !showFront
     }
 
-    private fun submitAnswer(isKnown: Boolean) {
-        // TODO Phase sau: lưu progress
-//        val current = vocabList.getOrNull(currentIndex) ?: return
-//        val vocab = current.first
-//        viewModel.markKnown(vocab.id, isKnown, moduleId)
-//
+    private fun submitAnswer(status: FlashcardViewModel.FlashcardStatus) {
+        val currentWord = vocabList.getOrNull(currentIndex) ?: return
+
+        // 1. Lưu vào Database thông qua ViewModel
+        flashViewModel.updateStatus(
+            vocabId = currentWord.id ?: "0",
+            moduleId = moduleId ?: "0",
+            status = status
+        )
+
+        // 2. Cập nhật biến đếm session tại chỗ
+        when (status) {
+            FlashcardViewModel.FlashcardStatus.KNOW -> sessionKnow++
+            FlashcardViewModel.FlashcardStatus.HARD -> sessionHard++
+            FlashcardViewModel.FlashcardStatus.REVIEW -> sessionReview++
+        }
+
         currentIndex++
         if (currentIndex < vocabList.size) {
+            updateProgressUI()
             showFlashcard(currentIndex)
         } else {
-            // Chuyển sang màn hình tổng kết
-            // Assuming FlashcardSummaryActivity exists or will be created
-             Toast.makeText(applicationContext, "Finish", Toast.LENGTH_SHORT).show()
-             // startActivity(Intent(this, FlashcardSummaryActivity::class.java))
-             finish()
+            // 3. Chuyển dữ liệu sang màn hình tổng kết
+            val intent = Intent(this, FlashcardSummaryActivity::class.java).apply {
+                putExtra("TOTAL_COUNT", vocabList.size)
+                putExtra("KNOW_COUNT", sessionKnow)
+                putExtra("HARD_COUNT", sessionHard)
+                putExtra("REVIEW_COUNT", sessionReview)
+            }
+            startActivity(intent)
+            finish()
         }
     }
 
     private fun showFlashcard(index: Int) {
-//        val (vocab, _) = vocabList[index]
-//        binding.tvWord.text = vocab.word
-//        binding.tvMeaning.text = vocab.meaningVi
-//        binding.tvExample.text = vocab.example
-
         val vocab = vocabList[index]
         binding.tvWord.text = vocab.textEn
         binding.tvMeaning.text = vocab.meaningVi
         binding.tvExample.text = vocab.exampleSentence
 
-
-        // Reset card to front side
         showFront = true
         binding.tvWord.visibility = View.VISIBLE
         binding.cardBackLayout.visibility = View.GONE

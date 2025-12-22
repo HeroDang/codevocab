@@ -99,42 +99,21 @@
             android:orientation="vertical"
             app:layout_constraintTop_toBottomOf="@id/tvRemovePhoto">
 
-            <!-- Username -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="USERNAME"
-                android:textColor="#94A3B8"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@null"
-                android:paddingVertical="8dp"
-                android:text="sarah_wilson"
-                android:textColor="#1E293B"
-                android:textSize="16sp" />
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#F1F5F9" />
-
             <!-- Full Name -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:text="FULL NAME"
                 android:textColor="#94A3B8"
                 android:textSize="12sp"
                 android:textStyle="bold" />
             <EditText
+                android:id="@+id/etFullName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@null"
-                android:paddingVertical="8dp"
-                android:text="Sarah Wilson"
+                android:paddingVertical="12dp"
+                android:hint="Enter your full name"
                 android:textColor="#1E293B"
                 android:textSize="16sp" />
             <View
@@ -142,21 +121,23 @@
                 android:layout_height="1dp"
                 android:background="#F1F5F9" />
 
-            <!-- Email -->
+            <!-- Email (Disabled usually, but keeping editable as per your request) -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="EMAIL"
+                android:layout_marginTop="20dp"
+                android:text="EMAIL ADDRESS"
                 android:textColor="#94A3B8"
                 android:textSize="12sp"
                 android:textStyle="bold" />
             <EditText
+                android:id="@+id/etEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@null"
-                android:paddingVertical="8dp"
-                android:text="sarah.wilson@email.com"
+                android:paddingVertical="12dp"
+                android:hint="Enter your email"
+                android:inputType="textEmailAddress"
                 android:textColor="#1E293B"
                 android:textSize="16sp" />
             <View
@@ -164,181 +145,29 @@
                 android:layout_height="1dp"
                 android:background="#F1F5F9" />
 
-            <!-- Phone -->
+            <!-- Phone (Optional) -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="20dp"
                 android:text="PHONE NUMBER"
                 android:textColor="#94A3B8"
                 android:textSize="12sp"
                 android:textStyle="bold" />
             <EditText
+                android:id="@+id/etPhone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@null"
-                android:paddingVertical="8dp"
-                android:text="+1 (555) 123-4567"
+                android:paddingVertical="12dp"
+                android:hint="Enter your phone number"
+                android:inputType="phone"
                 android:textColor="#1E293B"
                 android:textSize="16sp" />
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="#F1F5F9" />
-
-            <!-- Bio -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="BIO"
-                android:textColor="#94A3B8"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@null"
-                android:paddingVertical="8dp"
-                android:text="Designer &amp; Creative enthusiast. Love to explore new places and capture moments."
-                android:textColor="#1E293B"
-                android:textSize="16sp"
-                android:minLines="2" />
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#F1F5F9" />
-
-        </LinearLayout>
-
-        <!-- Account Settings -->
-        <TextView
-            android:id="@+id/tvAccountSettingsLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="Account Settings"
-            android:textColor="#1E293B"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layoutFields" />
-
-        <LinearLayout
-            android:id="@+id/layoutAccountActions"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:orientation="vertical"
-            app:layout_constraintTop_toBottomOf="@id/tvAccountSettingsLabel">
-
-            <!-- Privacy -->
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingVertical="12dp">
-                <ImageView
-                    android:id="@+id/ivPrivacy"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:background="@drawable/bg_stat_time"
-                    android:padding="10dp"
-                    android:src="@android:drawable/ic_lock_idle_lock"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:tint="#2563EB" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:text="Privacy"
-                    android:textColor="#1E293B"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/ivPrivacy"
-                    app:layout_constraintTop_toTopOf="parent" />
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/ic_more_vert"
-                    android:rotation="-90"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:tint="#94A3B8" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <!-- Security -->
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingVertical="12dp">
-                <ImageView
-                    android:id="@+id/ivSecurity"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:background="@drawable/bg_stat_words"
-                    android:padding="10dp"
-                    android:src="@drawable/ic_check"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:tint="#16A34A" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:text="Security"
-                    android:textColor="#1E293B"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/ivSecurity"
-                    app:layout_constraintTop_toTopOf="parent" />
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/ic_more_vert"
-                    android:rotation="-90"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:tint="#94A3B8" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <!-- Notifications -->
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingVertical="12dp">
-                <ImageView
-                    android:id="@+id/ivNoti"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:background="@drawable/bg_circle_purple"
-                    android:padding="10dp"
-                    android:src="@android:drawable/ic_popup_reminder"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:tint="#7C3AED" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:text="Notifications"
-                    android:textColor="#1E293B"
-                    android:textSize="16sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/ivNoti"
-                    app:layout_constraintTop_toTopOf="parent" />
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/ic_more_vert"
-                    android:rotation="-90"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:tint="#94A3B8" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
 
@@ -347,14 +176,14 @@
             android:id="@+id/btnSave"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="48dp"
             android:padding="16dp"
             android:text="Save Profile"
             android:textAllCaps="false"
-            android:textColor="#64748B"
-            app:backgroundTint="#CBD5E1"
+            android:textColor="@android:color/white"
+            app:backgroundTint="#6366F1"
             app:cornerRadius="12dp"
-            app:layout_constraintTop_toBottomOf="@id/layoutAccountActions" />
+            app:layout_constraintTop_toBottomOf="@id/layoutFields" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

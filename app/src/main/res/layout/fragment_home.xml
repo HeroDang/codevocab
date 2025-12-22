@@ -10,7 +10,7 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -211,6 +211,7 @@
 
                 <!-- Learning -->
                 <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/btnLearning"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
@@ -242,6 +243,7 @@
 
                 <!-- My Dictionary -->
                 <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/btnDictionary"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
@@ -274,6 +276,7 @@
 
                 <!-- Market -->
                 <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/btnMarket"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
@@ -305,6 +308,7 @@
 
                 <!-- Group -->
                 <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/btnGroup"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
@@ -337,6 +341,7 @@
 
                 <!-- Stats -->
                 <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/btnStats"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
@@ -369,6 +374,7 @@
 
                 <!-- Settings -->
                 <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/btnSettings"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"

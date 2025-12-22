@@ -6,14 +6,12 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "flashcard_progress")
 data class FlashcardProgressEntity(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
-
+    @PrimaryKey
     @ColumnInfo(name = "vocab_id")
-    val vocabId: String,
+    val vocabId: Int,
 
     @ColumnInfo(name = "module_id")
-    val moduleId: String, // Kept for quick access or redundancy, changed to String to match ModuleEntity
+    val moduleId: Int = 0,
 
     @ColumnInfo(name = "is_known")
     val isKnown: Boolean = false,

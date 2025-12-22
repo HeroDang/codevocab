@@ -28,7 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:padding="20dp"
-                android:src="@drawable/ic_lightning"
+                android:src="@drawable/ic_lightbulb"
                 app:tint="@android:color/white" />
         </com.google.android.material.card.MaterialCardView>
 
@@ -81,6 +81,7 @@
                 app:startIconDrawable="@android:drawable/ic_dialog_email"
                 app:startIconTint="#64748B">
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etEmail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingStart="44dp"
@@ -103,6 +104,7 @@
                 app:startIconDrawable="@android:drawable/ic_lock_idle_lock"
                 app:startIconTint="#64748B">
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingStart="44dp"
@@ -132,7 +134,7 @@
             android:textAllCaps="false"
             android:textColor="#1E293B"
             app:cornerRadius="12dp"
-            app:icon="@drawable/ic_google" 
+            app:icon="@drawable/ic_google"
             app:iconGravity="textStart"
             app:iconSize="24dp"
             app:layout_constraintTop_toBottomOf="@id/layoutInput"
@@ -151,7 +153,7 @@
             app:cornerRadius="12dp"
             app:layout_constraintTop_toBottomOf="@id/btnGoogle" />
 
-        <!-- Navigation links at the bottom -->
+        <!-- Footer Section -->
         <LinearLayout
             android:id="@+id/layoutFooter"
             android:layout_width="wrap_content"

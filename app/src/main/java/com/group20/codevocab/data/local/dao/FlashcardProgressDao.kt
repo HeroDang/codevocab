@@ -10,22 +10,18 @@ import com.group20.codevocab.data.local.entity.FlashcardProgressEntity
 @Dao
 interface FlashcardProgressDao {
 
-    @Query("SELECT * FROM flashcard_progress WHERE id = :id")
-    suspend fun getById(id: Int): FlashcardProgressEntity?
-
     @Query("SELECT * FROM flashcard_progress WHERE vocab_id = :vocabId LIMIT 1")
-    suspend fun getByVocabId(vocabId: String): FlashcardProgressEntity?
+    suspend fun getByVocabId(vocabId: Int): FlashcardProgressEntity?
 
-    // Get flashcards for a module (join words -> module_id)
+    // Lấy danh sách tiến trình theo Module
     @Query("""
         SELECT f.* FROM flashcard_progress f
-        JOIN words w ON w.id = f.vocab_id
-        WHERE w.module_id = :moduleId
+        WHERE f.module_id = :moduleId
         ORDER BY
             CASE WHEN f.last_reviewed IS NULL THEN 0 ELSE 1 END, 
             f.last_reviewed ASC
     """)
-    suspend fun getByModule(moduleId: String): List<FlashcardProgressEntity>
+    suspend fun getByModule(moduleId: Int): List<FlashcardProgressEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(flashcard: FlashcardProgressEntity): Long
@@ -39,24 +35,13 @@ interface FlashcardProgressDao {
     @Update
     suspend fun update(flashcard: FlashcardProgressEntity)
 
-    @Query("UPDATE flashcard_progress SET is_known = :isKnown, last_reviewed = :ts WHERE id = :id")
-    suspend fun markKnown(id: Int, isKnown: Boolean, ts: Long)
+    @Query("DELETE FROM flashcard_progress WHERE vocab_id = :vocabId")
+    suspend fun deleteByVocabId(vocabId: Int)
 
-    @Query("DELETE FROM flashcard_progress WHERE id = :id")
-    suspend fun deleteById(id: Int)
+    // Thống kê
+    @Query("SELECT COUNT(*) FROM flashcard_progress WHERE module_id = :moduleId")
+    suspend fun countByModule(moduleId: Int): Int
 
-    // Statistics
-    @Query("""
-        SELECT COUNT(*) FROM flashcard_progress f
-        JOIN words w ON w.id = f.vocab_id
-        WHERE w.module_id = :moduleId
-    """)
-    suspend fun countByModule(moduleId: String): Int
-
-    @Query("""
-        SELECT COUNT(*) FROM flashcard_progress f
-        JOIN words w ON w.id = f.vocab_id
-        WHERE w.module_id = :moduleId AND f.is_known = 1
-    """)
-    suspend fun countKnownByModule(moduleId: String): Int
+    @Query("SELECT COUNT(*) FROM flashcard_progress WHERE module_id = :moduleId AND is_known = 1")
+    suspend fun countKnownByModule(moduleId: Int): Int
 }

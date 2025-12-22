@@ -48,6 +48,12 @@
     </fragment>
 
     <fragment
+        android:id="@+id/statsFragment"
+        android:name="com.group20.codevocab.ui.stats.StatsFragment"
+        android:label="Stats"
+        tools:layout="@layout/fragment_stats" />
+
+    <fragment
         android:id="@+id/addWordFragment"
         android:name="com.group20.codevocab.ui.dictionary.AddWordFragment"
         android:label="Add Word"
