@@ -78,6 +78,9 @@ interface ApiService {
     @GET("modules/")
     suspend fun getAllModules(): List<ModuleDto>
 
+    @GET("modules/market")
+    suspend fun getMarketModules(): List<ModuleDto>
+
     @PUT("modules/{moduleId}")
     suspend fun updateModule(
         @Path("moduleId") moduleId: String,

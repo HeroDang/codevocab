@@ -6,5 +6,7 @@ data class ModuleDto(
     val description: String?,
     val module_type: String,
     val is_public: Boolean,
-    val created_at: String
+    val created_at: String,
+    val owner_name: String? = null,
+    val count_word: Int? = 0
 )

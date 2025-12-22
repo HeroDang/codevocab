@@ -11,7 +11,7 @@ class MarketRepository {
     private val apiService = ApiClient.api
 
     suspend fun getMarketModules(): List<ModuleItem> {
-        return apiService.getAllModules().map { it.toModuleItem() }
+        return apiService.getMarketModules().map { it.toModuleItem() }
     }
 
     suspend fun getWordsOfModule(moduleId: String): List<WordItem> {
