@@ -17,7 +17,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.group20.codevocab.R
 import com.group20.codevocab.databinding.FragmentMarketBinding
@@ -31,7 +33,7 @@ class MarketFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val marketViewModel: MarketViewModel by viewModels()
-    private lateinit var marketAdapter: MarketAdapter
+    private lateinit var marketAdapter: MarketModuleAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -72,8 +74,8 @@ class MarketFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        marketAdapter = MarketAdapter { moduleId ->
-            val bundle = bundleOf("moduleId" to moduleId)
+        marketAdapter = MarketModuleAdapter { moduleItem ->
+            val bundle = bundleOf("module" to moduleItem)
             findNavController().navigate(R.id.action_marketFragment_to_wordListMarketFragment, bundle)
         }
         binding.recyclerView.apply {
@@ -133,11 +135,10 @@ class MarketFragment : Fragment() {
     }
 }
 
-class MarketAdapter(private val onClick: (String) -> Unit) :
-    RecyclerView.Adapter<MarketAdapter.ViewHolder>() {
+class MarketModuleAdapter(private val onClick: (ModuleItem) -> Unit) :
+    ListAdapter<ModuleItem, MarketModuleAdapter.ViewHolder>(DiffCallback()) {
 
     private var originalItems: List<ModuleItem> = emptyList()
-    private var items: List<ModuleItem> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ItemModuleDetailMarketBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -145,34 +146,39 @@ class MarketAdapter(private val onClick: (String) -> Unit) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(items[position])
+        holder.bind(getItem(position))
     }
 
-    override fun getItemCount() = items.size
-
-    fun submitList(newItems: List<ModuleItem>) {
-        originalItems = newItems
-        items = newItems
-        notifyDataSetChanged()
+    override fun submitList(list: List<ModuleItem>?) {
+        originalItems = list ?: emptyList()
+        super.submitList(list)
     }
 
     fun filter(query: String) {
-        items = if (query.isEmpty()) {
+        val filteredList = if (query.isEmpty()) {
             originalItems
         } else {
             originalItems.filter { it.name.contains(query, ignoreCase = true) }
         }
-        notifyDataSetChanged()
+        super.submitList(filteredList)
     }
 
-    class ViewHolder(private val binding: ItemModuleDetailMarketBinding, private val onClick: (String) -> Unit) :
+    class ViewHolder(private val binding: ItemModuleDetailMarketBinding, private val onClick: (ModuleItem) -> Unit) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: ModuleItem) {
             binding.tvModuleName.text = item.name
             binding.tvAuthor.text = item.ownerName ?: "Anonymous"
             binding.tvWordCount.text = "${item.wordCount ?: 0} words"
             binding.tvModuleDescription?.text = item.description
-            binding.root.setOnClickListener { onClick(item.id) }
+            binding.root.setOnClickListener { onClick(item) }
         }
+    }
+
+    private class DiffCallback : DiffUtil.ItemCallback<ModuleItem>() {
+        override fun areItemsTheSame(oldItem: ModuleItem, newItem: ModuleItem) =
+            oldItem.id == newItem.id
+
+        override fun areContentsTheSame(oldItem: ModuleItem, newItem: ModuleItem) =
+            oldItem == newItem
     }
 }

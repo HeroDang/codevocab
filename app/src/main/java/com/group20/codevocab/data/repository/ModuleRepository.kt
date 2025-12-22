@@ -1,8 +1,9 @@
 package com.group20.codevocab.data.repository
 
-
 import com.group20.codevocab.data.local.dao.ModuleDao
+import com.group20.codevocab.data.local.dao.WordDao
 import com.group20.codevocab.data.local.entity.ModuleEntity
+import com.group20.codevocab.data.local.entity.WordEntity
 import com.group20.codevocab.data.local.entity.toEntity
 import com.group20.codevocab.data.remote.ApiService
 import com.group20.codevocab.model.ModuleDetailItem
@@ -11,10 +12,12 @@ import com.group20.codevocab.model.mapper.toModuleDetailItem
 import com.group20.codevocab.model.toDto
 import com.group20.codevocab.model.toEntity
 import com.group20.codevocab.model.toModuleItem
+import java.util.UUID
 
 class ModuleRepository(
     private val api: ApiService,
-    private val moduleDao: ModuleDao
+    private val moduleDao: ModuleDao,
+    private val wordDao: WordDao
 ) {
     suspend fun getAllModules() = moduleDao.getAllModules()
     suspend fun getGeneralModules() = moduleDao.getGeneralModules()
@@ -41,7 +44,7 @@ class ModuleRepository(
     
     suspend fun createModuleLocal(name: String) {
         val module = ModuleEntity(
-            id = java.util.UUID.randomUUID().toString(),
+            id = UUID.randomUUID().toString(),
             name = name,
             description = null,
             moduleType = "personal",
@@ -57,5 +60,23 @@ class ModuleRepository(
         } else {
             api.updateModule(item.id, item.toDto())
         }
+    }
+
+    suspend fun insertWords(words: List<WordEntity>) {
+        wordDao.insertAll(words)
+    }
+
+    suspend fun copyModuleToLocal(moduleItem: ModuleItem): String {
+        val newId = UUID.randomUUID().toString()
+        val newModule = ModuleEntity(
+            id = newId,
+            name = "Copy " + moduleItem.name,
+            description = moduleItem.description,
+            moduleType = "personal", // Set as personal
+            isPublic = false, // Set as private
+            createdAt = System.currentTimeMillis().toString()
+        )
+        moduleDao.insertModules(listOf(newModule))
+        return newId
     }
 }

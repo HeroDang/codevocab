@@ -13,7 +13,7 @@ class ModuleViewModelFactory(private val context: Context) :
         if (modelClass.isAssignableFrom(ModuleViewModel::class.java)) {
 
             val db = AppDatabase.getDatabase(context)
-            val moduleRepo = ModuleRepository(ApiClient.api ,db.moduleDao())
+            val moduleRepo = ModuleRepository(ApiClient.api ,db.moduleDao(), db.wordDao())
 
             return ModuleViewModel(moduleRepo) as T
         }

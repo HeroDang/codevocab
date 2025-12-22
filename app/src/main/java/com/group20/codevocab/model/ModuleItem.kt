@@ -1,8 +1,11 @@
 package com.group20.codevocab.model
 
+import android.os.Parcelable
 import com.group20.codevocab.data.local.entity.ModuleEntity
 import com.group20.codevocab.data.remote.dto.ModuleDto
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class ModuleItem(
     val id: String,
     val name: String,
@@ -11,7 +14,7 @@ data class ModuleItem(
     val isLocal: Boolean = false, // Default to false for backward compatibility or ease of use
     val ownerName: String? = null,
     val wordCount: Int? = 0
-)
+) : Parcelable
 
 fun ModuleDto.toModuleItem(): ModuleItem {
     return ModuleItem(
