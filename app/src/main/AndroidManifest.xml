@@ -91,10 +91,6 @@
             android:name=".ui.word_detail.WordDetailActivity"
             android:exported="false" />
 
-        <activity
-            android:name=".ui.pronunciation.PronunciationActivity"
-            android:exported="false" />
-
         <!-- Profile & Settings -->
         <activity
             android:name=".ui.theme.SettingsActivity"
