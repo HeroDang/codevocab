@@ -23,3 +23,17 @@ fun WordEntity.toWordItem(): WordItem {
         audioUrl = this.audioUrl
     )
 }
+
+fun WordItem.toEntity(moduleId: String): WordEntity {
+    return WordEntity(
+        id = this.id,
+        moduleId = moduleId,
+        textEn = this.textEn,
+        meaningVi = this.meaningVi,
+        partOfSpeech = this.partOfSpeech,
+        ipa = this.ipa,
+        exampleSentence = this.exampleSentence,
+        audioUrl = this.audioUrl,
+        createdAt = null
+    )
+}

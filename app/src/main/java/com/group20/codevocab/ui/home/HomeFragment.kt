@@ -7,15 +7,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.group20.codevocab.R
+import com.group20.codevocab.data.local.AppDatabase
 import com.group20.codevocab.data.remote.ApiClient
 import com.group20.codevocab.data.repository.AuthRepository
+import com.group20.codevocab.data.repository.ModuleRepository
 import com.group20.codevocab.databinding.FragmentHomeBinding
+import com.group20.codevocab.ui.profile.EditProfileActivity
 import com.group20.codevocab.ui.theme.SettingsActivity
 import com.group20.codevocab.viewmodel.BaseViewModelFactory
+import com.group20.codevocab.viewmodel.ModuleViewModel
 import com.group20.codevocab.viewmodel.UserViewModel
 
 class HomeFragment : Fragment() {
@@ -23,6 +27,8 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
     private lateinit var userViewModel: UserViewModel
+    private lateinit var moduleViewModel: ModuleViewModel
+    private lateinit var recommendedAdapter: RecommendedAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,78 +42,80 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupViewModel()
-        observeUserData()
+        setupViewModels()
+        setupRecyclerView()
+        observeData()
         setupQuickAccess()
 
         userViewModel.fetchCurrentUser()
     }
 
-    private fun setupViewModel() {
-        val apiService = ApiClient.getApiService()
-        val repository = AuthRepository(apiService)
-
-        val factory = object : BaseViewModelFactory<UserViewModel>() {
-            override fun createViewModel(): UserViewModel {
-                return UserViewModel(repository)
-            }
-        }
-
-        userViewModel = ViewModelProvider(this, factory)[UserViewModel::class.java]
+    override fun onResume() {
+        super.onResume()
+        moduleViewModel.loadInProgressModules()
     }
 
-    private fun observeUserData() {
+    private fun setupViewModels() {
+        val apiService = ApiClient.api
+        val authRepository = AuthRepository(apiService)
+        val db = AppDatabase.getDatabase(requireContext())
+        val moduleRepository = ModuleRepository(apiService, db.moduleDao(), db.flashcardDao(), db.wordDao())
+
+        userViewModel = ViewModelProvider(this, object : BaseViewModelFactory<UserViewModel>() {
+            override fun createViewModel() = UserViewModel(authRepository)
+        })[UserViewModel::class.java]
+
+        moduleViewModel = ViewModelProvider(this, object : BaseViewModelFactory<ModuleViewModel>() {
+            override fun createViewModel() = ModuleViewModel(moduleRepository)
+        })[ModuleViewModel::class.java]
+    }
+
+    private fun setupRecyclerView() {
+        recommendedAdapter = RecommendedAdapter { module ->
+            val intent = Intent(requireContext(), com.group20.codevocab.ui.module.WordListActivity::class.java).apply {
+                putExtra("module_id", module.id)
+                putExtra("module_name", module.name)
+                putExtra("is_local", module.moduleType == "personal")
+            }
+            startActivity(intent)
+        }
+        binding.rvRecommended.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = recommendedAdapter
+        }
+    }
+
+    private fun observeData() {
         userViewModel.userData.observe(viewLifecycleOwner) { user ->
             user?.let {
                 binding.tvUserName.text = it.name
-
                 if (!it.avatarUrl.isNullOrEmpty()) {
-                    Glide.with(this)
-                        .load(it.avatarUrl)
-                        .placeholder(R.drawable.ic_user)
-                        .circleCrop()
-                        .into(binding.ivAvatar)
-                } else {
-                    binding.ivAvatar.setImageResource(R.drawable.ic_user)
+                    Glide.with(this).load(it.avatarUrl).circleCrop().into(binding.ivAvatar)
                 }
+            }
+        }
+
+        moduleViewModel.inProgressModules.observe(viewLifecycleOwner) { inProgress ->
+            if (inProgress.isNullOrEmpty()) {
+                binding.layoutRecommendedHeader.visibility = View.GONE
+                binding.rvRecommended.visibility = View.GONE
+            } else {
+                binding.layoutRecommendedHeader.visibility = View.VISIBLE
+                binding.rvRecommended.visibility = View.VISIBLE
+                recommendedAdapter.updateData(inProgress)
             }
         }
     }
 
     private fun setupQuickAccess() {
-        val navController = findNavController()
-
-        val navOptions = NavOptions.Builder()
-            .setLaunchSingleTop(true)
-            .setRestoreState(true)
-            .setPopUpTo(R.id.homeFragment, false, true)
-            .build()
-
-        binding.btnLearning.setOnClickListener {
-            navController.navigate(R.id.learningFragment, null, navOptions)
-        }
-
-        binding.btnDictionary.setOnClickListener {
-            navController.navigate(R.id.dictionaryFragment, null, navOptions)
-        }
-
-        binding.btnMarket.setOnClickListener {
-            navController.navigate(R.id.marketFragment, null, navOptions)
-        }
-
-        binding.btnGroup.setOnClickListener {
-            navController.navigate(R.id.groupFragment, null, navOptions)
-        }
-
-        binding.btnStats.setOnClickListener {
-            navController.navigate(R.id.statsFragment, null, navOptions)
-        }
-
-        binding.btnSettings.setOnClickListener {
-            // ✅ Sử dụng Intent để mở Activity thay vì NavController để tránh crash
-            val intent = Intent(requireContext(), SettingsActivity::class.java)
-            startActivity(intent)
-        }
+        binding.btnLearning.setOnClickListener { findNavController().navigate(R.id.learningFragment) }
+        binding.btnDictionary.setOnClickListener { findNavController().navigate(R.id.dictionaryFragment) }
+        binding.btnMarket.setOnClickListener { findNavController().navigate(R.id.marketFragment) }
+        binding.btnGroup.setOnClickListener { findNavController().navigate(R.id.groupFragment) }
+        binding.btnStats.setOnClickListener { findNavController().navigate(R.id.statsFragment) }
+        binding.btnSettings.setOnClickListener { startActivity(Intent(requireContext(), SettingsActivity::class.java)) }
+        binding.btnSettingsTop.setOnClickListener { startActivity(Intent(requireContext(), SettingsActivity::class.java)) }
+        binding.ivAvatar.setOnClickListener { startActivity(Intent(requireContext(), EditProfileActivity::class.java)) }
     }
 
     override fun onDestroyView() {

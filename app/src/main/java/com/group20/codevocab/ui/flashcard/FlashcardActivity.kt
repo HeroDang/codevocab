@@ -9,8 +9,13 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.group20.codevocab.data.local.AppDatabase
+import com.group20.codevocab.data.local.entity.ModuleEntity
+import com.group20.codevocab.data.remote.ApiClient
+import com.group20.codevocab.data.repository.ModuleRepository
 import com.group20.codevocab.databinding.ActivityFlashcardBinding
 import com.group20.codevocab.model.WordItem
+import com.group20.codevocab.model.toEntity
 import com.group20.codevocab.viewmodel.FlashcardViewModel
 import com.group20.codevocab.viewmodel.FlashcardViewModelFactory
 import com.group20.codevocab.viewmodel.WordListState
@@ -49,6 +54,9 @@ class FlashcardActivity : AppCompatActivity() {
             return
         }
 
+        // ✅ Lưu module vào database local ngay khi bắt đầu học để màn Home có thể hiển thị Recommend
+        saveModuleLocally(moduleId!!, moduleName ?: "Unnamed Module")
+
         val flashFactory = FlashcardViewModelFactory(applicationContext)
         flashViewModel = ViewModelProvider(this, flashFactory)[FlashcardViewModel::class.java]
 
@@ -61,8 +69,15 @@ class FlashcardActivity : AppCompatActivity() {
                     when (state) {
                         is WordListState.Success -> {
                             vocabList = state.items
-                            currentIndex = 0
+                            
+                            // ✅ TÍNH NĂNG RESUME: Lấy số lượng từ đã học để đặt currentIndex chính xác
+                            val processedCount = flashViewModel.getProcessedCount(moduleId!!)
+                            currentIndex = if (processedCount < vocabList.size) processedCount else 0
+                            
                             if (vocabList.isNotEmpty()) {
+                                // ✅ Lưu danh sách từ vào local DB để tính toán progress chính xác
+                                saveWordsLocally(vocabList, moduleId!!)
+                                
                                 updateProgressUI()
                                 showFlashcard(currentIndex)
                             } else {
@@ -71,7 +86,7 @@ class FlashcardActivity : AppCompatActivity() {
                             }
                         }
                         is WordListState.Loading -> {
-                            // Data is being loaded, can show a progress bar
+                            // Data is being loaded
                         }
                         is WordListState.Error -> {
                             Toast.makeText(this@FlashcardActivity, state.message, Toast.LENGTH_SHORT).show()
@@ -88,6 +103,35 @@ class FlashcardActivity : AppCompatActivity() {
         }
 
         setupUI()
+    }
+
+    private fun saveModuleLocally(id: String, name: String) {
+        lifecycleScope.launch {
+            val db = AppDatabase.getDatabase(applicationContext)
+            val apiService = ApiClient.getApiService()
+            val moduleRepo = ModuleRepository(apiService, db.moduleDao(), db.flashcardDao(), db.wordDao())
+            
+            val existing = moduleRepo.getModuleById(id)
+            if (existing == null) {
+                val newModule = ModuleEntity(
+                    id = id,
+                    name = name,
+                    description = null,
+                    moduleType = "general",
+                    isPublic = false,
+                    createdAt = System.currentTimeMillis().toString()
+                )
+                db.moduleDao().insertModules(listOf(newModule))
+            }
+        }
+    }
+
+    private fun saveWordsLocally(words: List<WordItem>, moduleId: String) {
+        lifecycleScope.launch {
+            val db = AppDatabase.getDatabase(applicationContext)
+            val entities = words.map { it.toEntity(moduleId) }
+            db.wordDao().insertAll(entities)
+        }
     }
 
     private fun setupUI() {
@@ -119,7 +163,7 @@ class FlashcardActivity : AppCompatActivity() {
         val current = currentIndex + 1
 
         binding.thanhTienDo.max = total
-        binding.thanhTienDo.progress = current
+        binding.thanhTienDo.progress = currentIndex // Số từ đã trả lời xong
         binding.tvProgressCount.text = "$current of $total"
     }
 
@@ -137,14 +181,14 @@ class FlashcardActivity : AppCompatActivity() {
     private fun submitAnswer(status: FlashcardViewModel.FlashcardStatus) {
         val currentWord = vocabList.getOrNull(currentIndex) ?: return
 
-        // 1. Lưu vào Database thông qua ViewModel
+        // ✅ LƯU TIẾN TRÌNH: Ghi nhận từ này đã được học vào Database
         flashViewModel.updateStatus(
-            vocabId = currentWord.id ?: "0",
+            vocabId = currentWord.id,
             moduleId = moduleId ?: "0",
             status = status
         )
 
-        // 2. Cập nhật biến đếm session tại chỗ
+        // Cập nhật biến đếm session
         when (status) {
             FlashcardViewModel.FlashcardStatus.KNOW -> sessionKnow++
             FlashcardViewModel.FlashcardStatus.HARD -> sessionHard++
@@ -156,7 +200,6 @@ class FlashcardActivity : AppCompatActivity() {
             updateProgressUI()
             showFlashcard(currentIndex)
         } else {
-            // 3. Chuyển dữ liệu sang màn hình tổng kết
             val intent = Intent(this, FlashcardSummaryActivity::class.java).apply {
                 putExtra("TOTAL_COUNT", vocabList.size)
                 putExtra("KNOW_COUNT", sessionKnow)

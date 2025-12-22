@@ -7,6 +7,7 @@ import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.group20.codevocab.data.local.entity.ModuleEntity
 import com.group20.codevocab.data.repository.ModuleRepository
+import com.group20.codevocab.data.repository.ModuleProgressInfo
 import com.group20.codevocab.model.ModuleDetailItem
 import com.group20.codevocab.model.ModuleItem
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,6 +33,10 @@ class ModuleViewModel(
 
     private val _modules = MutableLiveData<List<ModuleEntity>>()
     val modules: LiveData<List<ModuleEntity>> get() = _modules
+
+    private val _inProgressModules = MutableLiveData<List<Pair<ModuleEntity, ModuleProgressInfo>>>()
+    val inProgressModules: LiveData<List<Pair<ModuleEntity, ModuleProgressInfo>>> get() = _inProgressModules
+
     private val _state = MutableStateFlow<ModulesState>(ModulesState.Loading)
     val state: StateFlow<ModulesState> = _state
     private val _moduleDetailState =
@@ -51,6 +56,23 @@ class ModuleViewModel(
     fun loadModules() {
         viewModelScope.launch {
             fetchLocalModules()
+        }
+    }
+
+    fun loadInProgressModules() {
+        viewModelScope.launch {
+            try {
+                val modules = repository.getInProgressModules()
+                // ✅ Lọc ra những module chưa hoàn thành (số từ đã học < tổng số từ)
+                val modulesWithProgress = modules.map { 
+                    it to repository.getModuleProgressInfo(it.id)
+                }.filter { (_, progress) ->
+                    progress.processedCount < progress.totalCount
+                }
+                _inProgressModules.postValue(modulesWithProgress)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 

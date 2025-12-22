@@ -13,7 +13,7 @@ interface ModuleDao {
     suspend fun getAllModules(): List<ModuleEntity>
 
     @Query("SELECT * FROM modules WHERE id = :id")
-    suspend fun getModuleById(id: String): ModuleEntity
+    suspend fun getModuleById(id: String): ModuleEntity? // Đã thêm dấu ? để tránh crash
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertModules(modules: List<ModuleEntity>)

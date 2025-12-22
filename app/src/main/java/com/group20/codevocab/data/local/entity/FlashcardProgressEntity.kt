@@ -8,10 +8,10 @@ import androidx.room.PrimaryKey
 data class FlashcardProgressEntity(
     @PrimaryKey
     @ColumnInfo(name = "vocab_id")
-    val vocabId: Int,
+    val vocabId: String,
 
     @ColumnInfo(name = "module_id")
-    val moduleId: Int = 0,
+    val moduleId: String,
 
     @ColumnInfo(name = "is_known")
     val isKnown: Boolean = false,
