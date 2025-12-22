@@ -80,9 +80,6 @@
             android:name=".ui.quiz.QuizActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.quiz.QuizSummaryActivity"
-            android:exported="false" />
-        <activity
             android:name=".ui.pronunciation.PronunciationActivity"
             android:exported="false" />
 
