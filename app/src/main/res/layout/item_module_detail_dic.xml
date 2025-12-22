@@ -52,7 +52,7 @@
             android:textColor="#212121"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/ivShare"
+            app:layout_constraintEnd_toStartOf="@+id/ivShareContainer"
             app:layout_constraintStart_toEndOf="@+id/flIcon"
             app:layout_constraintTop_toTopOf="@+id/flIcon" />
 
@@ -83,14 +83,24 @@
         </LinearLayout>
 
         <!-- Share Icon -->
-        <ImageView
-            android:id="@+id/ivShare"
-            android:layout_width="17dp"
-            android:layout_height="14dp"
-            android:src="@drawable/ic_menu_point"
+        <FrameLayout
+            android:id="@+id/ivShareContainer"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/flIcon"
-            app:tint="#757575" />
+            app:layout_constraintTop_toTopOf="@+id/flIcon">
+            
+             <ImageView
+                android:id="@+id/ivShare"
+                android:layout_width="17dp"
+                android:layout_height="14dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_menu_point"
+                app:tint="#757575" />
+        </FrameLayout>
 
         <!-- Shared Info (Visible only in Shared Tab) -->
         <TextView

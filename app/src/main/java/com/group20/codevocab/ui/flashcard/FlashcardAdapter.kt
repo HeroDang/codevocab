@@ -10,14 +10,14 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.group20.codevocab.R
 import com.group20.codevocab.data.local.entity.FlashcardProgressEntity
-import com.group20.codevocab.data.local.entity.VocabularyEntity
+import com.group20.codevocab.data.local.entity.WordEntity
 
 class FlashcardAdapter(
-    private var vocabList: List<Pair<VocabularyEntity, FlashcardProgressEntity?>> = emptyList(),
+    private var vocabList: List<Pair<WordEntity, FlashcardProgressEntity?>> = emptyList(),
     val onKnownClicked: (FlashcardProgressEntity) -> Unit
 ) : RecyclerView.Adapter<FlashcardAdapter.FlashcardViewHolder>() {
 
-    fun submitList(newList: List<Pair<VocabularyEntity, FlashcardProgressEntity?>>) {
+    fun submitList(newList: List<Pair<WordEntity, FlashcardProgressEntity?>>) {
         val diffCallback = object : DiffUtil.Callback() {
             override fun getOldListSize() = vocabList.size
             override fun getNewListSize() = newList.size
@@ -47,9 +47,9 @@ class FlashcardAdapter(
 
     override fun onBindViewHolder(holder: FlashcardViewHolder, position: Int) {
         val (vocab, flash) = vocabList[position]
-        holder.tvWord.text = vocab.word
+        holder.tvWord.text = vocab.textEn
         holder.tvMeaning.text = vocab.meaningVi
-        holder.tvPhonetic.text = vocab.phonetic ?: ""
+        holder.tvPhonetic.text = vocab.ipa ?: ""
 
         // Hiển thị trạng thái học
         val known = flash?.isKnown == true

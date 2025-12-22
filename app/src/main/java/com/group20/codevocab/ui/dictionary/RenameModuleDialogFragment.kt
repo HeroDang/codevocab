@@ -6,7 +6,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.setFragmentResult
 import com.group20.codevocab.databinding.DialogRenameModuleBinding
 
 class RenameModuleDialogFragment : DialogFragment() {
@@ -37,8 +39,19 @@ class RenameModuleDialogFragment : DialogFragment() {
         }
 
         binding.btnSave.setOnClickListener {
-            // TODO: Handle rename logic
-            dismiss()
+            val newName = binding.etModuleName.text.toString().trim()
+
+            if (newName.isNotEmpty()) {
+                // Return the result to the parent fragment
+                setFragmentResult(
+                    REQUEST_KEY,
+                    bundleOf(BUNDLE_KEY_NEW_NAME to newName)
+                )
+                dismiss()
+            } else {
+                // Optional: Show error if empty
+                binding.etModuleName.error = "Name cannot be empty"
+            }
         }
     }
 
@@ -49,6 +62,10 @@ class RenameModuleDialogFragment : DialogFragment() {
 
     companion object {
         private const val ARG_MODULE_NAME = "module_name"
+
+        // Constants for Fragment Result API
+        const val REQUEST_KEY = "request_rename_module"
+        const val BUNDLE_KEY_NEW_NAME = "new_module_name"
 
         fun newInstance(moduleName: String): RenameModuleDialogFragment {
             val fragment = RenameModuleDialogFragment()

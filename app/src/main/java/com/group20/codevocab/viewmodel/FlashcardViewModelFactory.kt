@@ -11,7 +11,7 @@ class FlashcardViewModelFactory(private val context: Context) : ViewModelProvide
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(FlashcardViewModel::class.java)) {
             val db = AppDatabase.getDatabase(context)
-            val vocabRepo = VocabularyRepository(db.vocabDao())
+            val vocabRepo = VocabularyRepository(db.wordDao())
             val flashRepo = FlashcardProgressRepository(db.flashcardDao())
             @Suppress("UNCHECKED_CAST")
             return FlashcardViewModel(vocabRepo, flashRepo) as T

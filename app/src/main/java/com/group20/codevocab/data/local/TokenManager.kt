@@ -1,3 +1,24 @@
-object TokenManager {
-    var accessToken: String? = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBleGFtcGxlLmNvbSIsInVzZXJfaWQiOiJjOGMzMmMyNC1hMzIwLTQ3OTgtOWZiNi0zNzE2MDE2Yjc1N2YiLCJyb2xlIjoiYWRtaW4iLCJleHAiOjE3NjU2OTA3NzZ9.kIGpd3lhUjaE-ZEcaG9H0Jp4Ui613o2RfmrKdCM2Vrs"
+package com.group20.codevocab.data.local
+
+import android.content.Context
+import android.content.SharedPreferences
+
+class TokenManager(context: Context) {
+    private val prefs: SharedPreferences = context.getSharedPreferences("AUTH_PREFS", Context.MODE_PRIVATE)
+
+    companion object {
+        private const val TOKEN_KEY = "ACCESS_TOKEN"
+    }
+
+    fun saveToken(token: String) {
+        prefs.edit().putString(TOKEN_KEY, token).apply()
+    }
+
+    fun getToken(): String? {
+        return prefs.getString(TOKEN_KEY, null)
+    }
+
+    fun clearToken() {
+        prefs.edit().remove(TOKEN_KEY).apply()
+    }
 }

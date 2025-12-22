@@ -1,8 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    // alias(libs.plugins.kotlin.compose)
-     alias(libs.plugins.kotlin.kapt)
+    id("kotlin-parcelize") // Add this line
+    alias(libs.plugins.kotlin.kapt)
 }
 
 android {
@@ -38,7 +38,6 @@ android {
     buildFeatures {
         viewBinding = true
         dataBinding = true
-        // compose = false
     }
 }
 
@@ -86,4 +85,8 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.gson)
     implementation(libs.okhttp.logging)
+
+    // Image Loading - Glide
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    kapt("com.github.bumptech.glide:compiler:4.16.0")
 }

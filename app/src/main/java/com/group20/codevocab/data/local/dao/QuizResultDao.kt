@@ -12,5 +12,5 @@ interface QuizResultDao {
     suspend fun insertResult(result: QuizResultEntity)
 
     @Query("SELECT * FROM quiz_results WHERE module_id = :moduleId ORDER BY created_at DESC")
-    suspend fun getResultsByModule(moduleId: Int): List<QuizResultEntity>
+    suspend fun getResultsByModule(moduleId: String): List<QuizResultEntity>
 }

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingVertical="12dp">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/ivCommentAvatar"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:background="#F1F5F9"
+        android:scaleType="centerCrop"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/CircleImageView"
+        tools:src="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/tvCommentUserName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:textColor="@android:color/black"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/ivCommentAvatar"
+        app:layout_constraintTop_toTopOf="@id/ivCommentAvatar"
+        tools:text="Sarah Johnson" />
+
+    <TextView
+        android:id="@+id/tvCommentTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#94A3B8"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@id/tvCommentUserName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tvCommentUserName"
+        tools:text="2h ago" />
+
+    <TextView
+        android:id="@+id/tvCommentContent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textColor="#475569"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/tvCommentUserName"
+        app:layout_constraintTop_toBottomOf="@id/tvCommentUserName"
+        tools:text="This flashcard really helped me understand the concept better! The explanation is clear and concise." />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

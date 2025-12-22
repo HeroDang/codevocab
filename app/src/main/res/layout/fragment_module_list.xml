@@ -20,6 +20,14 @@
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"/>
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_marginTop="16dp"
+        android:layout_gravity="center" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvModules"
         android:layout_width="match_parent"

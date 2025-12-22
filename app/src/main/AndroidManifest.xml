@@ -3,6 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
 
     <application
         android:allowBackup="true"
@@ -15,6 +22,18 @@
         android:theme="@style/Theme.CodeVocab"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+
+        <receiver android:name=".utils.ReminderReceiver" android:exported="false" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
         <!-- Splash Screen -->
         <activity
             android:name=".SplashActivity"
@@ -26,18 +45,25 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ui.auth.LoginActivity"
+            android:exported="false" />
+
         <!-- Main Activity -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.CodeVocab">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
         </activity>
+
+        <!-- Auth Flow -->
+        <activity android:name=".ui.auth.RegisterActivity" android:exported="false" />
+        <activity android:name=".ui.auth.ResetPasswordActivity" android:exported="false" />
+        <activity android:name=".ui.auth.ConfirmOtpActivity" android:exported="false" />
+        <activity android:name=".ui.auth.NewPasswordActivity" android:exported="false" />
+
+        <!-- App Features -->
 
         <activity
             android:name=".ui.module.ModuleDetailActivity"
@@ -50,14 +76,43 @@
             
         <activity
             android:name=".ui.flashcard.FlashcardSummaryActivity"
+            android:label="Kết quả học tập"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.quiz.QuizSummaryActivity"
             android:exported="false" />
         <activity
             android:name=".ui.quiz.QuizActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.pronunciation.PronunciationActivity"
             android:exported="false" />
 
         <activity
             android:name=".ui.module.WordListActivity"
             android:label="Danh sách từ vựng"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.word_detail.WordDetailActivity"
+            android:exported="false" />
+
+        <!-- Profile & Settings -->
+        <activity
+            android:name=".ui.theme.SettingsActivity"
+            android:label="Settings"
+            android:exported="false" />
+        <activity
+            android:name=".ui.profile.EditProfileActivity"
+            android:exported="false" />
+
+        <!-- Group Features -->
+        <activity
+            android:name=".ui.group.CommentListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.group.CreatePostActivity"
             android:exported="false" />
     </application>
 

@@ -242,7 +242,7 @@
                 android:id="@+id/cardScore"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="0dp"
                 app:cardBackgroundColor="#DCFCE7"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="0dp"
@@ -263,7 +263,6 @@
                         android:layout_height="wrap_content"
                         android:gravity="bottom"
                         android:orientation="horizontal"
-                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent">
 
@@ -305,8 +304,8 @@
                         android:gravity="start"
                         android:orientation="vertical"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/layoutScoreLeft">
 
                         <TextView
                             android:id="@+id/tvScoreFeedback1"

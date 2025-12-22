@@ -8,7 +8,7 @@ import com.group20.codevocab.data.repository.QuizRepository
 
 class QuizViewModelFactory(
     private val repository: QuizRepository,
-    private val moduleId: Int
+    private val moduleId: String
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

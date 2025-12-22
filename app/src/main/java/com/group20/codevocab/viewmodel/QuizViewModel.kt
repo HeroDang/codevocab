@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 
 class QuizViewModel(
     private val repository: QuizRepository,
-    private val moduleId: Int
+    private val moduleId: String
 ) : ViewModel() {
 
     private val _questions = MutableLiveData<List<QuizQuestion>>()
@@ -42,14 +42,13 @@ class QuizViewModel(
     }
 
     private fun loadQuestions() {
-        viewModelScope.launch {
-//            val loadedQuestions = repository.getQuizQuestions(moduleId)
-            val loadedQuestions = repository.generateQuiz(moduleId)
-            _questions.value = loadedQuestions
-            _totalQuestions.value = loadedQuestions.size
-            _currentQuestion.value = loadedQuestions.getOrNull(0)
-            _progress.value = if (loadedQuestions.isEmpty()) 0 else 1
-        }
+//        viewModelScope.launch {
+//            val loadedQuestions = repository.generateQuiz(moduleId)
+//            _questions.value = loadedQuestions
+//            _totalQuestions.value = loadedQuestions.size
+//            _currentQuestion.value = loadedQuestions.getOrNull(0)
+//            _progress.value = if (loadedQuestions.isEmpty()) 0 else 1
+//        }
     }
 
     fun checkAnswer(selectedIndex: Int): Boolean {

@@ -31,7 +31,11 @@
         android:id="@+id/marketFragment"
         android:name="com.group20.codevocab.ui.market.MarketFragment"
         android:label="Market"
-        tools:layout="@layout/fragment_market" />
+        tools:layout="@layout/fragment_market">
+        <action
+            android:id="@+id/action_marketFragment_to_wordListMarketFragment"
+            app:destination="@id/wordListMarketFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/groupFragment"
@@ -42,6 +46,12 @@
             android:id="@+id/action_groupFragment_to_groupDetailFragment"
             app:destination="@id/groupDetailFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/statsFragment"
+        android:name="com.group20.codevocab.ui.stats.StatsFragment"
+        android:label="Stats"
+        tools:layout="@layout/fragment_stats" />
 
     <fragment
         android:id="@+id/addWordFragment"
@@ -84,5 +94,14 @@
         android:name="com.group20.codevocab.ui.group.GroupDetailFragment"
         android:label="Group Detail"
         tools:layout="@layout/fragment_group_detail" />
+
+    <fragment
+        android:id="@+id/wordListMarketFragment"
+        android:name="com.group20.codevocab.ui.market.WordListMarketFragment"
+        android:label="WordListMarketFragment">
+        <argument
+            android:name="moduleId"
+            app:argType="string" />
+    </fragment>
 
 </navigation>
