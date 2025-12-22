@@ -40,6 +40,9 @@ class FlashcardActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         moduleId = intent.getStringExtra("module_id")
+        val moduleName = intent.getStringExtra("module_name")
+        val isLocal = intent.getBooleanExtra("is_local", false)
+
         if (moduleId == null) {
             Toast.makeText(this, "Module not found", Toast.LENGTH_SHORT).show()
             finish()
@@ -68,10 +71,7 @@ class FlashcardActivity : AppCompatActivity() {
                             }
                         }
                         is WordListState.Loading -> {
-                            wordViewModel.loadWordsFromServer(
-                                subModuleId = moduleId.toString(),
-                                subModuleName = null
-                            )
+                            // Data is being loaded, can show a progress bar
                         }
                         is WordListState.Error -> {
                             Toast.makeText(this@FlashcardActivity, state.message, Toast.LENGTH_SHORT).show()
@@ -79,6 +79,12 @@ class FlashcardActivity : AppCompatActivity() {
                     }
                 }
             }
+        }
+
+        if (isLocal) {
+            wordViewModel.loadWords(moduleId!!, moduleName)
+        } else {
+            wordViewModel.loadWordsFromServer(moduleId!!, moduleName)
         }
 
         setupUI()

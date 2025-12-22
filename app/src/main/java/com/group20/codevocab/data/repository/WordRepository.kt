@@ -15,4 +15,8 @@ class WordRepository(
     suspend fun getWordsRemote(subModuleId: String): List<WordItem> {
         return api.getWordsBySubmodule(subModuleId).map { it.toWordItem() }
     }
+
+    suspend fun insertWords(words: List<WordEntity>) {
+        wordDao.insertAll(words)
+    }
 }

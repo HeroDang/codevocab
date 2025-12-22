@@ -50,6 +50,9 @@ class QuizActivity : AppCompatActivity() {
         } else {
             // Start a normal quiz
             val moduleId = intent.getStringExtra("module_id")
+            val moduleName = intent.getStringExtra("module_name")
+            val isLocal = intent.getBooleanExtra("is_local", false)
+
             if (moduleId == null) {
                 Toast.makeText(this, "Module ID is missing!", Toast.LENGTH_SHORT).show()
                 finish()
@@ -60,7 +63,12 @@ class QuizActivity : AppCompatActivity() {
             quizAdapter = QuizAdapter(binding, this)
             setupUI()
             observeViewModel()
-            wordViewModel.loadWordsFromServer(moduleId, null)
+
+            if (isLocal) {
+                wordViewModel.loadWords(moduleId, moduleName)
+            } else {
+                wordViewModel.loadWordsFromServer(moduleId, moduleName)
+            }
         }
     }
 

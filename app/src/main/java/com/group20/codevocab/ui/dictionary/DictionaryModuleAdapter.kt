@@ -51,6 +51,7 @@ class DictionaryModuleAdapter(
                 currentModule?.let { module ->
                     intent.putExtra("module_id", module.id)
                     intent.putExtra("module_name", module.name)
+                    intent.putExtra("is_local", module.isLocal)
                 }
                 context.startActivity(intent)
             }

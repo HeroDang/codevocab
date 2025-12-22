@@ -14,10 +14,14 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.group20.codevocab.R
 import com.group20.codevocab.data.local.entity.ModuleEntity
+import com.group20.codevocab.data.local.entity.WordEntity
 import com.group20.codevocab.databinding.FragmentReviewWordBinding
 import com.group20.codevocab.model.ReviewableWord
 import com.group20.codevocab.viewmodel.ModuleViewModel
 import com.group20.codevocab.viewmodel.ModuleViewModelFactory
+import com.group20.codevocab.viewmodel.WordViewModel
+import com.group20.codevocab.viewmodel.WordViewModelFactory
+import java.util.UUID
 
 class ReviewWordFragment : Fragment() {
 
@@ -25,7 +29,8 @@ class ReviewWordFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var reviewWordAdapter: ReviewWordAdapter
-    private lateinit var viewModel: ModuleViewModel
+    private lateinit var moduleViewModel: ModuleViewModel
+    private lateinit var wordViewModel: WordViewModel
     private var localModules: List<ModuleEntity> = emptyList()
     private var selectedModuleId: String? = null
 
@@ -40,9 +45,13 @@ class ReviewWordFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Initialize ViewModel
-        val factory = ModuleViewModelFactory(requireContext())
-        viewModel = ViewModelProvider(this, factory)[ModuleViewModel::class.java]
+        // Initialize ModuleViewModel
+        val moduleFactory = ModuleViewModelFactory(requireContext())
+        moduleViewModel = ViewModelProvider(this, moduleFactory)[ModuleViewModel::class.java]
+
+        // Initialize WordViewModel
+        val wordFactory = WordViewModelFactory(requireContext())
+        wordViewModel = ViewModelProvider(this, wordFactory)[WordViewModel::class.java]
 
         setupToolbar()
         setupRecyclerView()
@@ -50,7 +59,7 @@ class ReviewWordFragment : Fragment() {
         setupButtons()
         
         // Load local modules
-        viewModel.loadModules()
+        moduleViewModel.loadModules()
     }
 
     private fun setupToolbar() {
@@ -63,6 +72,7 @@ class ReviewWordFragment : Fragment() {
         // Initialize adapter with click listener callback
         reviewWordAdapter = ReviewWordAdapter { word ->
             // Handle edit word navigation
+            // You might want to pass data to the edit fragment here
             findNavController().navigate(R.id.action_reviewWordFragment_to_editWordFragment)
         }
 
@@ -105,7 +115,7 @@ class ReviewWordFragment : Fragment() {
     }
 
     private fun setupModuleSpinner() {
-        viewModel.modules.observe(viewLifecycleOwner) { modules ->
+        moduleViewModel.modules.observe(viewLifecycleOwner) { modules ->
             // Check context safe to avoid crash if fragment detached
             val context = context ?: return@observe
             
@@ -127,8 +137,32 @@ class ReviewWordFragment : Fragment() {
 
     private fun setupButtons() {
         binding.btnSaveWord.setOnClickListener {
-            // TODO: Handle saving selected words using selectedModuleId
-            findNavController().navigateUp() // Go back for now
+            if (selectedModuleId == null) {
+                Toast.makeText(context, "Please select a module", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val wordsToSave = reviewWordAdapter.currentList.filter { it.isChecked }.map { item ->
+                WordEntity(
+                    id = UUID.randomUUID().toString(),
+                    moduleId = selectedModuleId!!,
+                    textEn = item.textEn ?: "",
+                    meaningVi = item.meaningVi,
+                    partOfSpeech = item.partOfSpeech,
+                    ipa = item.ipa,
+                    exampleSentence = item.exampleSentence,
+                    audioUrl = null,
+                    createdAt = System.currentTimeMillis().toString()
+                )
+            }
+
+            if (wordsToSave.isNotEmpty()) {
+                wordViewModel.saveWords(wordsToSave)
+                Toast.makeText(context, "Saved ${wordsToSave.size} words", Toast.LENGTH_SHORT).show()
+                findNavController().navigateUp()
+            } else {
+                Toast.makeText(context, "No words selected", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
