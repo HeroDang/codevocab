@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -45,11 +47,10 @@ class ReviewWordFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Initialize ModuleViewModel
+        // Initialize ViewModels
         val moduleFactory = ModuleViewModelFactory(requireContext())
         moduleViewModel = ViewModelProvider(this, moduleFactory)[ModuleViewModel::class.java]
 
-        // Initialize WordViewModel
         val wordFactory = WordViewModelFactory(requireContext())
         wordViewModel = ViewModelProvider(this, wordFactory)[WordViewModel::class.java]
 
@@ -57,9 +58,29 @@ class ReviewWordFragment : Fragment() {
         setupRecyclerView()
         setupModuleSpinner()
         setupButtons()
-        
+        setupResultListener()
+
         // Load local modules
         moduleViewModel.loadModules()
+    }
+
+    private fun setupResultListener() {
+        setFragmentResultListener("editWordResult") { _, bundle ->
+            // Safely retrieve both the original and updated word
+            @Suppress("DEPRECATION")
+            val originalWord = bundle.getParcelable<ReviewableWord>("originalWord")
+            @Suppress("DEPRECATION")
+            val updatedWord = bundle.getParcelable<ReviewableWord>("updatedWord")
+
+            if (originalWord != null && updatedWord != null) {
+                val currentList = reviewWordAdapter.currentList.toMutableList()
+                val index = currentList.indexOf(originalWord)
+                if (index != -1) {
+                    currentList[index] = updatedWord
+                    reviewWordAdapter.submitList(currentList)
+                }
+            }
+        }
     }
 
     private fun setupToolbar() {
@@ -71,9 +92,8 @@ class ReviewWordFragment : Fragment() {
     private fun setupRecyclerView() {
         // Initialize adapter with click listener callback
         reviewWordAdapter = ReviewWordAdapter { word ->
-            // Handle edit word navigation
-            // You might want to pass data to the edit fragment here
-            findNavController().navigate(R.id.action_reviewWordFragment_to_editWordFragment)
+            val bundle = bundleOf("wordToEdit" to word)
+            findNavController().navigate(R.id.action_reviewWordFragment_to_editWordFragment, bundle)
         }
 
         binding.recyclerView.apply {
@@ -93,9 +113,7 @@ class ReviewWordFragment : Fragment() {
                 val type = object : TypeToken<List<ReviewableWord>>() {}.type
                 val words = gson.fromJson<List<ReviewableWord>>(jsonString, type)
 
-                // Kiểm tra null safety cho list và các item bên trong
                 if (words != null) {
-                    // Filter out null items and duplicates to prevent crashes in DiffUtil
                     val distinctWords = words.filterNotNull().distinctBy { it.textEn to it.meaningVi }
                     reviewWordAdapter.submitList(distinctWords)
                 } else {
@@ -103,7 +121,6 @@ class ReviewWordFragment : Fragment() {
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                // Sử dụng context an toàn để tránh crash nếu fragment bị detached
                 context?.let { ctx ->
                     Toast.makeText(ctx, "Error parsing OCR data: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
@@ -116,9 +133,7 @@ class ReviewWordFragment : Fragment() {
 
     private fun setupModuleSpinner() {
         moduleViewModel.modules.observe(viewLifecycleOwner) { modules ->
-            // Check context safe to avoid crash if fragment detached
             val context = context ?: return@observe
-            
             localModules = modules
             val moduleNames = modules.map { it.name }
             val adapter = ArrayAdapter(context, android.R.layout.simple_dropdown_item_1line, moduleNames)
@@ -126,7 +141,6 @@ class ReviewWordFragment : Fragment() {
 
             if (moduleNames.isNotEmpty()) {
                 binding.autoCompleteModule.setOnItemClickListener { _, _, position, _ ->
-                    // Capture selected module ID for future save usage
                     if (position < localModules.size) {
                         selectedModuleId = localModules[position].id
                     }
