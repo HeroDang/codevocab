@@ -183,7 +183,7 @@
                             android:textAllCaps="false"
                             app:backgroundTint="#4F46E5"
                             app:cornerRadius="8dp"
-                            app:icon="@drawable/ic_play" />
+                            app:icon="@drawable/ic_speaker" />
                     </LinearLayout>
 
                     <!-- Recording -->
@@ -237,18 +237,30 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- Loading ProgressBar for Pronunciation Check -->
+            <ProgressBar
+                android:id="@+id/progressBarProcessing"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cardAudioControls" />
+
             <!-- Score Card -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardScore"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="0dp"
+                android:visibility="gone"
                 app:cardBackgroundColor="#DCFCE7"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="0dp"
                 app:layout_constraintEnd_toEndOf="@id/cardAudioControls"
                 app:layout_constraintStart_toStartOf="@id/cardAudioControls"
-                app:layout_constraintTop_toBottomOf="@+id/cardAudioControls"
+                app:layout_constraintTop_toBottomOf="@+id/progressBarProcessing"
                 app:strokeColor="#86EFAC"
                 app:strokeWidth="1dp">
 
