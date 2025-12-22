@@ -38,6 +38,9 @@ interface ApiService {
         @Path("moduleId") subModuleId: String
     ): List<WordDto>
 
+    @GET("modules/")
+    suspend fun getAllModules(): List<ModuleDto>
+
     @PUT("modules/{moduleId}")
     suspend fun updateModule(
         @Path("moduleId") moduleId: String,

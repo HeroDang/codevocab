@@ -72,6 +72,10 @@
             android:name=".ui.flashcard.FlashcardSummaryActivity"
             android:label="Kết quả học tập"
             android:exported="false" />
+
+        <activity
+            android:name=".ui.quiz.QuizSummaryActivity"
+            android:exported="false" />
         <activity
             android:name=".ui.quiz.QuizActivity"
             android:exported="false" />

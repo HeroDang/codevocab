@@ -80,31 +80,6 @@
         </LinearLayout>
 
 
-        <!-- Explanation Box -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/bg_explanation_box"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="12dp">
-
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/ic_lightbulb"
-                app:tint="#2563EB" />
-
-            <TextView
-                android:id="@+id/tvExplanation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="Canberra is the capital city of Australia, located in the Australian Capital Territory."
-                android:textColor="#1E40AF" />
-
-        </LinearLayout>
 
     </LinearLayout>
 
