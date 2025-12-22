@@ -151,4 +151,8 @@ class ModuleViewModel(
             }
         }
     }
+
+    suspend fun copyModuleToLocal(moduleItem: ModuleItem): String {
+        return repository.copyModuleToLocal(moduleItem)
+    }
 }

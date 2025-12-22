@@ -102,8 +102,10 @@ class WordListActivity : AppCompatActivity() {
         binding.btnPractice.setOnClickListener {
             val intent = Intent(this, PronunciationActivity::class.java).apply {
                 putExtra("module_id", moduleId)
+                putExtra("module_name", moduleName)
+                putExtra("is_local", isLocal)
             }
-            Toast.makeText(this, "Practice feature coming soon", Toast.LENGTH_SHORT).show()
+            // Toast.makeText(this, "Practice feature coming soon", Toast.LENGTH_SHORT).show()
             startActivity(intent)
         }
     }

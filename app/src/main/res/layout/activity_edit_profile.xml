@@ -146,6 +146,24 @@
                 android:background="#F1F5F9" />
 
             <!-- Phone (Optional) -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="PHONE NUMBER"
+                android:textColor="#94A3B8"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+            <EditText
+                android:id="@+id/etPhone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:paddingVertical="12dp"
+                android:hint="Enter your phone number"
+                android:inputType="phone"
+                android:textColor="#1E293B"
+                android:textSize="16sp" />
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"

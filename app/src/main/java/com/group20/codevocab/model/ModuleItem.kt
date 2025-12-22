@@ -1,15 +1,20 @@
 package com.group20.codevocab.model
 
+import android.os.Parcelable
 import com.group20.codevocab.data.local.entity.ModuleEntity
 import com.group20.codevocab.data.remote.dto.ModuleDto
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class ModuleItem(
     val id: String,
     val name: String,
     val description: String?,
     val isPublic: Boolean,
-    val isLocal: Boolean = false // Default to false for backward compatibility or ease of use
-)
+    val isLocal: Boolean = false, // Default to false for backward compatibility or ease of use
+    val ownerName: String? = null,
+    val wordCount: Int? = 0
+) : Parcelable
 
 fun ModuleDto.toModuleItem(): ModuleItem {
     return ModuleItem(
@@ -17,7 +22,9 @@ fun ModuleDto.toModuleItem(): ModuleItem {
         name = name,
         description = description,
         isPublic = is_public,
-        isLocal = false // Data from DTO (Server) is not local
+        isLocal = false, // Data from DTO (Server) is not local
+        ownerName = owner_name,
+        wordCount = count_word
     )
 }
 
@@ -39,6 +46,8 @@ fun ModuleItem.toDto(): ModuleDto {
         description = description,
         is_public = isPublic,
         module_type = "personal", // Default for now
-        created_at = ""
+        created_at = "",
+        owner_name = ownerName,
+        count_word = wordCount
     )
 }
