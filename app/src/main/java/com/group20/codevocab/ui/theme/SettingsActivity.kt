@@ -14,11 +14,14 @@ import android.os.Bundle
 import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.group20.codevocab.R
+import com.group20.codevocab.data.local.AppDatabase
 import com.group20.codevocab.data.local.TokenManager
 import com.group20.codevocab.data.remote.ApiClient
 import com.group20.codevocab.data.repository.AuthRepository
@@ -28,6 +31,8 @@ import com.group20.codevocab.ui.profile.EditProfileActivity
 import com.group20.codevocab.utils.ReminderReceiver
 import com.group20.codevocab.viewmodel.BaseViewModelFactory
 import com.group20.codevocab.viewmodel.UserViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.Calendar
 
 class SettingsActivity : AppCompatActivity() {
@@ -100,7 +105,6 @@ class SettingsActivity : AppCompatActivity() {
     private fun setupListeners() {
         binding.btnBack.setOnClickListener { finish() }
 
-        // ✅ Thêm sự kiện chuyển sang màn hình Edit Profile
         binding.btnEditProfile.setOnClickListener {
             val intent = Intent(this, EditProfileActivity::class.java)
             startActivity(intent)
@@ -116,12 +120,35 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         binding.btnLogout.setOnClickListener {
-            TokenManager(this).clearToken()
-            val intent = Intent(this, LoginActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(intent)
-            finish()
+            showLogoutConfirmation()
         }
+    }
+
+    private fun showLogoutConfirmation() {
+        AlertDialog.Builder(this)
+            .setTitle("Logout")
+            .setMessage("Are you sure you want to logout?")
+            .setPositiveButton("Logout") { _, _ ->
+                performLogout()
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun performLogout() {
+        // 1. Clear session token
+        TokenManager(this).clearToken()
+        
+        // 2. Clear local database to ensure next user has a clean state
+        lifecycleScope.launch(Dispatchers.IO) {
+            AppDatabase.getDatabase(applicationContext).clearAllTables()
+        }
+
+        // 3. Navigate back to Login and clear the activity stack
+        val intent = Intent(this, LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        finish()
     }
 
     private fun showTimePicker() {

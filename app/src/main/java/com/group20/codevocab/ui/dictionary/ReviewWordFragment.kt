@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,10 +16,14 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.group20.codevocab.R
 import com.group20.codevocab.data.local.entity.ModuleEntity
+import com.group20.codevocab.data.local.entity.WordEntity
 import com.group20.codevocab.databinding.FragmentReviewWordBinding
 import com.group20.codevocab.model.ReviewableWord
 import com.group20.codevocab.viewmodel.ModuleViewModel
 import com.group20.codevocab.viewmodel.ModuleViewModelFactory
+import com.group20.codevocab.viewmodel.WordViewModel
+import com.group20.codevocab.viewmodel.WordViewModelFactory
+import java.util.UUID
 
 class ReviewWordFragment : Fragment() {
 
@@ -25,7 +31,8 @@ class ReviewWordFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var reviewWordAdapter: ReviewWordAdapter
-    private lateinit var viewModel: ModuleViewModel
+    private lateinit var moduleViewModel: ModuleViewModel
+    private lateinit var wordViewModel: WordViewModel
     private var localModules: List<ModuleEntity> = emptyList()
     private var selectedModuleId: String? = null
 
@@ -40,17 +47,40 @@ class ReviewWordFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Initialize ViewModel
-        val factory = ModuleViewModelFactory(requireContext())
-        viewModel = ViewModelProvider(this, factory)[ModuleViewModel::class.java]
+        // Initialize ViewModels
+        val moduleFactory = ModuleViewModelFactory(requireContext())
+        moduleViewModel = ViewModelProvider(this, moduleFactory)[ModuleViewModel::class.java]
+
+        val wordFactory = WordViewModelFactory(requireContext())
+        wordViewModel = ViewModelProvider(this, wordFactory)[WordViewModel::class.java]
 
         setupToolbar()
         setupRecyclerView()
         setupModuleSpinner()
         setupButtons()
-        
+        setupResultListener()
+
         // Load local modules
-        viewModel.loadModules()
+        moduleViewModel.loadModules()
+    }
+
+    private fun setupResultListener() {
+        setFragmentResultListener("editWordResult") { _, bundle ->
+            // Safely retrieve both the original and updated word
+            @Suppress("DEPRECATION")
+            val originalWord = bundle.getParcelable<ReviewableWord>("originalWord")
+            @Suppress("DEPRECATION")
+            val updatedWord = bundle.getParcelable<ReviewableWord>("updatedWord")
+
+            if (originalWord != null && updatedWord != null) {
+                val currentList = reviewWordAdapter.currentList.toMutableList()
+                val index = currentList.indexOf(originalWord)
+                if (index != -1) {
+                    currentList[index] = updatedWord
+                    reviewWordAdapter.submitList(currentList)
+                }
+            }
+        }
     }
 
     private fun setupToolbar() {
@@ -62,8 +92,8 @@ class ReviewWordFragment : Fragment() {
     private fun setupRecyclerView() {
         // Initialize adapter with click listener callback
         reviewWordAdapter = ReviewWordAdapter { word ->
-            // Handle edit word navigation
-            findNavController().navigate(R.id.action_reviewWordFragment_to_editWordFragment)
+            val bundle = bundleOf("wordToEdit" to word)
+            findNavController().navigate(R.id.action_reviewWordFragment_to_editWordFragment, bundle)
         }
 
         binding.recyclerView.apply {
@@ -83,9 +113,7 @@ class ReviewWordFragment : Fragment() {
                 val type = object : TypeToken<List<ReviewableWord>>() {}.type
                 val words = gson.fromJson<List<ReviewableWord>>(jsonString, type)
 
-                // Kiểm tra null safety cho list và các item bên trong
                 if (words != null) {
-                    // Filter out null items and duplicates to prevent crashes in DiffUtil
                     val distinctWords = words.filterNotNull().distinctBy { it.textEn to it.meaningVi }
                     reviewWordAdapter.submitList(distinctWords)
                 } else {
@@ -93,7 +121,6 @@ class ReviewWordFragment : Fragment() {
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                // Sử dụng context an toàn để tránh crash nếu fragment bị detached
                 context?.let { ctx ->
                     Toast.makeText(ctx, "Error parsing OCR data: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
@@ -105,10 +132,8 @@ class ReviewWordFragment : Fragment() {
     }
 
     private fun setupModuleSpinner() {
-        viewModel.modules.observe(viewLifecycleOwner) { modules ->
-            // Check context safe to avoid crash if fragment detached
+        moduleViewModel.modules.observe(viewLifecycleOwner) { modules ->
             val context = context ?: return@observe
-            
             localModules = modules
             val moduleNames = modules.map { it.name }
             val adapter = ArrayAdapter(context, android.R.layout.simple_dropdown_item_1line, moduleNames)
@@ -116,7 +141,6 @@ class ReviewWordFragment : Fragment() {
 
             if (moduleNames.isNotEmpty()) {
                 binding.autoCompleteModule.setOnItemClickListener { _, _, position, _ ->
-                    // Capture selected module ID for future save usage
                     if (position < localModules.size) {
                         selectedModuleId = localModules[position].id
                     }
@@ -127,8 +151,32 @@ class ReviewWordFragment : Fragment() {
 
     private fun setupButtons() {
         binding.btnSaveWord.setOnClickListener {
-            // TODO: Handle saving selected words using selectedModuleId
-            findNavController().navigateUp() // Go back for now
+            if (selectedModuleId == null) {
+                Toast.makeText(context, "Please select a module", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val wordsToSave = reviewWordAdapter.currentList.filter { it.isChecked }.map { item ->
+                WordEntity(
+                    id = UUID.randomUUID().toString(),
+                    moduleId = selectedModuleId!!,
+                    textEn = item.textEn ?: "",
+                    meaningVi = item.meaningVi,
+                    partOfSpeech = item.partOfSpeech,
+                    ipa = item.ipa,
+                    exampleSentence = item.exampleSentence,
+                    audioUrl = null,
+                    createdAt = System.currentTimeMillis().toString()
+                )
+            }
+
+            if (wordsToSave.isNotEmpty()) {
+                wordViewModel.saveWords(wordsToSave)
+                Toast.makeText(context, "Saved ${wordsToSave.size} words", Toast.LENGTH_SHORT).show()
+                findNavController().navigateUp()
+            } else {
+                Toast.makeText(context, "No words selected", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

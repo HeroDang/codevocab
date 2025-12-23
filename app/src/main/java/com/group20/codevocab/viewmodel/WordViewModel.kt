@@ -8,6 +8,7 @@ import com.group20.codevocab.data.local.entity.WordEntity
 import com.group20.codevocab.data.repository.VocabRepository
 import com.group20.codevocab.data.repository.WordRepository
 import com.group20.codevocab.model.WordItem
+import com.group20.codevocab.model.toWordItem
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -29,10 +30,22 @@ class WordViewModel(private val repository: VocabRepository, private val repoWor
     private val _state = MutableStateFlow<WordListState>(WordListState.Loading)
     val state: StateFlow<WordListState> = _state
 
-    fun loadWords(moduleId: String) {
+    fun loadWords(moduleId: String, moduleName: String?) {
         viewModelScope.launch {
-            val wordList = repository.getVocabByModule(moduleId)
-            _words.postValue(wordList)
+            _state.value = WordListState.Loading
+            try {
+                val wordList = repository.getVocabByModule(moduleId)
+                val wordItems = wordList.map { it.toWordItem() }
+                _state.value = WordListState.Success(moduleName, wordItems)
+            } catch (e: Exception) {
+                _state.value = WordListState.Error(e.message ?: "Failed to load local words")
+            }
+        }
+    }
+
+    fun saveWords(wordsToSave: List<WordEntity>) {
+        viewModelScope.launch {
+            repoWord.insertWords(wordsToSave)
         }
     }
 

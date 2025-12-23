@@ -7,12 +7,17 @@ import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.group20.codevocab.data.local.entity.ModuleEntity
 import com.group20.codevocab.data.repository.ModuleRepository
+import com.group20.codevocab.data.repository.ModuleProgressInfo
 import com.group20.codevocab.model.ModuleDetailItem
 import com.group20.codevocab.model.ModuleItem
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.util.Collections.sort
 
+enum class SortType {
+    NAME, DATE, WORD_COUNT
+}
 
 sealed class ModulesState {
     data object Loading : ModulesState()
@@ -32,11 +37,38 @@ class ModuleViewModel(
 
     private val _modules = MutableLiveData<List<ModuleEntity>>()
     val modules: LiveData<List<ModuleEntity>> get() = _modules
+
+    private val _inProgressModules = MutableLiveData<List<Pair<ModuleEntity, ModuleProgressInfo>>>()
+    val inProgressModules: LiveData<List<Pair<ModuleEntity, ModuleProgressInfo>>> get() = _inProgressModules
+
     private val _state = MutableStateFlow<ModulesState>(ModulesState.Loading)
     val state: StateFlow<ModulesState> = _state
     private val _moduleDetailState =
         MutableStateFlow<ModuleDetailState>(ModuleDetailState.Loading)
     val moduleDetailState: StateFlow<ModuleDetailState> = _moduleDetailState
+    
+    // Sort state separated for My Modules and Shared Modules
+    private val _myModulesSortType = MutableLiveData<SortType>(SortType.NAME)
+    val myModulesSortType: LiveData<SortType> = _myModulesSortType
+
+    private val _sharedModulesSortType = MutableLiveData<SortType>(SortType.NAME)
+    val sharedModulesSortType: LiveData<SortType> = _sharedModulesSortType
+
+    fun setSortType(isShared: Boolean, type: SortType) {
+        if (isShared) {
+            _sharedModulesSortType.value = type
+        } else {
+            _myModulesSortType.value = type
+        }
+    }
+
+    fun getSortType(isShared: Boolean): SortType {
+        return if (isShared) {
+            _sharedModulesSortType.value ?: SortType.NAME
+        } else {
+            _myModulesSortType.value ?: SortType.NAME
+        }
+    }
 
     // Helper suspend function to fetch data sequentially
     private suspend fun fetchLocalModules() {
@@ -47,10 +79,31 @@ class ModuleViewModel(
             e.printStackTrace()
         }
     }
-
+    
     fun loadModules() {
         viewModelScope.launch {
             fetchLocalModules()
+        }
+    }
+
+    suspend fun getWordCount(moduleId: String): Int {
+        return repository.getWordCountForModule(moduleId)
+    }
+
+    fun loadInProgressModules() {
+        viewModelScope.launch {
+            try {
+                val modules = repository.getInProgressModules()
+                // ✅ Lọc ra những module chưa hoàn thành (số từ đã học < tổng số từ)
+                val modulesWithProgress = modules.map { 
+                    it to repository.getModuleProgressInfo(it.id)
+                }.filter { (_, progress) ->
+                    progress.processedCount < progress.totalCount
+                }
+                _inProgressModules.postValue(modulesWithProgress)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
@@ -77,14 +130,26 @@ class ModuleViewModel(
         }
     }
     
-    fun loadUserModulesFromServer(userId: String) {
+    fun loadMyModulesFromServer() {
         viewModelScope.launch {
             _state.value = ModulesState.Loading
             try {
-                val items = repository.getUserModulesRemote(userId)
+                val items = repository.getMyModules()
                 _state.value = ModulesState.Success(items)
             } catch (e: Exception) {
                 _state.value = ModulesState.Error(e.message ?: "Failed to load user modules")
+            }
+        }
+    }
+
+    fun loadSharedWithMeModules() {
+        viewModelScope.launch {
+            _state.value = ModulesState.Loading
+            try {
+                val items = repository.getSharedWithMeModules()
+                _state.value = ModulesState.Success(items)
+            } catch (e: Exception) {
+                _state.value = ModulesState.Error(e.message ?: "Failed to load shared modules")
             }
         }
     }
@@ -122,10 +187,30 @@ class ModuleViewModel(
                     fetchLocalModules() // Refresh local sequentially
                 } else {
                     // Refresh remote list
-                    loadUserModulesFromServer("9150dfe1-0758-4716-9d0e-99fc0fbe3a63")
+                    loadMyModulesFromServer()
                 }
             } catch (e: Exception) {
                  _state.value = ModulesState.Error("Failed to update: ${e.message}")
+            }
+        }
+    }
+
+    suspend fun copyModuleToLocal(moduleItem: ModuleItem): String {
+        return repository.copyModuleToLocal(moduleItem)
+    }
+
+    fun acceptShareModule(module: ModuleItem, onSuccess: () -> Unit, onError: (String) -> Unit) {
+        viewModelScope.launch {
+            try {
+                val success = repository.acceptShareModule(module.id)
+                if (success) {
+                    onSuccess()
+                    loadSharedWithMeModules() // Reload list
+                } else {
+                    onError("Failed to accept module")
+                }
+            } catch (e: Exception) {
+                onError(e.message ?: "Unknown error")
             }
         }
     }

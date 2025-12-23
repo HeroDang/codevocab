@@ -25,9 +25,11 @@
 
     <!-- Status Colors -->
     <color name="green_500">#4CAF50</color> <!-- Added for Next button -->
+    <color name="green_700">#15803D</color>
     <color name="status_green">#2ECC71</color>
     <color name="status_green_bg">#E8F8F5</color>
     <color name="status_yellow">#F1C40F</color>
+    <color name="yellow_600">#FBC02D</color>
     <color name="status_yellow_bg">#FEF9E7</color>
     <color name="status_red">#E74C3C</color>
     <color name="status_red_bg">#FDEDEC</color>
@@ -35,6 +37,7 @@
     <color name="success_circle_bg">#E8F5E9</color>
     <color name="success_check">#4CAF50</color>
 
+    <color name="primary">#2196F3</color> <!-- Added R.color.primary -->
     <color name="colorPrimary">@color/blue_500</color>
     <color name="colorOnPrimary">@color/white</color>
 

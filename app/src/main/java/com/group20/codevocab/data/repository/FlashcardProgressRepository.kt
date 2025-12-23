@@ -5,9 +5,9 @@ import com.group20.codevocab.data.local.entity.FlashcardProgressEntity
 
 class FlashcardProgressRepository(private val dao: FlashcardProgressDao) {
 
-//    suspend fun getByVocabId(vocabId: String): FlashcardProgressEntity? = dao.getByVocabId(vocabId)
+    suspend fun getByVocabId(vocabId: String): FlashcardProgressEntity? = dao.getByVocabId(vocabId)
 
-//    suspend fun getByModule(moduleId: String): List<FlashcardProgressEntity> = dao.getByModule(moduleId)
+    suspend fun getByModule(moduleId: String): List<FlashcardProgressEntity> = dao.getByModule(moduleId)
 
     suspend fun insert(flashcard: FlashcardProgressEntity): Long = dao.insert(flashcard)
 
@@ -15,7 +15,7 @@ class FlashcardProgressRepository(private val dao: FlashcardProgressDao) {
 
     suspend fun update(flashcard: FlashcardProgressEntity) = dao.update(flashcard)
 
-    suspend fun markKnown(vocabId: Int, moduleId: Int, isKnown: Boolean) {
+    suspend fun markKnown(vocabId: String, moduleId: String, isKnown: Boolean) {
         val entity = FlashcardProgressEntity(
             vocabId = vocabId,
             moduleId = moduleId,
@@ -26,12 +26,12 @@ class FlashcardProgressRepository(private val dao: FlashcardProgressDao) {
     }
 
     suspend fun ensureFlashcardForVocab(vocabId: String, moduleId: String) {
-//        val exists = dao.getByVocabId(vocabId)
-//        if (exists == null) {
-//            dao.insert(FlashcardProgressEntity(vocabId = vocabId, moduleId = moduleId))
-//        }
+        val exists = dao.getByVocabId(vocabId)
+        if (exists == null) {
+            dao.insert(FlashcardProgressEntity(vocabId = vocabId, moduleId = moduleId))
+        }
     }
 
-//    suspend fun countByModule(moduleId: String): Int = dao.countByModule(moduleId)
-//    suspend fun countKnownByModule(moduleId: String): Int = dao.countKnownByModule(moduleId)
+    suspend fun countByModule(moduleId: String): Int = dao.countByModule(moduleId)
+    suspend fun countKnownByModule(moduleId: String): Int = dao.countKnownByModule(moduleId)
 }

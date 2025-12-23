@@ -1,7 +1,10 @@
 package com.group20.codevocab.model
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class ReviewableWord(
     @SerializedName("text_en")
     val textEn: String?,
@@ -13,4 +16,4 @@ data class ReviewableWord(
     @SerializedName("example_sentence")
     val exampleSentence: String?,
     var isChecked: Boolean = true
-)
+) : Parcelable
