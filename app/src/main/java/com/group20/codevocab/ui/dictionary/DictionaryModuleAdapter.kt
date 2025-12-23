@@ -92,6 +92,7 @@ class DictionaryModuleAdapter(
                 binding.tvSharedBy.text = "By: ${module.ownerName ?: "Unknown"}"
                 binding.llSharedActions.visibility = View.VISIBLE
                 binding.ivShareContainer.visibility = View.GONE
+                binding.tvPrivacyStatus.visibility = View.GONE
 
                 when (module.status) {
                     "pending" -> {
@@ -110,6 +111,17 @@ class DictionaryModuleAdapter(
                 binding.tvSharedBy.visibility = View.GONE
                 binding.llSharedActions.visibility = View.GONE
                 binding.ivShareContainer.visibility = View.VISIBLE
+                
+                binding.tvPrivacyStatus.visibility = View.VISIBLE
+                if (module.isLocal) {
+                    binding.tvPrivacyStatus.text = "Private"
+                    binding.tvPrivacyStatus.setBackgroundResource(R.drawable.bg_tag_private)
+                    binding.tvPrivacyStatus.setTextColor(Color.parseColor("#616161")) // gray_700
+                } else {
+                    binding.tvPrivacyStatus.text = "Public"
+                    binding.tvPrivacyStatus.setBackgroundResource(R.drawable.bg_tag_public)
+                    binding.tvPrivacyStatus.setTextColor(Color.parseColor("#1565C0")) // blue_800
+                }
             }
         }
 

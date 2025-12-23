@@ -13,7 +13,11 @@ import com.group20.codevocab.model.ModuleItem
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.util.Collections.sort
 
+enum class SortType {
+    NAME, DATE, WORD_COUNT
+}
 
 sealed class ModulesState {
     data object Loading : ModulesState()
@@ -42,6 +46,29 @@ class ModuleViewModel(
     private val _moduleDetailState =
         MutableStateFlow<ModuleDetailState>(ModuleDetailState.Loading)
     val moduleDetailState: StateFlow<ModuleDetailState> = _moduleDetailState
+    
+    // Sort state separated for My Modules and Shared Modules
+    private val _myModulesSortType = MutableLiveData<SortType>(SortType.NAME)
+    val myModulesSortType: LiveData<SortType> = _myModulesSortType
+
+    private val _sharedModulesSortType = MutableLiveData<SortType>(SortType.NAME)
+    val sharedModulesSortType: LiveData<SortType> = _sharedModulesSortType
+
+    fun setSortType(isShared: Boolean, type: SortType) {
+        if (isShared) {
+            _sharedModulesSortType.value = type
+        } else {
+            _myModulesSortType.value = type
+        }
+    }
+
+    fun getSortType(isShared: Boolean): SortType {
+        return if (isShared) {
+            _sharedModulesSortType.value ?: SortType.NAME
+        } else {
+            _myModulesSortType.value ?: SortType.NAME
+        }
+    }
 
     // Helper suspend function to fetch data sequentially
     private suspend fun fetchLocalModules() {
@@ -52,7 +79,7 @@ class ModuleViewModel(
             e.printStackTrace()
         }
     }
-
+    
     fun loadModules() {
         viewModelScope.launch {
             fetchLocalModules()

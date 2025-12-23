@@ -59,11 +59,12 @@
         <!-- Word Count Row -->
         <LinearLayout
             android:id="@+id/llWordCount"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="@+id/flIcon"
+            app:layout_constraintEnd_toStartOf="@+id/ivShareContainer"
             app:layout_constraintStart_toStartOf="@+id/tvModuleName">
 
             <ImageView
@@ -80,6 +81,20 @@
                 android:text="24 words"
                 android:textColor="#757575"
                 android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tvPrivacyStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/bg_tag_private"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="2dp"
+                android:text="Private"
+                android:textColor="#616161"
+                android:textSize="10sp"
+                android:visibility="gone"
+                tools:visibility="visible" />
         </LinearLayout>
 
         <!-- Share Icon -->

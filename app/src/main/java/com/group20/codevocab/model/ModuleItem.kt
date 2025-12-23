@@ -14,7 +14,9 @@ data class ModuleItem(
     val isLocal: Boolean = false, // Default to false for backward compatibility or ease of use
     val ownerName: String? = null,
     val wordCount: Int? = 0,
-    val status: String? = null
+    val status: String? = null,
+    val shareId: String? = null,
+    val createdAt: String? = null
 ) : Parcelable
 
 fun ModuleDto.toModuleItem(): ModuleItem {
@@ -26,7 +28,8 @@ fun ModuleDto.toModuleItem(): ModuleItem {
         isLocal = false, // Data from DTO (Server) is not local
         ownerName = owner_name,
         wordCount = count_word,
-        status = status
+        status = status,
+        createdAt = created_at
     )
 }
 
@@ -37,7 +40,7 @@ fun ModuleItem.toEntity(): ModuleEntity {
         description = description,
         moduleType = if (isLocal) "personal" else "general", // Simplified mapping
         isPublic = isPublic,
-        createdAt = "" // Should be handled properly, for update it's fine if ignored by logic
+        createdAt = createdAt ?: System.currentTimeMillis().toString()
     )
 }
 
@@ -48,7 +51,7 @@ fun ModuleItem.toDto(): ModuleDto {
         description = description,
         is_public = isPublic,
         module_type = "personal", // Default for now
-        created_at = "",
+        created_at = createdAt ?: "",
         owner_name = ownerName,
         count_word = wordCount,
         status = status
