@@ -33,8 +33,22 @@ class ModuleRepository(
     suspend fun getGeneralModules() = moduleDao.getGeneralModules()
     suspend fun getModuleById(id: String) = moduleDao.getModuleById(id)
 
+    suspend fun getWordCountForModule(moduleId: String): Int {
+        return wordDao.getWordsByModule(moduleId).size
+    }
+
     suspend fun getModulesRemote(): List<ModuleItem> {
         val remoteModules = api.getModules()
+        return remoteModules.map { it.toModuleItem() }
+    }
+
+    suspend fun getMyModules(): List<ModuleItem> {
+        val remoteModules = api.getMyModules()
+        return remoteModules.map { it.toModuleItem() }
+    }
+
+    suspend fun getSharedWithMeModules(): List<ModuleItem> {
+        val remoteModules = api.getSharedWithMeModules()
         return remoteModules.map { it.toModuleItem() }
     }
 
@@ -67,6 +81,15 @@ class ModuleRepository(
             moduleDao.updateModule(item.toEntity())
         } else {
             api.updateModule(item.id, item.toDto())
+        }
+    }
+
+    suspend fun acceptShareModule(shareId: String): Boolean {
+        return try {
+            val response = api.acceptShareModule(shareId)
+            response.isSuccessful
+        } catch (e: Exception) {
+            false
         }
     }
 

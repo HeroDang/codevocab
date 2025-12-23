@@ -8,5 +8,6 @@ data class ModuleDto(
     val is_public: Boolean,
     val created_at: String,
     val owner_name: String? = null,
-    val count_word: Int? = 0
+    val count_word: Int? = 0,
+    val status: String? = null
 )

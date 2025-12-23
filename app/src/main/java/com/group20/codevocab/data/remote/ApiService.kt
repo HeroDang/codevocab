@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName
 import com.group20.codevocab.data.remote.dto.LoginResponse
 import com.group20.codevocab.data.remote.dto.ModuleDetailDto
 import com.group20.codevocab.data.remote.dto.ModuleDto
+import com.group20.codevocab.data.remote.dto.ModuleShareOut
 import com.group20.codevocab.data.remote.dto.RegisterRequest
 import com.group20.codevocab.data.remote.dto.RegisterResponse
 import com.group20.codevocab.data.remote.dto.StudySessionRequest
@@ -55,6 +56,12 @@ interface ApiService {
     @GET("modules")
     suspend fun getModules(): List<ModuleDto>
 
+    @GET("dictionary/my-module")
+    suspend fun getMyModules(): List<ModuleDto>
+
+    @GET("dictionary/shared-with-me")
+    suspend fun getSharedWithMeModules(): List<ModuleDto>
+
     @GET("modules/user_modules")
     suspend fun getUserModules(
         @Query("current_user_id") userId: String
@@ -86,6 +93,12 @@ interface ApiService {
         @Path("moduleId") moduleId: String,
         @Body module: ModuleDto
     ): ModuleDto
+
+    // API chấp nhận chia sẻ module
+    @PUT("dictionary/share/accept/{moduleId}")
+    suspend fun acceptShareModule(
+        @Path("moduleId") moduleId: String
+    ): Response<ModuleShareOut>
 }
 
 data class WordsDto(

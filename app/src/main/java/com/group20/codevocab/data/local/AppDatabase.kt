@@ -18,7 +18,7 @@ import com.group20.codevocab.data.local.entity.WordEntity
     ModuleEntity::class,
     FlashcardProgressEntity::class,
     QuizResultEntity::class],
-    version = 11, exportSchema = false)
+    version = 12, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun wordDao(): WordDao
     abstract fun moduleDao(): ModuleDao

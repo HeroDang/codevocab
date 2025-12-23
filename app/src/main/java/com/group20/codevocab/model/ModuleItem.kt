@@ -13,7 +13,8 @@ data class ModuleItem(
     val isPublic: Boolean,
     val isLocal: Boolean = false, // Default to false for backward compatibility or ease of use
     val ownerName: String? = null,
-    val wordCount: Int? = 0
+    val wordCount: Int? = 0,
+    val status: String? = null
 ) : Parcelable
 
 fun ModuleDto.toModuleItem(): ModuleItem {
@@ -24,7 +25,8 @@ fun ModuleDto.toModuleItem(): ModuleItem {
         isPublic = is_public,
         isLocal = false, // Data from DTO (Server) is not local
         ownerName = owner_name,
-        wordCount = count_word
+        wordCount = count_word,
+        status = status
     )
 }
 
@@ -48,6 +50,7 @@ fun ModuleItem.toDto(): ModuleDto {
         module_type = "personal", // Default for now
         created_at = "",
         owner_name = ownerName,
-        count_word = wordCount
+        count_word = wordCount,
+        status = status
     )
 }

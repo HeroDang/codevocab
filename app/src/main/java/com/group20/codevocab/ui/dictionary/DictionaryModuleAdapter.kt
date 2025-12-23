@@ -19,15 +19,16 @@ import com.group20.codevocab.ui.module.WordListActivity
 
 class DictionaryModuleAdapter(
     private val isSharedTab: Boolean,
-    // Thêm callback onRenameClick để xử lý sự kiện đổi tên
-    private val onRenameClick: (ModuleItem) -> Unit
+    // Callback cho sự kiện rename
+    private val onRenameClick: (ModuleItem) -> Unit,
+    // Callback cho sự kiện accept
+    private val onAcceptClick: (ModuleItem) -> Unit = {}
 ) : ListAdapter<ModuleItem, DictionaryModuleAdapter.ModuleViewHolder>(DiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ModuleViewHolder {
         val binding =
             ItemModuleDetailDicBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        // Truyền callback vào ViewHolder
-        return ModuleViewHolder(binding, isSharedTab, onRenameClick)
+        return ModuleViewHolder(binding, isSharedTab, onRenameClick, onAcceptClick)
     }
 
     override fun onBindViewHolder(holder: ModuleViewHolder, position: Int) {
@@ -38,37 +39,45 @@ class DictionaryModuleAdapter(
     inner class ModuleViewHolder(
         private val binding: ItemModuleDetailDicBinding,
         private val isSharedTab: Boolean,
-        private val onRenameClick: (ModuleItem) -> Unit
+        private val onRenameClick: (ModuleItem) -> Unit,
+        private val onAcceptClick: (ModuleItem) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
 
         private var currentModule: ModuleItem? = null
 
         init {
-            // Sự kiện click vào item để mở danh sách từ
+            // Sự kiện click vào item
             itemView.setOnClickListener {
                 val context = it.context
-                val intent = Intent(context, WordListActivity::class.java)
                 currentModule?.let { module ->
+                    // Nếu pending thì chặn action
+                    if (isSharedTab && module.status == "pending") {
+                        return@setOnClickListener
+                    }
+                    
+                    val intent = Intent(context, WordListActivity::class.java)
                     intent.putExtra("module_id", module.id)
                     intent.putExtra("module_name", module.name)
                     intent.putExtra("is_local", module.isLocal)
+                    context.startActivity(intent)
                 }
-                context.startActivity(intent)
             }
 
-            // Sự kiện mở menu (3 chấm)
+            // Menu 3 chấm
             binding.ivShareContainer.setOnClickListener { view ->
                 currentModule?.let { showPopupMenu(view, it) }
             }
 
-            // Sự kiện nút Accept (cho Shared Tab)
-            binding.btnAccept.setOnClickListener { view ->
-                currentModule?.let { module ->
-                    val context = view.context
-                    if (context is AppCompatActivity) {
-                        AcceptModuleDialogFragment.newInstance(module.name)
-                            .show(context.supportFragmentManager, AcceptModuleDialogFragment.TAG)
-                    }
+            // Nút Accept (dành cho trạng thái đã accept - hiện tại chưa làm gì)
+            binding.btnAccept.setOnClickListener { 
+                // Placeholder
+            }
+
+            // Nút Pending Accept (dành cho trạng thái pending)
+            binding.btnPendingAccept.setOnClickListener {
+                 currentModule?.let { module ->
+                    // Gọi callback thay vì tự xử lý context ép kiểu
+                    onAcceptClick(module)
                 }
             }
         }
@@ -76,11 +85,27 @@ class DictionaryModuleAdapter(
         fun bind(module: ModuleItem) {
             currentModule = module
             binding.tvModuleName.text = module.name
+            binding.tvWordCount.text = "${module.wordCount ?: 0} words"
 
             if (isSharedTab) {
                 binding.tvSharedBy.visibility = View.VISIBLE
+                binding.tvSharedBy.text = "By: ${module.ownerName ?: "Unknown"}"
                 binding.llSharedActions.visibility = View.VISIBLE
                 binding.ivShareContainer.visibility = View.GONE
+
+                when (module.status) {
+                    "pending" -> {
+                        binding.btnPending.visibility = View.VISIBLE
+                        binding.btnPendingAccept.visibility = View.VISIBLE
+                        binding.btnAccept.visibility = View.GONE
+                    }
+                    else -> { 
+                        binding.btnPending.visibility = View.GONE
+                        binding.btnPendingAccept.visibility = View.GONE
+                        binding.btnAccept.visibility = View.VISIBLE
+                    }
+                }
+
             } else {
                 binding.tvSharedBy.visibility = View.GONE
                 binding.llSharedActions.visibility = View.GONE
@@ -93,7 +118,6 @@ class DictionaryModuleAdapter(
             val popup = PopupMenu(context, anchor)
             popup.menuInflater.inflate(R.menu.dictionary_module_menu, popup.menu)
 
-            // Tô đỏ nút Delete
             val deleteItem = popup.menu.findItem(R.id.action_delete)
             if (deleteItem != null) {
                 val spannableString = SpannableString(deleteItem.title)
@@ -109,7 +133,6 @@ class DictionaryModuleAdapter(
             popup.setOnMenuItemClickListener { item ->
                 when (item.itemId) {
                     R.id.action_rename -> {
-                        // Gọi callback để Fragment xử lý (hiển thị Dialog)
                         onRenameClick(module)
                         true
                     }
@@ -121,7 +144,6 @@ class DictionaryModuleAdapter(
                         true
                     }
                     R.id.action_delete -> {
-                        // TODO: Handle Delete here or via callback
                         true
                     }
                     else -> false

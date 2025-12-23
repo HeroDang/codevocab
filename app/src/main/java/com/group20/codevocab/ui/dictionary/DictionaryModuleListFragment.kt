@@ -1,5 +1,6 @@
 package com.group20.codevocab.ui.dictionary
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.group20.codevocab.databinding.FragmentDictionaryModuleListBinding
 import com.group20.codevocab.model.ModuleItem
+import com.group20.codevocab.ui.module.WordListActivity
 import com.group20.codevocab.viewmodel.ModuleViewModel
 import com.group20.codevocab.viewmodel.ModuleViewModelFactory
 import com.group20.codevocab.viewmodel.ModulesState
@@ -63,21 +65,56 @@ class DictionaryModuleListFragment : Fragment() {
 
         // 5. Trigger Loads
         if (isSharedTab) {
-            // Placeholder for Shared Modules
-            adapter.submitList(emptyList())
+            viewModel.loadSharedWithMeModules()
         } else {
             // Load Local first
             viewModel.loadModules()
             // Load Server
-            viewModel.loadUserModulesFromServer("9150dfe1-0758-4716-9d0e-99fc0fbe3a63")
+            viewModel.loadMyModulesFromServer()
+        }
+
+        // 6. Lắng nghe kết quả từ Accept Dialog
+        setFragmentResultListener(AcceptModuleDialogFragment.REQUEST_KEY) { _, bundle ->
+            val shouldViewModule = bundle.getBoolean(AcceptModuleDialogFragment.BUNDLE_KEY_VIEW_MODULE, false)
+            val moduleId = bundle.getString(AcceptModuleDialogFragment.BUNDLE_KEY_MODULE_ID)
+            val moduleName = bundle.getString(AcceptModuleDialogFragment.BUNDLE_KEY_MODULE_NAME)
+
+            if (shouldViewModule && !moduleId.isNullOrEmpty()) {
+                val intent = Intent(context, WordListActivity::class.java)
+                intent.putExtra("module_id", moduleId)
+                intent.putExtra("module_name", moduleName)
+                intent.putExtra("is_local", false) // Shared module is remote
+                startActivity(intent)
+            }
         }
     }
 
     private fun setupRecyclerView() {
-        // Cập nhật Adapter với callback xử lý Rename
-        adapter = DictionaryModuleAdapter(isSharedTab) { moduleItem ->
-            showRenameDialog(moduleItem)
-        }
+        // Cập nhật Adapter với callback xử lý Rename và Accept
+        adapter = DictionaryModuleAdapter(
+            isSharedTab = isSharedTab,
+            onRenameClick = { moduleItem ->
+                showRenameDialog(moduleItem)
+            },
+            onAcceptClick = { moduleItem ->
+                // Gọi API để accept module
+                viewModel.acceptShareModule(
+                    module = moduleItem,
+                    onSuccess = {
+                        // Hiển thị dialog thông báo thành công
+                        // Truyền thêm moduleId để dialog có thể trả về khi người dùng nhấn "View Module"
+                        val dialog = AcceptModuleDialogFragment.newInstance(moduleItem.name, moduleItem.id)
+                        dialog.show(parentFragmentManager, AcceptModuleDialogFragment.TAG)
+                        
+                        // Thông báo toast
+                        Toast.makeText(context, "Accepted share module successfully", Toast.LENGTH_SHORT).show()
+                    },
+                    onError = { message ->
+                        Toast.makeText(context, "Error accepting: $message", Toast.LENGTH_SHORT).show()
+                    }
+                )
+            }
+        )
 
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
@@ -131,17 +168,21 @@ class DictionaryModuleListFragment : Fragment() {
         // 1. Quan sát Local Database
         viewModel.modules.observe(viewLifecycleOwner) { entities ->
             if (!isSharedTab) {
-                val safeEntities = entities ?: emptyList()
-                localModules = safeEntities.map { entity ->
-                    ModuleItem(
-                        id = entity.id,
-                        name = entity.name,
-                        description = entity.description,
-                        isPublic = entity.isPublic,
-                        isLocal = true
-                    )
+                lifecycleScope.launch {
+                    val safeEntities = entities ?: emptyList()
+                    localModules = safeEntities.map { entity ->
+                        val wordCount = viewModel.getWordCount(entity.id)
+                        ModuleItem(
+                            id = entity.id,
+                            name = entity.name,
+                            description = entity.description,
+                            isPublic = entity.isPublic,
+                            isLocal = true,
+                            wordCount = wordCount
+                        )
+                    }
+                    mergeAndSubmitList()
                 }
-                mergeAndSubmitList()
             }
         }
 
@@ -151,7 +192,9 @@ class DictionaryModuleListFragment : Fragment() {
                 when (state) {
                     is ModulesState.Loading -> { }
                     is ModulesState.Success -> {
-                        if (!isSharedTab) {
+                        if (isSharedTab) {
+                            adapter.submitList(state.items)
+                        } else {
                             serverModules = state.items
                             mergeAndSubmitList()
                         }

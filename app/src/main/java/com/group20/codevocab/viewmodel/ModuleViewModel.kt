@@ -59,6 +59,10 @@ class ModuleViewModel(
         }
     }
 
+    suspend fun getWordCount(moduleId: String): Int {
+        return repository.getWordCountForModule(moduleId)
+    }
+
     fun loadInProgressModules() {
         viewModelScope.launch {
             try {
@@ -99,14 +103,26 @@ class ModuleViewModel(
         }
     }
     
-    fun loadUserModulesFromServer(userId: String) {
+    fun loadMyModulesFromServer() {
         viewModelScope.launch {
             _state.value = ModulesState.Loading
             try {
-                val items = repository.getUserModulesRemote(userId)
+                val items = repository.getMyModules()
                 _state.value = ModulesState.Success(items)
             } catch (e: Exception) {
                 _state.value = ModulesState.Error(e.message ?: "Failed to load user modules")
+            }
+        }
+    }
+
+    fun loadSharedWithMeModules() {
+        viewModelScope.launch {
+            _state.value = ModulesState.Loading
+            try {
+                val items = repository.getSharedWithMeModules()
+                _state.value = ModulesState.Success(items)
+            } catch (e: Exception) {
+                _state.value = ModulesState.Error(e.message ?: "Failed to load shared modules")
             }
         }
     }
@@ -144,7 +160,7 @@ class ModuleViewModel(
                     fetchLocalModules() // Refresh local sequentially
                 } else {
                     // Refresh remote list
-                    loadUserModulesFromServer("9150dfe1-0758-4716-9d0e-99fc0fbe3a63")
+                    loadMyModulesFromServer()
                 }
             } catch (e: Exception) {
                  _state.value = ModulesState.Error("Failed to update: ${e.message}")
@@ -154,5 +170,21 @@ class ModuleViewModel(
 
     suspend fun copyModuleToLocal(moduleItem: ModuleItem): String {
         return repository.copyModuleToLocal(moduleItem)
+    }
+
+    fun acceptShareModule(module: ModuleItem, onSuccess: () -> Unit, onError: (String) -> Unit) {
+        viewModelScope.launch {
+            try {
+                val success = repository.acceptShareModule(module.id)
+                if (success) {
+                    onSuccess()
+                    loadSharedWithMeModules() // Reload list
+                } else {
+                    onError("Failed to accept module")
+                }
+            } catch (e: Exception) {
+                onError(e.message ?: "Unknown error")
+            }
+        }
     }
 }
