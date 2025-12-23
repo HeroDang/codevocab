@@ -93,6 +93,8 @@ class ModuleRepository(
 
     suspend fun getModuleProgress(moduleId: String): Int {
         return getModuleProgressInfo(moduleId).percentage
+    }
+
     suspend fun insertWords(words: List<WordEntity>) {
         wordDao.insertAll(words)
     }
