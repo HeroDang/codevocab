@@ -61,4 +61,16 @@ class WordViewModel(private val repository: VocabRepository, private val repoWor
             }
         }
     }
+    
+    fun updateWordRemote(wordItem: WordItem, onSuccess: () -> Unit, onError: (String) -> Unit) {
+        viewModelScope.launch {
+            runCatching {
+                repoWord.updateWordRemote(wordItem.id, wordItem)
+            }.onSuccess {
+                onSuccess()
+            }.onFailure { e ->
+                onError(e.message ?: "Failed to update word")
+            }
+        }
+    }
 }

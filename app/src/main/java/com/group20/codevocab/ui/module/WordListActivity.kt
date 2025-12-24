@@ -74,22 +74,22 @@ class WordListActivity : AppCompatActivity() {
         supportFragmentManager.setFragmentResultListener(EditWordFragment.REQUEST_KEY, this) { _, bundle ->
             val updatedWord = bundle.getParcelable<WordItem>(EditWordFragment.BUNDLE_KEY_UPDATED_WORD)
             if (updatedWord != null) {
-                // Save updated word to local database or sync with server as needed
-                // Currently just saving to local for simplicity as requested context implies local edits primarily or need implementation
-                // If it's remote, we might need a different approach or just update local cache if architecture supports it
-                viewModel.saveWords(listOf(updatedWord.toEntity(moduleId!!)))
-                
-                // Refresh list
                 if (isLocal) {
+                    viewModel.saveWords(listOf(updatedWord.toEntity(moduleId!!)))
                     viewModel.loadWords(moduleId!!, moduleName)
+                    Toast.makeText(this, "Local word updated", Toast.LENGTH_SHORT).show()
                 } else {
-                     // For remote, typically we'd call an API update. 
-                     // Assuming for now we reload or update UI directly. 
-                     // If offline editing of remote modules isn't fully supported, this might need adjustment.
-                     // But let's assume we want to reflect changes.
-                     viewModel.loadWordsFromServer(moduleId!!, moduleName)
+                    viewModel.updateWordRemote(
+                        wordItem = updatedWord,
+                        onSuccess = {
+                            viewModel.loadWordsFromServer(moduleId!!, moduleName)
+                            Toast.makeText(this, "Remote word updated", Toast.LENGTH_SHORT).show()
+                        },
+                        onError = { errorMsg ->
+                            Toast.makeText(this, "Update failed: $errorMsg", Toast.LENGTH_SHORT).show()
+                        }
+                    )
                 }
-                Toast.makeText(this, "Word updated", Toast.LENGTH_SHORT).show()
             }
         }
     }

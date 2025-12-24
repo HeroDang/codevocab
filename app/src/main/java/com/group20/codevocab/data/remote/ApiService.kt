@@ -10,6 +10,7 @@ import com.group20.codevocab.data.remote.dto.RegisterRequest
 import com.group20.codevocab.data.remote.dto.RegisterResponse
 import com.group20.codevocab.data.remote.dto.StudySessionRequest
 import com.group20.codevocab.data.remote.dto.StudySessionResponse
+import com.group20.codevocab.data.remote.dto.UpdateWordRequest
 import com.group20.codevocab.data.remote.dto.UserDto
 import com.group20.codevocab.data.remote.dto.WordDto
 import okhttp3.MultipartBody
@@ -99,6 +100,12 @@ interface ApiService {
     suspend fun acceptShareModule(
         @Path("moduleId") moduleId: String
     ): Response<ModuleShareOut>
+
+    @PUT("words/{wordId}")
+    suspend fun updateWord(
+        @Path("wordId") wordId: String,
+        @Body request: UpdateWordRequest
+    ): WordDto
 }
 
 data class WordsDto(
