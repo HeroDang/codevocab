@@ -69,7 +69,7 @@
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:src="@drawable/ic_layers"
+                    android:src="@drawable/ic_layers1"
                     app:tint="@android:color/white" />
 
                 <TextView
@@ -171,15 +171,7 @@
             android:textSize="16sp"
             android:textStyle="bold" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawablePadding="4dp"
-            android:text="Filter"
-            android:textColor="#3F51B5"
-            android:textSize="14sp"
-            app:drawableStartCompat="@drawable/ic_filter"
-            app:drawableTint="#3F51B5" />
+
     </LinearLayout>
 
     <!-- Recycler View -->
