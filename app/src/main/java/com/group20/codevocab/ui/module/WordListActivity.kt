@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Lifecycle
@@ -114,7 +115,36 @@ class WordListActivity : AppCompatActivity() {
                 dialog.show(supportFragmentManager, EditWordFragment.TAG)
             },
             onDeleteClick = { word ->
-                // TODO: Implement delete functionality
+                AlertDialog.Builder(this)
+                    .setTitle("Delete Word")
+                    .setMessage("Are you sure you want to delete '${word.textEn}'?")
+                    .setPositiveButton("Delete") { _, _ ->
+                        if (isLocal) {
+                            viewModel.deleteWordLocal(
+                                wordId = word.id,
+                                onSuccess = {
+                                    viewModel.loadWords(moduleId!!, moduleName)
+                                    Toast.makeText(this, "Word deleted locally", Toast.LENGTH_SHORT).show()
+                                },
+                                onError = { msg ->
+                                    Toast.makeText(this, "Error: $msg", Toast.LENGTH_SHORT).show()
+                                }
+                            )
+                        } else {
+                            viewModel.deleteWordRemote(
+                                wordId = word.id,
+                                onSuccess = {
+                                    viewModel.loadWordsFromServer(moduleId!!, moduleName)
+                                    Toast.makeText(this, "Word deleted on server", Toast.LENGTH_SHORT).show()
+                                },
+                                onError = { msg ->
+                                    Toast.makeText(this, "Error: $msg", Toast.LENGTH_SHORT).show()
+                                }
+                            )
+                        }
+                    }
+                    .setNegativeButton("Cancel", null)
+                    .show()
             }
         )
         binding.rvWords.layoutManager = LinearLayoutManager(this)

@@ -40,4 +40,8 @@ class WordRepository(
         val response = api.updateWord(wordId, request)
         return response.toWordItem()
     }
+
+    suspend fun deleteWordRemote(wordId: String) {
+        api.deleteWord(wordId)
+    }
 }
