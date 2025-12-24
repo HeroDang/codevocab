@@ -19,4 +19,12 @@ class WordRepository(
     suspend fun insertWords(words: List<WordEntity>) {
         wordDao.insertAll(words)
     }
+
+    suspend fun deleteWordLocal(wordId: String) {
+        val word = wordDao.getWordById(wordId)
+        if (word != null) {
+            val updatedWord = word.copy(isDeleted = true)
+            wordDao.update(updatedWord)
+        }
+    }
 }

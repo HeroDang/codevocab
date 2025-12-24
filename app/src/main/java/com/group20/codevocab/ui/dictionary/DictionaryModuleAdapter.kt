@@ -59,6 +59,8 @@ class DictionaryModuleAdapter(
                     intent.putExtra("module_id", module.id)
                     intent.putExtra("module_name", module.name)
                     intent.putExtra("is_local", module.isLocal)
+                    // Thêm flag show_menu = true khi đi từ Dictionary
+                    intent.putExtra("show_menu", true)
                     context.startActivity(intent)
                 }
             }
@@ -114,11 +116,11 @@ class DictionaryModuleAdapter(
                 
                 binding.tvPrivacyStatus.visibility = View.VISIBLE
                 if (module.isLocal) {
-                    binding.tvPrivacyStatus.text = "Private"
+                    binding.tvPrivacyStatus.text = "Offline"
                     binding.tvPrivacyStatus.setBackgroundResource(R.drawable.bg_tag_private)
                     binding.tvPrivacyStatus.setTextColor(Color.parseColor("#616161")) // gray_700
                 } else {
-                    binding.tvPrivacyStatus.text = "Public"
+                    binding.tvPrivacyStatus.text = "Online"
                     binding.tvPrivacyStatus.setBackgroundResource(R.drawable.bg_tag_public)
                     binding.tvPrivacyStatus.setTextColor(Color.parseColor("#1565C0")) // blue_800
                 }

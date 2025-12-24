@@ -95,6 +95,7 @@ class DictionaryModuleListFragment : Fragment() {
                 intent.putExtra("module_id", moduleId)
                 intent.putExtra("module_name", moduleName)
                 intent.putExtra("is_local", false) // Shared module is remote
+                intent.putExtra("show_menu", true) // Show menu when opening from Dictionary
                 startActivity(intent)
             }
         }

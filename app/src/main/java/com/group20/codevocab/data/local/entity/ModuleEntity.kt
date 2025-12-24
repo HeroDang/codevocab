@@ -24,7 +24,10 @@ data class ModuleEntity(
     val isPublic: Boolean,
     
     @ColumnInfo(name = "created_at")
-    val createdAt: String
+    val createdAt: String,
+
+    @ColumnInfo(name = "is_deleted")
+    val isDeleted: Boolean = false
 )
 
 fun ModuleDto.toEntity(): ModuleEntity {
@@ -34,7 +37,8 @@ fun ModuleDto.toEntity(): ModuleEntity {
         description = description,
         moduleType = module_type,
         isPublic = is_public,
-        createdAt = created_at
+        createdAt = created_at,
+        isDeleted = false
     )
 }
 

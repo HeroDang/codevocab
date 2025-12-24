@@ -71,7 +71,8 @@ class ModuleRepository(
             description = null,
             moduleType = "personal",
             isPublic = false,
-            createdAt = System.currentTimeMillis().toString()
+            createdAt = System.currentTimeMillis().toString(),
+            isDeleted = false
         )
         moduleDao.insertModules(listOf(module))
     }
@@ -81,6 +82,14 @@ class ModuleRepository(
             moduleDao.updateModule(item.toEntity())
         } else {
             api.updateModule(item.id, item.toDto())
+        }
+    }
+
+    suspend fun deleteModuleLocal(moduleId: String) {
+        val module = moduleDao.getModuleById(moduleId)
+        if (module != null) {
+            val updatedModule = module.copy(isDeleted = true)
+            moduleDao.updateModule(updatedModule)
         }
     }
 
@@ -97,7 +106,7 @@ class ModuleRepository(
         val inProgressIds = flashcardProgressDao.getInProgressModuleIds()
         return inProgressIds.mapNotNull { id ->
             moduleDao.getModuleById(id)
-        }
+        }.filter { !it.isDeleted }
     }
 
     suspend fun getModuleProgressInfo(moduleId: String): ModuleProgressInfo {
@@ -130,7 +139,8 @@ class ModuleRepository(
             description = moduleItem.description,
             moduleType = "personal", // Set as personal
             isPublic = false, // Set as private
-            createdAt = System.currentTimeMillis().toString()
+            createdAt = System.currentTimeMillis().toString(),
+            isDeleted = false
         )
         moduleDao.insertModules(listOf(newModule))
         return newId
