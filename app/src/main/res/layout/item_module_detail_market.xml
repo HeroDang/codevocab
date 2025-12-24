@@ -4,10 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="16dp"
-    android:layout_marginVertical="8dp"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="4dp">
+    android:layout_margin="12dp"
+    android:clickable="true"
+    android:focusable="true"
+    app:cardBackgroundColor="@android:color/transparent"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="0dp"
+    app:strokeColor="#6b7280"
+    app:strokeWidth="1dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -21,7 +25,9 @@
             android:ellipsize="end"
             android:maxLines="2"
             android:text="Introduction to Programming"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+            android:textColor="#000"
+            android:textSize="18sp"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -34,7 +40,8 @@
             android:ellipsize="end"
             android:maxLines="3"
             android:text="Learn the basic concepts of programming, including variables, data types, and control structures."
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+            android:textColor="#444"
+            android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvModuleName" />
@@ -47,7 +54,7 @@
             android:src="@drawable/ic_account"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvModuleDescription"
-            app:tint="@android:color/darker_gray" />
+            app:tint="#555" />
 
         <TextView
             android:id="@+id/tvAuthor"
@@ -55,7 +62,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:text="by Sarah Johnson"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+            android:textColor="#555"
+            android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="@+id/ivAuthorIcon"
             app:layout_constraintStart_toEndOf="@+id/ivAuthorIcon"
             app:layout_constraintTop_toTopOf="@+id/ivAuthorIcon" />
@@ -65,11 +73,11 @@
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_marginStart="16dp"
-            android:src="@drawable/ic_layers"
+            android:src="@drawable/ic_layers1"
             app:layout_constraintBottom_toBottomOf="@+id/tvAuthor"
             app:layout_constraintStart_toEndOf="@+id/tvAuthor"
             app:layout_constraintTop_toTopOf="@+id/tvAuthor"
-            app:tint="@android:color/darker_gray" />
+            app:tint="#555" />
 
         <TextView
             android:id="@+id/tvWordCount"
@@ -77,7 +85,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:text="150 words"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+            android:textColor="#555"
+            android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="@+id/ivLayersIcon"
             app:layout_constraintStart_toEndOf="@+id/ivLayersIcon"
             app:layout_constraintTop_toTopOf="@+id/ivLayersIcon" />
