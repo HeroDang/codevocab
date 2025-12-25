@@ -19,7 +19,7 @@ fun isEmulator(): Boolean {
 object ApiConfig {
     // Main Backend URLs
     private const val EMULATOR_URL = "http://10.0.2.2:8000/"
-    private const val REAL_DEVICE_URL = "http://192.168.1.87:8000/"
+    private const val REAL_DEVICE_URL = "http://192.168.1.175:8000/"
 
     // OCR Service URLs
     private const val EMULATOR_OCR_URL = "http://10.0.2.2:8001/"

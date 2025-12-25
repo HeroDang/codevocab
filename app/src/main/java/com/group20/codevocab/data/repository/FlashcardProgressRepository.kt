@@ -1,5 +1,6 @@
 package com.group20.codevocab.data.repository
 
+import com.group20.codevocab.data.local.dao.DayProgress
 import com.group20.codevocab.data.local.dao.FlashcardProgressDao
 import com.group20.codevocab.data.local.entity.FlashcardProgressEntity
 
@@ -34,4 +35,8 @@ class FlashcardProgressRepository(private val dao: FlashcardProgressDao) {
 
     suspend fun countByModule(moduleId: String): Int = dao.countByModule(moduleId)
     suspend fun countKnownByModule(moduleId: String): Int = dao.countKnownByModule(moduleId)
+
+    // ✅ Thêm các hàm hỗ trợ Stats
+    suspend fun getTotalKnownWords(): Int = dao.getTotalKnownWords()
+    suspend fun getWeeklyProgress(): List<DayProgress> = dao.getWeeklyProgress()
 }

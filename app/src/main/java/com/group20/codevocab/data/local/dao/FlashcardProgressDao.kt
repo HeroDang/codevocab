@@ -43,7 +43,27 @@ interface FlashcardProgressDao {
     @Query("SELECT COUNT(*) FROM flashcard_progress WHERE module_id = :moduleId AND is_known = 1")
     suspend fun countKnownByModule(moduleId: String): Int
 
-    // ✅ Lấy Module ID theo thứ tự học gần nhất
     @Query("SELECT module_id FROM flashcard_progress GROUP BY module_id ORDER BY MAX(last_reviewed) DESC")
     suspend fun getInProgressModuleIds(): List<String>
+
+    // ✅ Lấy tổng số từ đã thuộc
+    @Query("SELECT COUNT(*) FROM flashcard_progress WHERE is_known = 1")
+    suspend fun getTotalKnownWords(): Int
+
+    // ✅ Lấy dữ liệu học theo ngày (7 ngày gần nhất)
+    @Query("""
+        SELECT COUNT(*) as count, 
+        strftime('%Y-%m-%d', last_reviewed / 1000, 'unixepoch', 'localtime') as date 
+        FROM flashcard_progress 
+        WHERE is_known = 1 AND last_reviewed IS NOT NULL 
+        GROUP BY date 
+        ORDER BY date ASC 
+        LIMIT 7
+    """)
+    suspend fun getWeeklyProgress(): List<DayProgress>
 }
+
+data class DayProgress(
+    val count: Int,
+    val date: String
+)

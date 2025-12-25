@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    id("kotlin-parcelize") // Add this line
+    id("kotlin-parcelize")
     alias(libs.plugins.kotlin.kapt)
 }
 
@@ -89,4 +89,7 @@ dependencies {
     // Image Loading - Glide
     implementation("com.github.bumptech.glide:glide:4.16.0")
     kapt("com.github.bumptech.glide:compiler:4.16.0")
+
+    // Charting
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 }
