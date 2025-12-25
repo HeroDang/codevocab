@@ -1,7 +1,10 @@
 package com.group20.codevocab.model
 
+import android.os.Parcelable
 import com.group20.codevocab.data.local.entity.WordEntity
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class WordItem(
     val id: String,
     val textEn: String,
@@ -10,7 +13,7 @@ data class WordItem(
     val partOfSpeech: String?,
     val exampleSentence: String?,
     val audioUrl: String?
-)
+) : Parcelable
 
 fun WordEntity.toWordItem(): WordItem {
     return WordItem(

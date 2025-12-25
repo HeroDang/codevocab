@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.group20.codevocab.R
@@ -11,7 +12,10 @@ import com.group20.codevocab.model.WordItem
 
 class WordListAdapter(
     private var words: List<WordItem>,
-    private val onSpeakClick: (WordItem) -> Unit
+    private val showMenu: Boolean,
+    private val onSpeakClick: (WordItem) -> Unit,
+    private val onEditClick: (WordItem) -> Unit,
+    private val onDeleteClick: (WordItem) -> Unit
 ) :
     RecyclerView.Adapter<WordListAdapter.WordViewHolder>() {
 
@@ -20,6 +24,7 @@ class WordListAdapter(
         val tvMeaning: TextView = itemView.findViewById(R.id.tvMeaning)
         val tvPhonetic: TextView = itemView.findViewById(R.id.tvPhonetic)
         val btnSpeak: ImageView = itemView.findViewById(R.id.btnSpeak)
+        val ivMenuPoint: ImageView = itemView.findViewById(R.id.ivMenuPoint)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WordViewHolder {
@@ -35,6 +40,31 @@ class WordListAdapter(
 
         holder.btnSpeak.setOnClickListener {
             onSpeakClick(word)
+        }
+
+        if (showMenu) {
+            holder.ivMenuPoint.visibility = View.VISIBLE
+            holder.ivMenuPoint.setOnClickListener { view ->
+                val popup = PopupMenu(view.context, view)
+                popup.inflate(R.menu.menu_word_item)
+                popup.setOnMenuItemClickListener { menuItem ->
+                    when (menuItem.itemId) {
+                        R.id.action_edit -> {
+                            onEditClick(word)
+                            true
+                        }
+                        R.id.action_delete -> {
+                            onDeleteClick(word)
+                            true
+                        }
+                        else -> false
+                    }
+                }
+                popup.show()
+            }
+        } else {
+            holder.ivMenuPoint.visibility = View.GONE
+            holder.ivMenuPoint.setOnClickListener(null)
         }
     }
 

@@ -18,7 +18,9 @@ import com.group20.codevocab.data.repository.ModuleRepository
 import com.group20.codevocab.databinding.FragmentHomeBinding
 import com.group20.codevocab.ui.profile.EditProfileActivity
 import com.group20.codevocab.ui.theme.SettingsActivity
+import com.group20.codevocab.utils.PreferenceManager
 import com.group20.codevocab.viewmodel.BaseViewModelFactory
+import com.group20.codevocab.viewmodel.HomeViewModel
 import com.group20.codevocab.viewmodel.ModuleViewModel
 import com.group20.codevocab.viewmodel.UserViewModel
 
@@ -28,7 +30,9 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var userViewModel: UserViewModel
     private lateinit var moduleViewModel: ModuleViewModel
+    private lateinit var homeViewModel: HomeViewModel
     private lateinit var recommendedAdapter: RecommendedAdapter
+    private lateinit var prefManager: PreferenceManager
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,8 +46,10 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        prefManager = PreferenceManager(requireContext())
         setupViewModels()
         setupRecyclerView()
+        setupRefreshLayout()
         observeData()
         setupQuickAccess()
 
@@ -52,7 +58,25 @@ class HomeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        refreshData()
+    }
+
+    private fun setupRefreshLayout() {
+        // ✅ Thiết lập màu sắc và sự kiện kéo để làm mới
+        binding.swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary)
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            refreshData()
+        }
+    }
+
+    private fun refreshData() {
+        userViewModel.fetchCurrentUser()
         moduleViewModel.loadInProgressModules()
+        homeViewModel.loadStats()
+        updateStudyTimeUI()
+        
+        // Tắt vòng xoay làm mới sau 1 giây (hoặc sau khi dữ liệu load xong)
+        binding.swipeRefreshLayout.isRefreshing = false
     }
 
     private fun setupViewModels() {
@@ -68,6 +92,10 @@ class HomeFragment : Fragment() {
         moduleViewModel = ViewModelProvider(this, object : BaseViewModelFactory<ModuleViewModel>() {
             override fun createViewModel() = ModuleViewModel(moduleRepository)
         })[ModuleViewModel::class.java]
+
+        homeViewModel = ViewModelProvider(this, object : BaseViewModelFactory<HomeViewModel>() {
+            override fun createViewModel() = HomeViewModel(db.flashcardDao())
+        })[HomeViewModel::class.java]
     }
 
     private fun setupRecyclerView() {
@@ -105,6 +133,19 @@ class HomeFragment : Fragment() {
                 recommendedAdapter.updateData(inProgress)
             }
         }
+
+        homeViewModel.streak.observe(viewLifecycleOwner) { streak ->
+            binding.tvStatDays.text = "$streak days"
+        }
+
+        homeViewModel.totalLearned.observe(viewLifecycleOwner) { total ->
+            binding.tvStatWords.text = "$total words"
+        }
+    }
+
+    private fun updateStudyTimeUI() {
+        val minutes = prefManager.getTodayStudyTime()
+        binding.tvStatTime.text = "$minutes min"
     }
 
     private fun setupQuickAccess() {
@@ -119,7 +160,7 @@ class HomeFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         _binding = null
+        super.onDestroyView()
     }
 }

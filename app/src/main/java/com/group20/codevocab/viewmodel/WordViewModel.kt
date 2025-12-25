@@ -61,4 +61,40 @@ class WordViewModel(private val repository: VocabRepository, private val repoWor
             }
         }
     }
+    
+    fun updateWordRemote(wordItem: WordItem, onSuccess: () -> Unit, onError: (String) -> Unit) {
+        viewModelScope.launch {
+            runCatching {
+                repoWord.updateWordRemote(wordItem.id, wordItem)
+            }.onSuccess {
+                onSuccess()
+            }.onFailure { e ->
+                onError(e.message ?: "Failed to update word")
+            }
+        }
+    }
+
+    fun deleteWordLocal(wordId: String, onSuccess: () -> Unit, onError: (String) -> Unit) {
+        viewModelScope.launch {
+            runCatching {
+                repoWord.deleteWordLocal(wordId)
+            }.onSuccess {
+                onSuccess()
+            }.onFailure { e ->
+                onError(e.message ?: "Failed to delete local word")
+            }
+        }
+    }
+
+    fun deleteWordRemote(wordId: String, onSuccess: () -> Unit, onError: (String) -> Unit) {
+        viewModelScope.launch {
+            runCatching {
+                repoWord.deleteWordRemote(wordId)
+            }.onSuccess {
+                onSuccess()
+            }.onFailure { e ->
+                onError(e.message ?: "Failed to delete remote word")
+            }
+        }
+    }
 }

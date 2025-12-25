@@ -8,6 +8,7 @@ class TokenManager(context: Context) {
 
     companion object {
         private const val TOKEN_KEY = "ACCESS_TOKEN"
+        private const val USER_ID_KEY = "USER_ID"
     }
 
     fun saveToken(token: String) {
@@ -19,6 +20,14 @@ class TokenManager(context: Context) {
     }
 
     fun clearToken() {
-        prefs.edit().remove(TOKEN_KEY).apply()
+        prefs.edit().remove(TOKEN_KEY).remove(USER_ID_KEY).apply()
+    }
+
+    fun saveUserId(userId: String) {
+        prefs.edit().putString(USER_ID_KEY, userId).apply()
+    }
+
+    fun getUserId(): String? {
+        return prefs.getString(USER_ID_KEY, null)
     }
 }

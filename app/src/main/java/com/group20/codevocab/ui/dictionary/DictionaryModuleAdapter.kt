@@ -21,6 +21,8 @@ class DictionaryModuleAdapter(
     private val isSharedTab: Boolean,
     // Callback cho sự kiện rename
     private val onRenameClick: (ModuleItem) -> Unit,
+    // Callback cho sự kiện delete
+    private val onDeleteClick: (ModuleItem) -> Unit = {},
     // Callback cho sự kiện accept
     private val onAcceptClick: (ModuleItem) -> Unit = {}
 ) : ListAdapter<ModuleItem, DictionaryModuleAdapter.ModuleViewHolder>(DiffCallback()) {
@@ -28,7 +30,7 @@ class DictionaryModuleAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ModuleViewHolder {
         val binding =
             ItemModuleDetailDicBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ModuleViewHolder(binding, isSharedTab, onRenameClick, onAcceptClick)
+        return ModuleViewHolder(binding, isSharedTab, onRenameClick, onDeleteClick, onAcceptClick)
     }
 
     override fun onBindViewHolder(holder: ModuleViewHolder, position: Int) {
@@ -40,6 +42,7 @@ class DictionaryModuleAdapter(
         private val binding: ItemModuleDetailDicBinding,
         private val isSharedTab: Boolean,
         private val onRenameClick: (ModuleItem) -> Unit,
+        private val onDeleteClick: (ModuleItem) -> Unit,
         private val onAcceptClick: (ModuleItem) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
 
@@ -59,6 +62,8 @@ class DictionaryModuleAdapter(
                     intent.putExtra("module_id", module.id)
                     intent.putExtra("module_name", module.name)
                     intent.putExtra("is_local", module.isLocal)
+                    // Thêm flag show_menu = true khi đi từ Dictionary
+                    intent.putExtra("show_menu", true)
                     context.startActivity(intent)
                 }
             }
@@ -114,11 +119,11 @@ class DictionaryModuleAdapter(
                 
                 binding.tvPrivacyStatus.visibility = View.VISIBLE
                 if (module.isLocal) {
-                    binding.tvPrivacyStatus.text = "Private"
+                    binding.tvPrivacyStatus.text = "Offline"
                     binding.tvPrivacyStatus.setBackgroundResource(R.drawable.bg_tag_private)
                     binding.tvPrivacyStatus.setTextColor(Color.parseColor("#616161")) // gray_700
                 } else {
-                    binding.tvPrivacyStatus.text = "Public"
+                    binding.tvPrivacyStatus.text = "Online"
                     binding.tvPrivacyStatus.setBackgroundResource(R.drawable.bg_tag_public)
                     binding.tvPrivacyStatus.setTextColor(Color.parseColor("#1565C0")) // blue_800
                 }
@@ -150,12 +155,13 @@ class DictionaryModuleAdapter(
                     }
                     R.id.action_share -> {
                         if (context is AppCompatActivity) {
-                            val dialog = ShareModuleDialogFragment.newInstance(module.name)
+                            val dialog = ShareModuleDialogFragment.newInstance(module.name, module.id, module.isLocal)
                             dialog.show(context.supportFragmentManager, "ShareModuleDialog")
                         }
                         true
                     }
                     R.id.action_delete -> {
+                        onDeleteClick(module)
                         true
                     }
                     else -> false

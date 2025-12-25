@@ -33,7 +33,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:padding="8dp"
-                    android:src="@drawable/ic_graduation_cap"
+                    android:src="@drawable/ic_graduation_cap1"
                     app:tint="@android:color/white" />
             </com.google.android.material.card.MaterialCardView>
 

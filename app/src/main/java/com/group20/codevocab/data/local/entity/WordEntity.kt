@@ -32,5 +32,8 @@ data class WordEntity(
     val audioUrl: String?,
 
     @ColumnInfo(name = "created_at")
-    val createdAt: String?
+    val createdAt: String?,
+
+    @ColumnInfo(name = "is_deleted")
+    val isDeleted: Boolean = false
 )

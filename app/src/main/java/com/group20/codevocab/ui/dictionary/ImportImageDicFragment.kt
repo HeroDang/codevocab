@@ -40,6 +40,7 @@ class ImportImageDicFragment : Fragment() {
                 currentImageUri = imageUri
                 binding.ivPreview.setImageURI(imageUri)
                 binding.ivPreview.visibility = View.VISIBLE
+                binding.ivClearImage.visibility = View.VISIBLE
                 binding.llUploadContainer.visibility = View.GONE
             }
         }
@@ -71,8 +72,9 @@ class ImportImageDicFragment : Fragment() {
             // Hiển thị ảnh
             binding.ivPreview.setImageURI(imageUri)
 
-            // Ẩn khu vực upload, hiện ảnh preview
+            // Ẩn khu vực upload, hiện ảnh preview và nút clear
             binding.ivPreview.visibility = View.VISIBLE
+            binding.ivClearImage.visibility = View.VISIBLE
             binding.llUploadContainer.visibility = View.GONE
         }
     }
@@ -102,6 +104,10 @@ class ImportImageDicFragment : Fragment() {
             } else {
                 Toast.makeText(requireContext(), "Please select an image first", Toast.LENGTH_SHORT).show()
             }
+        }
+        
+        binding.ivClearImage.setOnClickListener {
+            resetImageSelection()
         }
     }
 
@@ -154,6 +160,14 @@ class ImportImageDicFragment : Fragment() {
             e.printStackTrace()
             null
         }
+    }
+
+    private fun resetImageSelection() {
+        currentImageUri = null
+        binding.ivPreview.setImageURI(null)
+        binding.ivPreview.visibility = View.GONE
+        binding.ivClearImage.visibility = View.GONE
+        binding.llUploadContainer.visibility = View.VISIBLE
     }
 
     override fun onDestroyView() {
