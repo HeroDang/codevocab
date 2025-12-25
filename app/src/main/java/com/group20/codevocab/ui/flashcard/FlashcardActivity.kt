@@ -1,6 +1,7 @@
 package com.group20.codevocab.ui.flashcard
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -14,8 +15,11 @@ import com.group20.codevocab.data.local.entity.ModuleEntity
 import com.group20.codevocab.data.remote.ApiClient
 import com.group20.codevocab.data.repository.ModuleRepository
 import com.group20.codevocab.databinding.ActivityFlashcardBinding
+import com.group20.codevocab.model.ReviewableWord
 import com.group20.codevocab.model.WordItem
 import com.group20.codevocab.model.toEntity
+import com.group20.codevocab.model.toReviewableWord
+import com.group20.codevocab.model.toWordItem
 import com.group20.codevocab.viewmodel.FlashcardViewModel
 import com.group20.codevocab.viewmodel.FlashcardViewModelFactory
 import com.group20.codevocab.viewmodel.WordListState
@@ -31,6 +35,8 @@ class FlashcardActivity : AppCompatActivity() {
 
     private var currentIndex = 0
     private var vocabList = emptyList<WordItem>()
+    private var hardWords = mutableListOf<ReviewableWord>()
+    private var reviewWords = mutableListOf<ReviewableWord>()
     private var showFront = true
     private var moduleId: String? = ""
 
@@ -44,63 +50,78 @@ class FlashcardActivity : AppCompatActivity() {
         binding = ActivityFlashcardBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        moduleId = intent.getStringExtra("module_id")
-        val moduleName = intent.getStringExtra("module_name")
-        val isLocal = intent.getBooleanExtra("is_local", false)
+        val retryWords = getParcelableArrayList<ReviewableWord>(intent, "EXTRA_RETRY_WORDS")
 
-        if (moduleId == null) {
-            Toast.makeText(this, "Module not found", Toast.LENGTH_SHORT).show()
-            finish()
-            return
-        }
+        if (retryWords != null && retryWords.isNotEmpty()) {
+            // This is a retry session
+            vocabList = retryWords.map { it.toWordItem() }
+            if (vocabList.isNotEmpty()) {
+                updateProgressUI()
+                showFlashcard(currentIndex)
+            } else {
+                Toast.makeText(this, "No words to retry", Toast.LENGTH_SHORT).show()
+                finish()
+            }
+        } else {
+            // This is a normal session
+            moduleId = intent.getStringExtra("module_id")
+            val moduleName = intent.getStringExtra("module_name")
+            val isLocal = intent.getBooleanExtra("is_local", false)
 
-        // ✅ Lưu module vào database local ngay khi bắt đầu học để màn Home có thể hiển thị Recommend
-        saveModuleLocally(moduleId!!, moduleName ?: "Unnamed Module")
+            if (moduleId == null) {
+                Toast.makeText(this, "Module not found", Toast.LENGTH_SHORT).show()
+                finish()
+                return
+            }
 
-        val flashFactory = FlashcardViewModelFactory(applicationContext)
-        flashViewModel = ViewModelProvider(this, flashFactory)[FlashcardViewModel::class.java]
+            // ✅ Lưu module vào database local ngay khi bắt đầu học để màn Home có thể hiển thị Recommend
+            saveModuleLocally(moduleId!!, moduleName ?: "Unnamed Module")
 
-        val wordFactory = WordViewModelFactory(applicationContext)
-        wordViewModel = ViewModelProvider(this, wordFactory)[WordViewModel::class.java]
+            val wordFactory = WordViewModelFactory(applicationContext)
+            wordViewModel = ViewModelProvider(this, wordFactory)[WordViewModel::class.java]
 
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                wordViewModel.state.collect { state ->
-                    when (state) {
-                        is WordListState.Success -> {
-                            vocabList = state.items
-                            
-                            // ✅ TÍNH NĂNG RESUME: Lấy số lượng từ đã học để đặt currentIndex chính xác
-                            val processedCount = flashViewModel.getProcessedCount(moduleId!!)
-                            currentIndex = if (processedCount < vocabList.size) processedCount else 0
-                            
-                            if (vocabList.isNotEmpty()) {
-                                // ✅ Lưu danh sách từ vào local DB để tính toán progress chính xác
-                                saveWordsLocally(vocabList, moduleId!!)
-                                
-                                updateProgressUI()
-                                showFlashcard(currentIndex)
-                            } else {
-                                Toast.makeText(this@FlashcardActivity, "No words in this module", Toast.LENGTH_SHORT).show()
-                                finish()
+            lifecycleScope.launch {
+                repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    wordViewModel.state.collect { state ->
+                        when (state) {
+                            is WordListState.Success -> {
+                                vocabList = state.items
+
+                                // ✅ TÍNH NĂNG RESUME: Lấy số lượng từ đã học để đặt currentIndex chính xác
+                                val processedCount = flashViewModel.getProcessedCount(moduleId!!)
+                                currentIndex = if (processedCount < vocabList.size) processedCount else 0
+
+                                if (vocabList.isNotEmpty()) {
+                                    // ✅ Lưu danh sách từ vào local DB để tính toán progress chính xác
+                                    saveWordsLocally(vocabList, moduleId!!)
+
+                                    updateProgressUI()
+                                    showFlashcard(currentIndex)
+                                } else {
+                                    Toast.makeText(this@FlashcardActivity, "No words in this module", Toast.LENGTH_SHORT).show()
+                                    finish()
+                                }
                             }
-                        }
-                        is WordListState.Loading -> {
-                            // Data is being loaded
-                        }
-                        is WordListState.Error -> {
-                            Toast.makeText(this@FlashcardActivity, state.message, Toast.LENGTH_SHORT).show()
+                            is WordListState.Loading -> {
+                                // Data is being loaded
+                            }
+                            is WordListState.Error -> {
+                                Toast.makeText(this@FlashcardActivity, state.message, Toast.LENGTH_SHORT).show()
+                            }
                         }
                     }
                 }
             }
+
+            if (isLocal) {
+                wordViewModel.loadWords(moduleId!!, moduleName)
+            } else {
+                wordViewModel.loadWordsFromServer(moduleId!!, moduleName)
+            }
         }
 
-        if (isLocal) {
-            wordViewModel.loadWords(moduleId!!, moduleName)
-        } else {
-            wordViewModel.loadWordsFromServer(moduleId!!, moduleName)
-        }
+        val flashFactory = FlashcardViewModelFactory(applicationContext)
+        flashViewModel = ViewModelProvider(this, flashFactory)[FlashcardViewModel::class.java]
 
         setupUI()
     }
@@ -110,7 +131,7 @@ class FlashcardActivity : AppCompatActivity() {
             val db = AppDatabase.getDatabase(applicationContext)
             val apiService = ApiClient.getApiService()
             val moduleRepo = ModuleRepository(apiService, db.moduleDao(), db.flashcardDao(), db.wordDao())
-            
+
             val existing = moduleRepo.getModuleById(id)
             if (existing == null) {
                 val newModule = ModuleEntity(
@@ -191,8 +212,14 @@ class FlashcardActivity : AppCompatActivity() {
         // Cập nhật biến đếm session
         when (status) {
             FlashcardViewModel.FlashcardStatus.KNOW -> sessionKnow++
-            FlashcardViewModel.FlashcardStatus.HARD -> sessionHard++
-            FlashcardViewModel.FlashcardStatus.REVIEW -> sessionReview++
+            FlashcardViewModel.FlashcardStatus.HARD -> {
+                sessionHard++
+                hardWords.add(currentWord.toReviewableWord())
+            }
+            FlashcardViewModel.FlashcardStatus.REVIEW -> {
+                sessionReview++
+                reviewWords.add(currentWord.toReviewableWord())
+            }
         }
 
         currentIndex++
@@ -205,6 +232,8 @@ class FlashcardActivity : AppCompatActivity() {
                 putExtra("KNOW_COUNT", sessionKnow)
                 putExtra("HARD_COUNT", sessionHard)
                 putExtra("REVIEW_COUNT", sessionReview)
+                putParcelableArrayListExtra("HARD_WORDS", ArrayList(hardWords))
+                putParcelableArrayListExtra("REVIEW_WORDS", ArrayList(reviewWords))
             }
             startActivity(intent)
             finish()
@@ -220,5 +249,14 @@ class FlashcardActivity : AppCompatActivity() {
         showFront = true
         binding.tvWord.visibility = View.VISIBLE
         binding.cardBackLayout.visibility = View.GONE
+    }
+
+    private inline fun <reified T : android.os.Parcelable> getParcelableArrayList(intent: Intent, key: String): ArrayList<T>? {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableArrayListExtra(key, T::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            intent.getParcelableArrayListExtra(key)
+        }
     }
 }
