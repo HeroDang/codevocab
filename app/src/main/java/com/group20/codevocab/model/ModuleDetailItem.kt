@@ -5,6 +5,7 @@ data class ModuleDetailItem(
     val title: String,
     val description: String?,
     val wordCount: Int? = 0,
+    val learnedCount: Int = 0, // Thêm cho module cha nếU cần
     val moduleType: String?,
     val isPublic: Boolean?,
     val createdAt: String?,
@@ -16,6 +17,7 @@ data class SubModuleItem(
     val name: String,
     val description: String?,
     val wordCount: Int? = 0,
+    val learnedCount: Int = 0, // ✅ Thêm số từ đã học
     val moduleType: String?,
     val isPublic: Boolean?,
     val createdAt: String?

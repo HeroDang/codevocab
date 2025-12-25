@@ -1,10 +1,10 @@
 package com.group20.codevocab.data.repository
 
+
 import com.group20.codevocab.data.local.dao.ModuleDao
 import com.group20.codevocab.data.local.dao.FlashcardProgressDao
 import com.group20.codevocab.data.local.dao.WordDao
 import com.group20.codevocab.data.local.entity.ModuleEntity
-import com.group20.codevocab.data.local.entity.WordEntity
 import com.group20.codevocab.data.local.entity.toEntity
 import com.group20.codevocab.data.remote.ApiService
 import com.group20.codevocab.model.ModuleDetailItem
@@ -61,7 +61,15 @@ class ModuleRepository(
         moduleId: String
     ): ModuleDetailItem {
         val dto = api.getModuleDetail(moduleId)
-        return dto.toModuleDetailItem()
+        val item = dto.toModuleDetailItem()
+        
+        // ✅ Cập nhật tiến độ học tập thực tế cho từng module con
+        val enrichedChildren = item.children.map { child ->
+            val progress = getModuleProgressInfo(child.id)
+            child.copy(learnedCount = progress.processedCount)
+        }
+        
+        return item.copy(children = enrichedChildren)
     }
     
     suspend fun createModuleLocal(name: String) {
@@ -131,7 +139,7 @@ class ModuleRepository(
         return getModuleProgressInfo(moduleId).percentage
     }
 
-    suspend fun insertWords(words: List<WordEntity>) {
+    suspend fun insertWords(words: List<com.group20.codevocab.data.local.entity.WordEntity>) {
         wordDao.insertAll(words)
     }
 
