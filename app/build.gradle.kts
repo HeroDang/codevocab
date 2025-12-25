@@ -63,6 +63,7 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.material)
+    implementation(libs.androidx.swiperefreshlayout) // ✅ Đã thêm SwipeRefreshLayout
 
     // Lifecycle
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
