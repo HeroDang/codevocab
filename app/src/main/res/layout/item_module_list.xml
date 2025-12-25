@@ -56,31 +56,31 @@
             app:layout_constraintTop_toBottomOf="@id/tvModuleName" />
 
         <!-- Word count + icon -->
-        <LinearLayout
-            android:id="@+id/llWordCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@+id/tvModuleDescription"
-            app:layout_constraintStart_toStartOf="@+id/tvModuleName">
+<!--        <LinearLayout-->
+<!--            android:id="@+id/llWordCount"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="12dp"-->
+<!--            android:gravity="center_vertical"-->
+<!--            android:orientation="horizontal"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/tvModuleDescription"-->
+<!--            app:layout_constraintStart_toStartOf="@+id/tvModuleName">-->
 
-            <ImageView
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:src="@drawable/ic_book1"
-                app:tint="#555" />
+<!--            <ImageView-->
+<!--                android:layout_width="16dp"-->
+<!--                android:layout_height="16dp"-->
+<!--                android:src="@drawable/ic_book1"-->
+<!--                app:tint="#555" />-->
 
-            <TextView
-                android:id="@+id/tvWordCount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:text="156 words"
-                android:textColor="#555"
-                android:textSize="13sp" />
-        </LinearLayout>
+<!--            <TextView-->
+<!--                android:id="@+id/tvWordCount"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="4dp"-->
+<!--                android:text="156 words"-->
+<!--                android:textColor="#555"-->
+<!--                android:textSize="13sp" />-->
+<!--        </LinearLayout>-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
