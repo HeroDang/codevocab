@@ -64,27 +64,27 @@
                 android:layout_width="16dp"
                 android:layout_height="1dp" />
 
-            <!-- TIME ICON + TEXT -->
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical">
+<!--            &lt;!&ndash; TIME ICON + TEXT &ndash;&gt;-->
+<!--            <LinearLayout-->
+<!--                android:orientation="horizontal"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:gravity="center_vertical">-->
 
-                <ImageView
-                    android:src="@drawable/ic_time"
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:layout_marginEnd="4dp"
-                    app:tint="#777777" />
+<!--                <ImageView-->
+<!--                    android:src="@drawable/ic_time"-->
+<!--                    android:layout_width="16dp"-->
+<!--                    android:layout_height="16dp"-->
+<!--                    android:layout_marginEnd="4dp"-->
+<!--                    app:tint="#777777" />-->
 
-                <TextView
-                    android:text="5 min"
-                    android:textSize="13sp"
-                    android:textColor="#777777"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
+<!--                <TextView-->
+<!--                    android:text="5 min"-->
+<!--                    android:textSize="13sp"-->
+<!--                    android:textColor="#777777"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content" />-->
+<!--            </LinearLayout>-->
 
             <!-- SPACING -->
             <Space
