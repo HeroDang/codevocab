@@ -1,23 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <item
         android:id="@+id/homeFragment"
         android:icon="@drawable/ic_home"
-        android:title="Home" />
+        android:title="Home"
+        app:launchSingleTop="true"
+        app:popUpTo="@id/nav_graph" />
+
     <item
         android:id="@+id/learningFragment"
         android:icon="@drawable/ic_learning"
-        android:title="Learning" />
+        android:title="Learning"
+        app:launchSingleTop="true"
+        app:popUpTo="@id/nav_graph" />
+
     <item
         android:id="@+id/dictionaryFragment"
         android:icon="@drawable/ic_dictionary"
-        android:title="Dictionary" />
+        android:title="Dictionary"
+        app:launchSingleTop="true"
+        app:popUpTo="@id/nav_graph" />
+
     <item
         android:id="@+id/marketFragment"
         android:icon="@drawable/ic_market"
-        android:title="Market" />
+        android:title="Market"
+        app:launchSingleTop="true"
+        app:popUpTo="@id/nav_graph" />
+
     <item
         android:id="@+id/groupFragment"
-        android:icon="@drawable/ic_group_nav"
-        android:title="Group" />
+        android:icon="@drawable/ic_group"
+        android:title="Group"
+        app:launchSingleTop="true"
+        app:popUpTo="@id/nav_graph" />
+
 </menu>

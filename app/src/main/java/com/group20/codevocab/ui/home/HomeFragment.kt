@@ -10,6 +10,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.group20.codevocab.MainActivity
 import com.group20.codevocab.R
 import com.group20.codevocab.data.local.AppDatabase
 import com.group20.codevocab.data.remote.ApiClient
@@ -72,12 +74,11 @@ class HomeFragment : Fragment() {
 
     private fun setupRecyclerView() {
         recommendedAdapter = RecommendedAdapter { module ->
-            val intent = Intent(requireContext(), com.group20.codevocab.ui.module.WordListActivity::class.java).apply {
-                putExtra("module_id", module.id)
-                putExtra("module_name", module.name)
-                putExtra("is_local", module.moduleType == "personal")
+            // FIX: Navigate using a Bundle to avoid Safe Args build issues
+            val bundle = Bundle().apply {
+                putString("moduleId", module.id)
             }
-            startActivity(intent)
+            findNavController().navigate(R.id.action_homeFragment_to_wordListMarketFragment, bundle)
         }
         binding.rvRecommended.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -108,11 +109,15 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupQuickAccess() {
-        binding.btnLearning.setOnClickListener { findNavController().navigate(R.id.learningFragment) }
-        binding.btnDictionary.setOnClickListener { findNavController().navigate(R.id.dictionaryFragment) }
-        binding.btnMarket.setOnClickListener { findNavController().navigate(R.id.marketFragment) }
-        binding.btnGroup.setOnClickListener { findNavController().navigate(R.id.groupFragment) }
-        binding.btnStats.setOnClickListener { findNavController().navigate(R.id.statsFragment) }
+        val bottomNav = (requireActivity() as? MainActivity)?.findViewById<BottomNavigationView>(R.id.nav_view)
+
+        binding.btnLearning.setOnClickListener { bottomNav?.selectedItemId = R.id.learningFragment }
+        binding.btnDictionary.setOnClickListener { bottomNav?.selectedItemId = R.id.dictionaryFragment }
+        binding.btnMarket.setOnClickListener { bottomNav?.selectedItemId = R.id.marketFragment }
+        binding.btnGroup.setOnClickListener { bottomNav?.selectedItemId = R.id.groupFragment }
+
+        binding.btnStats.setOnClickListener { findNavController().navigate(R.id.action_homeFragment_to_statsFragment) }
+
         binding.btnSettings.setOnClickListener { startActivity(Intent(requireContext(), SettingsActivity::class.java)) }
         binding.btnSettingsTop.setOnClickListener { startActivity(Intent(requireContext(), SettingsActivity::class.java)) }
         binding.ivAvatar.setOnClickListener { startActivity(Intent(requireContext(), EditProfileActivity::class.java)) }
