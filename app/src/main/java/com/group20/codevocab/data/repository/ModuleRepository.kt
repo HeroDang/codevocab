@@ -92,6 +92,10 @@ class ModuleRepository(
             moduleDao.updateModule(updatedModule)
         }
     }
+    
+    suspend fun deleteModuleRemote(moduleId: String) {
+        api.deleteModule(moduleId)
+    }
 
     suspend fun acceptShareModule(shareId: String): Boolean {
         return try {

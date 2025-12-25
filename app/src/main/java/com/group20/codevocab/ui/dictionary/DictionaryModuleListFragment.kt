@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.ViewModelProvider
@@ -107,6 +108,9 @@ class DictionaryModuleListFragment : Fragment() {
             onRenameClick = { moduleItem ->
                 showRenameDialog(moduleItem)
             },
+            onDeleteClick = { moduleItem ->
+                showDeleteConfirmationDialog(moduleItem)
+            },
             onAcceptClick = { moduleItem ->
                 viewModel.acceptShareModule(
                     module = moduleItem,
@@ -132,6 +136,32 @@ class DictionaryModuleListFragment : Fragment() {
         val dialog = RenameModuleDialogFragment.newInstance(moduleItem.name)
         currentEditingModuleId = moduleItem.id
         dialog.show(parentFragmentManager, "RenameModuleDialog")
+    }
+    
+    private fun showDeleteConfirmationDialog(moduleItem: ModuleItem) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Delete Module")
+            .setMessage("Are you sure you want to delete '${moduleItem.name}'?")
+            .setPositiveButton("Delete") { _, _ ->
+                viewModel.deleteModule(
+                    module = moduleItem,
+                    onSuccess = {
+                        Toast.makeText(context, "Module deleted", Toast.LENGTH_SHORT).show()
+                        if (isSharedTab) {
+                            viewModel.loadSharedWithMeModules()
+                        } else {
+                             // Refresh logic is handled in ViewModel (loadMyModulesFromServer or fetchLocalModules)
+                             // but we might need to manually trigger refresh if ViewModel doesn't auto-refresh specific flow
+                             // ViewModel deleteModule implementation seems to handle reload calls.
+                        }
+                    },
+                    onError = { msg ->
+                        Toast.makeText(context, "Error deleting: $msg", Toast.LENGTH_SHORT).show()
+                    }
+                )
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 
     private var currentEditingModuleId: String? = null

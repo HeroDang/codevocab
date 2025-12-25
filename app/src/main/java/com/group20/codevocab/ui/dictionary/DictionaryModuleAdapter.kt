@@ -21,6 +21,8 @@ class DictionaryModuleAdapter(
     private val isSharedTab: Boolean,
     // Callback cho sự kiện rename
     private val onRenameClick: (ModuleItem) -> Unit,
+    // Callback cho sự kiện delete
+    private val onDeleteClick: (ModuleItem) -> Unit = {},
     // Callback cho sự kiện accept
     private val onAcceptClick: (ModuleItem) -> Unit = {}
 ) : ListAdapter<ModuleItem, DictionaryModuleAdapter.ModuleViewHolder>(DiffCallback()) {
@@ -28,7 +30,7 @@ class DictionaryModuleAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ModuleViewHolder {
         val binding =
             ItemModuleDetailDicBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ModuleViewHolder(binding, isSharedTab, onRenameClick, onAcceptClick)
+        return ModuleViewHolder(binding, isSharedTab, onRenameClick, onDeleteClick, onAcceptClick)
     }
 
     override fun onBindViewHolder(holder: ModuleViewHolder, position: Int) {
@@ -40,6 +42,7 @@ class DictionaryModuleAdapter(
         private val binding: ItemModuleDetailDicBinding,
         private val isSharedTab: Boolean,
         private val onRenameClick: (ModuleItem) -> Unit,
+        private val onDeleteClick: (ModuleItem) -> Unit,
         private val onAcceptClick: (ModuleItem) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
 
@@ -152,12 +155,13 @@ class DictionaryModuleAdapter(
                     }
                     R.id.action_share -> {
                         if (context is AppCompatActivity) {
-                            val dialog = ShareModuleDialogFragment.newInstance(module.name)
+                            val dialog = ShareModuleDialogFragment.newInstance(module.name, module.id, module.isLocal)
                             dialog.show(context.supportFragmentManager, "ShareModuleDialog")
                         }
                         true
                     }
                     R.id.action_delete -> {
+                        onDeleteClick(module)
                         true
                     }
                     else -> false

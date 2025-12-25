@@ -214,4 +214,23 @@ class ModuleViewModel(
             }
         }
     }
+
+    fun deleteModule(module: ModuleItem, onSuccess: () -> Unit, onError: (String) -> Unit) {
+        viewModelScope.launch {
+            try {
+                if (module.isLocal) {
+                    repository.deleteModuleLocal(module.id)
+                    fetchLocalModules()
+                } else {
+                    repository.deleteModuleRemote(module.id)
+                    // Depending on context, reload appropriate remote list
+                    // If we don't know exactly which list, reloading "My Modules" is a safe bet for deletion context usually
+                    loadMyModulesFromServer()
+                }
+                onSuccess()
+            } catch (e: Exception) {
+                onError(e.message ?: "Failed to delete module")
+            }
+        }
+    }
 }

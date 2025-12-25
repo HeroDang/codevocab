@@ -2,17 +2,21 @@ package com.group20.codevocab.data.remote
 
 
 import com.google.gson.annotations.SerializedName
+import com.group20.codevocab.data.remote.dto.EmailCheckResponse
 import com.group20.codevocab.data.remote.dto.LoginResponse
+import com.group20.codevocab.data.remote.dto.ModuleCreateRequest
 import com.group20.codevocab.data.remote.dto.ModuleDetailDto
 import com.group20.codevocab.data.remote.dto.ModuleDto
 import com.group20.codevocab.data.remote.dto.ModuleShareOut
 import com.group20.codevocab.data.remote.dto.RegisterRequest
 import com.group20.codevocab.data.remote.dto.RegisterResponse
+import com.group20.codevocab.data.remote.dto.ShareModuleRequest
 import com.group20.codevocab.data.remote.dto.StudySessionRequest
 import com.group20.codevocab.data.remote.dto.StudySessionResponse
 import com.group20.codevocab.data.remote.dto.UpdateWordRequest
 import com.group20.codevocab.data.remote.dto.UserDto
 import com.group20.codevocab.data.remote.dto.WordDto
+import com.group20.codevocab.data.remote.dto.WordListCreateRequest
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Response
@@ -112,6 +116,36 @@ interface ApiService {
     suspend fun deleteWord(
         @Path("wordId") wordId: String
     ): Response<Unit>
+
+    @DELETE("modules/{moduleId}")
+    suspend fun deleteModule(
+        @Path("moduleId") moduleId: String
+    ): Response<Unit>
+    
+    @GET("users/check-email/{email}")
+    suspend fun checkEmail(
+        @Path("email") email: String
+    ): Response<EmailCheckResponse>
+    
+    @POST("dictionary/share")
+    suspend fun shareModule(
+        @Body request: ShareModuleRequest
+    ): Response<ModuleShareOut>
+    
+    @PUT("dictionary/publish/{moduleId}")
+    suspend fun publishModule(
+        @Path("moduleId") moduleId: String
+    ): Response<ModuleDto>
+    
+    @POST("modules/")
+    suspend fun createModule(
+        @Body request: ModuleCreateRequest
+    ): ModuleDto
+    
+    @POST("words/list")
+    suspend fun createWordList(
+        @Body request: WordListCreateRequest
+    ): List<WordDto>
 }
 
 data class WordsDto(

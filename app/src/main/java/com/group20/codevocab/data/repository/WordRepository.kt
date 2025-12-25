@@ -13,6 +13,10 @@ class WordRepository(
     suspend fun insertWord(wordEntity: WordEntity) = wordDao.insert(wordEntity)
     suspend fun getAllWords() = wordDao.getAllWords()
 
+    suspend fun getVocabByModule(moduleId: String): List<WordEntity> {
+        return wordDao.getWordsByModule(moduleId)
+    }
+
     suspend fun getWordsRemote(subModuleId: String): List<WordItem> {
         return api.getWordsBySubmodule(subModuleId).map { it.toWordItem() }
     }
