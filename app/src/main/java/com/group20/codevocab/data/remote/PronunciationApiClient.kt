@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit
 
 object PronunciationApiClient {
 
-    private const val BASE_URL = "http://192.168.1.87:8001/"
+    private const val BASE_URL = "http://192.168.1.175:8001/"
 
     private val logging = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
