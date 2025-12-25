@@ -161,8 +161,7 @@ class PronunciationActivity : AppCompatActivity() {
     private fun setupListeners() {
         binding.btnBack.setOnClickListener { finish() }
 
-        binding.btnNextWord.setOnClickListener {
-            if (vocabList.isNotEmpty()) {
+        binding.btnNextWord.setOnClickListener {            if (vocabList.isNotEmpty()) {
                 if (currentIndex < vocabList.size - 1) {
                     currentIndex++
                     updateProgressUI()
@@ -244,6 +243,12 @@ class PronunciationActivity : AppCompatActivity() {
         binding.progressBar.max = total
         binding.progressBar.progress = current
         binding.tvProgressCount.text = "$current/$total"
+
+        if (vocabList.isNotEmpty() && currentIndex == vocabList.size - 1) {
+            binding.btnNextWord.text = "Finish"
+        } else {
+            binding.btnNextWord.text = "Next Word"
+        }
     }
 
     private fun resetScoreUI() {
