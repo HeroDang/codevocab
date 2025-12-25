@@ -32,7 +32,7 @@
     <ImageView
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:src="@drawable/ic_graduation_cap"
+        android:src="@drawable/ic_graduation_cap1"
         app:layout_constraintBottom_toBottomOf="@id/viewInnerCircle"
         app:layout_constraintEnd_toEndOf="@id/viewInnerCircle"
         app:layout_constraintStart_toStartOf="@id/viewInnerCircle"
