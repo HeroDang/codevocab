@@ -46,11 +46,9 @@ interface FlashcardProgressDao {
     @Query("SELECT module_id FROM flashcard_progress GROUP BY module_id ORDER BY MAX(last_reviewed) DESC")
     suspend fun getInProgressModuleIds(): List<String>
 
-    // ✅ Lấy tổng số từ đã thuộc
     @Query("SELECT COUNT(*) FROM flashcard_progress WHERE is_known = 1")
     suspend fun getTotalKnownWords(): Int
 
-    // ✅ Lấy dữ liệu học theo ngày (7 ngày gần nhất)
     @Query("""
         SELECT COUNT(*) as count, 
         strftime('%Y-%m-%d', last_reviewed / 1000, 'unixepoch', 'localtime') as date 
@@ -61,6 +59,15 @@ interface FlashcardProgressDao {
         LIMIT 7
     """)
     suspend fun getWeeklyProgress(): List<DayProgress>
+
+    // ✅ Lấy danh sách các ngày duy nhất đã học để tính Streak
+    @Query("""
+        SELECT DISTINCT strftime('%Y-%m-%d', last_reviewed / 1000, 'unixepoch', 'localtime') as date 
+        FROM flashcard_progress 
+        WHERE last_reviewed IS NOT NULL 
+        ORDER BY date DESC
+    """)
+    suspend fun getUniqueStudyDates(): List<String>
 }
 
 data class DayProgress(
