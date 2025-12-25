@@ -55,13 +55,21 @@ fun ModuleDetailDto.toModuleDetailItemExt(): ModuleDetailItem {
         id = this.id ?: "",
         title = this.name ?: "",
         description = this.description,
-        children = this.children?.map { child ->
+        wordCount = this.count_word ?: 0,
+        moduleType = this.module_type,
+        isPublic = this.is_public,
+        createdAt = this.created_at,
+        children = this.children.map { child ->
             SubModuleItem(
                 id = child.id ?: "",
                 name = child.name ?: "",
-                description = child.description ?: ""
+                description = child.description ?: "",
+                wordCount = child.count_word ?: 0,
+                moduleType = child.module_type,
+                isPublic = child.is_public,
+                createdAt = child.created_at
             )
-        } ?: emptyList()
+        }
     )
 }
 
@@ -73,6 +81,6 @@ fun WordEntity.toWordDto(): WordDto {
         partOfSpeech = this.partOfSpeech,
         ipa = this.ipa,
         exampleSentence = this.exampleSentence,
-        audioUrl = this.audioUrl // Added audioUrl parameter
+        audioUrl = this.audioUrl
     )
 }

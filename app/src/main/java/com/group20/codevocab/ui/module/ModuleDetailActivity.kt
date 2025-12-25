@@ -78,6 +78,15 @@ class ModuleDetailActivity : AppCompatActivity() {
                         val data = state.data
                         binding.tvModuleName.text = data.title
                         binding.tvModuleDescription.text = data.description
+                        
+                        // Set word count for module detail
+                        // You might need to add a TextView for total word count if desired in activity_module_detail.xml
+                        // For example: binding.tvTotalWords.text = "${data.wordCount ?: 0} words" 
+                        // But user requested "setting count word cho item_module_detail" which is handled in Adapter.
+                        // However, if the main module also has a count to display, we can set it here if UI supports it.
+                        // Based on the provided layout XML, there is a completion block and tabs with counts (All 12, etc.).
+                        // These seem static in the layout. We might want to update them dynamically.
+                        // binding.tabAll.text = "All ${data.wordCount ?: 0}" 
 
                         adapter.updateData(data.children)
                     }

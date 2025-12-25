@@ -26,21 +26,21 @@
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/btnBack"
-        app:layout_constraintEnd_toStartOf="@id/btnMenu"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/btnBack"
         app:layout_constraintTop_toTopOf="@id/btnBack"
         tools:text="Question 3/10" />
 
-    <ImageView
-        android:id="@+id/btnMenu"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:padding="8dp"
-        android:src="@drawable/ic_more_vert"
-        app:layout_constraintBottom_toBottomOf="@id/btnBack"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/btnBack" />
+<!--    <ImageView-->
+<!--        android:id="@+id/btnMenu"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginEnd="16dp"-->
+<!--        android:padding="8dp"-->
+<!--        android:src="@drawable/ic_more_vert"-->
+<!--        app:layout_constraintBottom_toBottomOf="@id/btnBack"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="@id/btnBack" />-->
 
     <ProgressBar
         android:id="@+id/progressQuiz"
@@ -60,7 +60,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:constraint_referenced_ids="tvQuestion,radioGroupOptions,btnSubmit,tvQuestionCounter,btnMenu,progressQuiz"
+        app:constraint_referenced_ids="tvQuestion,radioGroupOptions,btnSubmit,tvQuestionCounter,progressQuiz"
         tools:visibility="visible" />
 
     <!-- Question -->

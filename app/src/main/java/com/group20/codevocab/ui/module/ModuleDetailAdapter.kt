@@ -17,10 +17,12 @@ class ModuleDetailAdapter(
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tvName = view.findViewById<TextView>(R.id.tvModuleName)
         val tvDesc = view.findViewById<TextView>(R.id.tvModuleDescription)
+        val tvWordCount = view.findViewById<TextView>(R.id.tvWordCount)
         
         fun bind(module: SubModuleItem) {
             tvName.text = module.name
             tvDesc.text = module.description
+            tvWordCount.text = "${module.wordCount ?: 0} words"
             itemView.setOnClickListener { onItemClick(module) }
         }
     }
