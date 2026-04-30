@@ -40,3 +40,13 @@ fun WordItem.toEntity(moduleId: String): WordEntity {
         createdAt = null
     )
 }
+
+fun WordItem.toReviewableWord(): ReviewableWord {
+    return ReviewableWord(
+        textEn = this.textEn,
+        meaningVi = this.meaningVi,
+        ipa = this.ipa,
+        partOfSpeech = this.partOfSpeech,
+        exampleSentence = this.exampleSentence
+    )
+}

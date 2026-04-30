@@ -5,11 +5,15 @@ import com.group20.codevocab.data.remote.dto.LoginResponse
 import com.group20.codevocab.data.remote.dto.RegisterRequest
 import com.group20.codevocab.data.remote.dto.RegisterResponse
 import com.group20.codevocab.data.remote.dto.UserDto
+import com.group20.codevocab.utils.UserSessionManager
 import retrofit2.Response
 
 class AuthRepository(private val apiService: ApiService) {
+    private val sessionManager = UserSessionManager.getInstance()
+
     suspend fun login(username: String, password: String): Response<LoginResponse> {
-        return apiService.login(username, password)
+        val response = apiService.login(username, password)
+        return response
     }
 
     suspend fun register(request: RegisterRequest): Response<RegisterResponse> {
@@ -17,7 +21,22 @@ class AuthRepository(private val apiService: ApiService) {
     }
 
     suspend fun getCurrentUser(): Response<UserDto> {
-        return apiService.getCurrentUser()
+        val response = apiService.getCurrentUser()
+        if (response.isSuccessful) {
+            response.body()?.let { user ->
+                sessionManager.saveUser(user)
+            }
+        }
+        return response
+    }
+
+    // Single Source of Truth: Trả về user từ SessionManager (RAM/Prefs)
+    fun getUser(): UserDto? {
+        return sessionManager.getUser()
+    }
+
+    fun getUserId(): String? {
+        return sessionManager.getUserId()
     }
 
     suspend fun updateProfile(name: String, email: String): Response<UserDto> {
@@ -25,6 +44,12 @@ class AuthRepository(private val apiService: ApiService) {
             "name" to name,
             "email" to email
         )
-        return apiService.updateProfile(body)
+        val response = apiService.updateProfile(body)
+        if (response.isSuccessful) {
+            response.body()?.let { user ->
+                sessionManager.saveUser(user)
+            }
+        }
+        return response
     }
 }

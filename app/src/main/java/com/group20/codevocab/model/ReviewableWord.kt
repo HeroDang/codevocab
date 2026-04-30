@@ -17,3 +17,15 @@ data class ReviewableWord(
     val exampleSentence: String?,
     var isChecked: Boolean = true
 ) : Parcelable
+
+fun ReviewableWord.toWordItem(): WordItem {
+    return WordItem(
+        id = "", // We may not have an ID here, so we pass an empty string
+        textEn = this.textEn ?: "",
+        meaningVi = this.meaningVi ?: "",
+        ipa = this.ipa,
+        partOfSpeech = this.partOfSpeech,
+        exampleSentence = this.exampleSentence,
+        audioUrl = null
+    )
+}
