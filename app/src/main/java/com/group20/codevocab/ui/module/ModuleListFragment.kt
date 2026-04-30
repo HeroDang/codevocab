@@ -1,20 +1,22 @@
 package com.group20.codevocab.ui.module
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.room.Room
 import com.group20.codevocab.R
-import com.group20.codevocab.data.local.AppDatabase
-import com.group20.codevocab.data.repository.ModuleRepository
 import com.group20.codevocab.databinding.FragmentModuleListBinding
+import com.group20.codevocab.model.ModuleItem
+import com.group20.codevocab.ui.pronunciation.PronunciationActivity
 import com.group20.codevocab.viewmodel.ModuleViewModel
 import com.group20.codevocab.viewmodel.ModuleViewModelFactory
 import com.group20.codevocab.viewmodel.ModulesState
@@ -26,6 +28,7 @@ class ModuleListFragment : Fragment() {
 
     private lateinit var viewModel: ModuleViewModel
     private lateinit var adapter: ModuleListAdapter
+    private var currentModules: List<ModuleItem> = emptyList()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,20 +44,19 @@ class ModuleListFragment : Fragment() {
         val factory = ModuleViewModelFactory(requireContext())
         viewModel = ViewModelProvider(this, factory)[ModuleViewModel::class.java]
 
-        // 3️⃣ Setup RecyclerView
+        // Setup Menu
+        binding.btnMenu.setOnClickListener { view ->
+            showPopupMenu(view)
+        }
+
+        // Setup RecyclerView
         adapter = ModuleListAdapter(emptyList(), R.layout.item_module_list) { module ->
-            Toast.makeText(requireContext(), "Clicked: ${module.name}", Toast.LENGTH_SHORT).show()
             val intent = Intent(requireContext(), ModuleDetailActivity::class.java)
             intent.putExtra("module_id", module.id)
             startActivity(intent)
         }
         binding.rvModules.layoutManager = LinearLayoutManager(requireContext())
         binding.rvModules.adapter = adapter
-
-        // 4️⃣ Quan sát dữ liệu
-        //viewModel.modules.observe(viewLifecycleOwner) { list ->
-        //    adapter.updateData(list)
-        //}
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.state.collect { state ->
@@ -65,6 +67,7 @@ class ModuleListFragment : Fragment() {
 
                     is ModulesState.Success -> {
                         binding.progressBar.visibility = View.GONE
+                        currentModules = state.items
                         adapter.updateData(state.items)
                     }
 
@@ -80,9 +83,49 @@ class ModuleListFragment : Fragment() {
             }
         }
 
-
-        // 5️⃣ Gọi load data
         viewModel.loadModulesFromServer()
+    }
+
+    private fun showPopupMenu(view: View) {
+        val popup = PopupMenu(requireContext(), view)
+        popup.menuInflater.inflate(R.menu.module_list_menu, popup.menu)
+
+        popup.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.action_speaking_practice -> {
+                    showModuleSelectionDialog()
+                    true
+                }
+                else -> false
+            }
+        }
+        popup.show()
+    }
+
+    private fun showModuleSelectionDialog() {
+        if (currentModules.isEmpty()) {
+            Toast.makeText(requireContext(), "No modules available", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val moduleNames = currentModules.map { it.name }.toTypedArray()
+        var selectedModuleIndex = 0
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Chọn Module để luyện nói")
+            .setSingleChoiceItems(moduleNames, 0) { _, which ->
+                selectedModuleIndex = which
+            }
+            .setPositiveButton("Practice") { _, _ ->
+                val selectedModule = currentModules[selectedModuleIndex]
+                val intent = Intent(requireContext(), SpeakingActivity::class.java).apply {
+                    putExtra("module_id", selectedModule.id)
+                    putExtra("module_name", selectedModule.name)
+                }
+                startActivity(intent)
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 
     override fun onDestroyView() {
