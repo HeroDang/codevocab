@@ -8,8 +8,6 @@ import java.util.concurrent.TimeUnit
 
 object SpeakingPracticeApiClient {
 
-    private const val BASE_URL = "http://192.168.101.60:8001/"
-
     private val logging = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
     }
@@ -21,9 +19,20 @@ object SpeakingPracticeApiClient {
         .writeTimeout(30, TimeUnit.SECONDS)
         .build()
 
-    val api: SpeakingPracticeApiService by lazy {
+    // API Service for AI backend (e.g. port 8001)
+    val apiAi: SpeakingPracticeApiService by lazy {
         Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(ApiConfig.AI_BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(client)
+            .build()
+            .create(SpeakingPracticeApiService::class.java)
+    }
+
+    // API Service for Main backend (e.g. port 8000)
+    val apiPostgresql: SpeakingPracticeApiService by lazy {
+        Retrofit.Builder()
+            .baseUrl(ApiConfig.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build()

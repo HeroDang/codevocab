@@ -4,118 +4,113 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="12dp"
-    app:cardBackgroundColor="#FFF5F5"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="0dp">
+    android:layout_marginBottom="16dp"
+    app:cardBackgroundColor="#FFF7ED"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="0dp"
+    app:strokeColor="#FFEDD5"
+    app:strokeWidth="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical"
+        android:padding="20dp">
 
-        <!-- Left Red Bar -->
-        <View
-            android:layout_width="4dp"
-            android:layout_height="match_parent"
-            android:background="#EF4444" />
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipIndex"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sentence 1"
+            android:textColor="#F97316"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:chipBackgroundColor="#FFEDD5"
+            app:chipCornerRadius="8dp"
+            app:chipMinHeight="24dp"
+            app:chipStrokeWidth="0dp" />
 
+        <!-- Original Sentence -->
+        <TextView
+            android:id="@+id/tvOriginal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="#1E293B"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:text="How can I improve my skills?" />
+
+        <!-- Phonetics -->
+        <TextView
+            android:id="@+id/tvPhonetics"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="#64748B"
+            android:textSize="14sp"
+            tools:text="/haʊ kæn aɪ ɪmˈpruːv maɪ skɪlz/" />
+
+        <!-- Transcribed Pronunciation -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:layout_marginTop="12dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chipIndex"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Sentence 1"
-                android:textColor="#B91C1C"
-                android:textSize="12sp"
-                app:chipBackgroundColor="#FEE2E2"
-                app:chipCornerRadius="6dp"
-                app:chipMinHeight="24dp"
-                app:chipStrokeWidth="0dp" />
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/ic_mic"
+                app:tint="#F97316" />
 
-            <!-- Original Sentence -->
             <TextView
-                android:id="@+id/tvOriginal"
+                android:id="@+id/tvRecognized"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="How can I improve my skills?"
-                android:textColor="#1F2937"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:layout_marginStart="8dp"
+                android:textColor="#F97316"
+                android:textSize="14sp"
+                tools:text="Your pronunciation: How can I improof my skils" />
+        </LinearLayout>
 
-            <!-- Phonetics -->
-            <TextView
-                android:id="@+id/tvPhonetics"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="/haʊ kæn aɪ ɪmˈpruːv maɪ skɪlz/"
-                android:textColor="#6B7280"
-                android:textSize="14sp" />
+        <!-- Mispronounced List -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:cardBackgroundColor="#EFF6FF"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:strokeColor="#DBEAFE"
+            app:strokeWidth="1dp">
 
-            <!-- Transcribed Pronunciation -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
                 android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:padding="12dp">
 
                 <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:src="@drawable/ic_close"
-                    app:tint="#EF4444" />
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_lightbulb"
+                    app:tint="#2563EB" />
 
                 <TextView
-                    android:id="@+id/tvRecognized"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="Your pronunciation: How can I improof my skils"
-                    android:textColor="#EF4444"
-                    android:textSize="14sp" />
-            </LinearLayout>
-
-            <!-- Mispronounced List -->
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                app:cardBackgroundColor="#EFF6FF"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="0dp">
-
-                <LinearLayout
+                    android:id="@+id/tvMistakesList"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="8dp">
+                    android:layout_marginStart="8dp"
+                    android:textColor="#2563EB"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    tools:text="Mistakes: improve, skills" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
-                    <ImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:src="@drawable/ic_lightbulb"
-                        app:tint="#1D4ED8" />
-
-                    <TextView
-                        android:id="@+id/tvMistakesList"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:text="Mistakes: improve, skills"
-                        android:textColor="#1D4ED8"
-                        android:textSize="13sp" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-        </LinearLayout>
     </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>

@@ -2,15 +2,9 @@ package com.group20.codevocab.model
 
 import com.group20.codevocab.data.local.entity.ModuleEntity
 import com.group20.codevocab.data.local.entity.WordEntity
-import com.group20.codevocab.data.remote.dto.ModuleDetailDto
-import com.group20.codevocab.data.remote.dto.ModuleDto
-import com.group20.codevocab.data.remote.dto.WordDto
+import com.group20.codevocab.data.remote.dto.*
 
-// Removed conflicting overload ModuleDto.toModuleItem() because it is already defined in ModuleItem.kt
-// But I will create a wrapper or alternative if needed, but since it's already there and correct, we can skip it here.
-// However, the user said "chi them code moi khong xoa code cua, doc config hay dat ten khac di"
-// So I will rename these extension functions to avoid conflict.
-
+// Existing mappers...
 fun ModuleDto.toModuleItemExt(): ModuleItem {
     return ModuleItem(
         id = this.id ?: "",
@@ -25,7 +19,6 @@ fun ModuleDto.toModuleItemExt(): ModuleItem {
     )
 }
 
-// Renamed to avoid conflict with ModuleItem.kt
 fun ModuleItem.toDtoExt(): ModuleDto {
     return ModuleDto(
         id = this.id,
@@ -33,11 +26,10 @@ fun ModuleItem.toDtoExt(): ModuleDto {
         description = this.description,
         is_public = this.isPublic,
         created_at = this.createdAt ?: "",
-        module_type = "personal" // Default for local
+        module_type = "personal"
     )
 }
 
-// Renamed to avoid conflict with ModuleItem.kt
 fun ModuleItem.toEntityExt(): ModuleEntity {
     return ModuleEntity(
         id = this.id,
@@ -82,5 +74,26 @@ fun WordEntity.toWordDto(): WordDto {
         ipa = this.ipa,
         exampleSentence = this.exampleSentence,
         audioUrl = this.audioUrl
+    )
+}
+
+// Speaking Analysis Mappers
+fun SpeakingAnalysisResponse.toResult(): SpeakingAnalysisResult {
+    return SpeakingAnalysisResult(
+        originalSentence = this.originalSentence,
+        recognizedSentence = this.recognizedSentence,
+        analysis = this.analysis.map { it.toModel() },
+        mispronouncedPhonemes = this.mispronouncedPhonemes
+    )
+}
+
+fun WordAnalysisDto.toModel(): WordAnalysis {
+    return WordAnalysis(
+        word = this.word,
+        status = this.status,
+        segments = this.segments.map { SpeakingSegment(it.text, it.isCorrect) },
+        phoneticError = this.phoneticError?.let {
+            PhoneticError(it.expected, it.actual, it.note)
+        }
     )
 }

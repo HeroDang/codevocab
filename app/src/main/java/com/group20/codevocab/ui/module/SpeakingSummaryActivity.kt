@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.group20.codevocab.databinding.ActivitySpeakingSummaryBinding
+import com.group20.codevocab.utils.SpeakingSessionManager
 
 class SpeakingSummaryActivity : AppCompatActivity() {
 
@@ -32,6 +33,19 @@ class SpeakingSummaryActivity : AppCompatActivity() {
     }
 
     private fun setupMistakesList() {
+        // Lấy dữ liệu từ SpeakingSessionManager và chuyển đổi sang SpeakingMistake
+        val sessionResults = SpeakingSessionManager.getResults()
+        val mistakes = sessionResults.mapIndexed { index, result ->
+            SpeakingMistake(
+                index = index + 1,
+                original = result.originalSentence,
+                phonetics = result.phonetics,
+                recognized = result.recognizedSentence,
+                mistakes = result.mispronouncedPhonemes.joinToString(", ")
+            )
+        }
+
+        /*
         val mistakes = listOf(
             SpeakingMistake(1, "What is the capital of Australia?", "/wɒt ɪz ðə ˈkæpɪtəl əv ɒˈstreɪliə/", "What is the capital of Austria", "Australia"),
             SpeakingMistake(2, "Which planet is closest to the Sun?", "/wɪtʃ ˈplænɪt ɪz ˈkləʊsɪst tə ðə sʌn/", "Which planet is closest to the Soon", "Sun"),
@@ -44,6 +58,7 @@ class SpeakingSummaryActivity : AppCompatActivity() {
             SpeakingMistake(9, "Success requires hard work.", "/səkˈses rɪˈkwaɪərz hɑːrd wɜːrk/", "Sucess requires hard work", "Success"),
             SpeakingMistake(10, "Don't give up on your dreams.", "/dəʊnt ɡɪv ʌp ɒn jɔːr driːmz/", "Dont give up on your dreams", "Don't")
         )
+        */
 
         binding.rvMistakes.layoutManager = LinearLayoutManager(this)
         binding.rvMistakes.adapter = SpeakingMistakeAdapter(mistakes)
@@ -51,6 +66,10 @@ class SpeakingSummaryActivity : AppCompatActivity() {
 
     private fun setupListeners() {
         binding.btnBack.setOnClickListener { finish() }
-        binding.btnFinish.setOnClickListener { finish() }
+        binding.btnFinish.setOnClickListener { 
+            // Xóa sạch session khi hoàn thành
+            SpeakingSessionManager.clearSession()
+            finish() 
+        }
     }
 }

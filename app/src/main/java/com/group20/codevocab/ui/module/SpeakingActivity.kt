@@ -19,9 +19,11 @@ import com.group20.codevocab.data.remote.ApiClient
 import com.group20.codevocab.data.repository.AuthRepository
 import com.group20.codevocab.data.repository.SpeakingPracticeRepository
 import com.group20.codevocab.databinding.ActivitySpeakingPracticeBinding
+import com.group20.codevocab.model.SpeakingResult
 import com.group20.codevocab.ui.common.speaker.Speaker
 import com.group20.codevocab.ui.common.speaker.SpeakerFactory
 import com.group20.codevocab.utils.PreferenceManager
+import com.group20.codevocab.utils.SpeakingSessionManager
 import com.group20.codevocab.utils.SpeechToTextManager
 import com.group20.codevocab.viewmodel.SpeakingPracticeState
 import com.group20.codevocab.viewmodel.SpeakingPracticeViewModel
@@ -67,6 +69,9 @@ class SpeakingActivity : AppCompatActivity() {
         sttManager = SpeechToTextManager(this)
 
         val moduleId = intent.getStringExtra("module_id") ?: ""
+        
+        // Disable Next Button initially
+        updateNextButtonState(isEnabled = false)
         
         setupListeners()
         observeViewModel()
@@ -127,6 +132,9 @@ class SpeakingActivity : AppCompatActivity() {
         binding.tvTranslation.text = sentence.phonetics
         binding.cardScore.visibility = View.GONE
         
+        // Reset Next Button state for new sentence
+        updateNextButtonState(isEnabled = false)
+        
         if (currentIndex == sentences.size - 1) {
             binding.btnNext.text = "Finish"
         } else {
@@ -159,6 +167,11 @@ class SpeakingActivity : AppCompatActivity() {
         }
     }
 
+    private fun updateNextButtonState(isEnabled: Boolean) {
+        binding.btnNext.isEnabled = isEnabled
+        binding.btnNext.alpha = if (isEnabled) 1.0f else 0.5f
+    }
+
     private fun checkPermissionAndStartSTT() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
             startSTT()
@@ -170,6 +183,9 @@ class SpeakingActivity : AppCompatActivity() {
     private fun startSTT() {
         handler.removeCallbacksAndMessages(null)
         
+        // Disable Next Button when recording starts
+        updateNextButtonState(isEnabled = false)
+
         sttManager.startListening(
             onStatusChange = { status ->
                 binding.tvStatus.text = status
@@ -177,12 +193,11 @@ class SpeakingActivity : AppCompatActivity() {
             onResult = { result ->
                 handler.removeCallbacksAndMessages(null)
                 binding.tvStatus.text = "Tap to record"
-                showScore(result)
+                analyzeAndShowScore(result)
             },
             onError = { error ->
                 handler.removeCallbacksAndMessages(null)
                 binding.tvStatus.text = "Tap to record"
-                // Nếu không nhận diện được gì, thông báo cho user
                 if (error == "No speech input") {
                     Toast.makeText(this, "Không nghe thấy tiếng bạn. Vui lòng đọc lại!", Toast.LENGTH_SHORT).show()
                 } else {
@@ -191,7 +206,6 @@ class SpeakingActivity : AppCompatActivity() {
             }
         )
 
-        // Tự động dừng ghi âm sau 10 giây
         handler.postDelayed({
             sttManager.stopListening()
             if (binding.tvStatus.text == "Listening...") {
@@ -202,40 +216,100 @@ class SpeakingActivity : AppCompatActivity() {
     }
 
     private fun navigateToSummary() {
-        val intent = Intent(this, SpeakingSummaryActivity::class.java).apply {
-            putExtra("AVERAGE_SCORE", 92)
-            putExtra("TOTAL_SENTENCES", sentences.size)
-            putExtra("HIGH_ACCURACY", (sentences.size * 0.7).toInt() + 1)
-            putExtra("NEEDS_PRACTICE", (sentences.size * 0.3).toInt())
+        // Lấy tất cả kết quả từ session manager
+        val allResults = SpeakingSessionManager.getResults()
+        
+        // Gộp tất cả các mispronouncedPhonemes thành 1 list và lưu vào biến tạm
+        val allMispronouncedPhonemes = allResults.flatMap { it.mispronouncedPhonemes }
+
+        // Tính toán các chỉ số thực tế
+        val totalSentences = sentences.size
+        val needsPracticeCount = allResults.count { it.mispronouncedPhonemes.isNotEmpty() }
+        val highAccuracyCount = totalSentences - needsPracticeCount
+        val avgScore = if (totalSentences > 0) (highAccuracyCount * 100 / totalSentences) else 0
+
+        lifecycleScope.launch {
+            binding.loadingOverlay.visibility = View.VISIBLE
+            
+            // Call API update âm tiết yếu
+            val isSuccess = viewModel.updateWeakPhonemes(allMispronouncedPhonemes)
+            
+            binding.loadingOverlay.visibility = View.GONE
+            
+            if (isSuccess) {
+                val intent = Intent(this@SpeakingActivity, SpeakingSummaryActivity::class.java).apply {
+                    putExtra("AVERAGE_SCORE", avgScore)
+                    putExtra("TOTAL_SENTENCES", totalSentences)
+                    putExtra("HIGH_ACCURACY", highAccuracyCount)
+                    putExtra("NEEDS_PRACTICE", needsPracticeCount)
+                    // Truyền danh sách âm tiết sai gộp chung qua activity summary
+                    putStringArrayListExtra("ALL_MISPRONOUNCED_PHONEMES", ArrayList(allMispronouncedPhonemes))
+                }
+                startActivity(intent)
+                finish()
+            } else {
+                Toast.makeText(this@SpeakingActivity, "Lưu tiến trình thất bại. Vui lòng thử lại!", Toast.LENGTH_SHORT).show()
+            }
         }
-        startActivity(intent)
-        finish()
     }
 
-    private fun showScore(recognizedText: String) {
+    private fun analyzeAndShowScore(recognizedText: String) {
         val targetText = sentences[currentIndex].english
+        val phoneticsTarget = sentences[currentIndex].phonetics
         
-        // Kiểm tra nếu độ dài kết quả nhận diện < 70% độ dài câu gốc
         if (recognizedText.isEmpty() || recognizedText.length < targetText.length * 0.5) {
             Toast.makeText(this, "Vui lòng đọc lại rõ ràng hơn!", Toast.LENGTH_LONG).show()
             binding.cardScore.visibility = View.GONE
+            updateNextButtonState(isEnabled = false)
             return
         }
 
         binding.cardScore.visibility = View.VISIBLE
+        binding.analysisProgressBar.visibility = View.VISIBLE
+        binding.layoutAnalysisContent.visibility = View.INVISIBLE
+        
+        // Keep Next Button disabled during analysis
+        updateNextButtonState(isEnabled = false)
+
+        lifecycleScope.launch {
+            val analysisResult = viewModel.analyzeSpeaking(
+                originalSentence = targetText,
+                phoneticsTarget = phoneticsTarget,
+                recognizedSentence = recognizedText
+            )
+            
+            binding.analysisProgressBar.visibility = View.GONE
+            binding.layoutAnalysisContent.visibility = View.VISIBLE
+            
+            analysisResult?.let { analysis ->
+                // Tạo SpeakingResult từ SpeakingAnalysisResult và phoneticsTarget
+                val resultToSave = SpeakingResult(
+                    originalSentence = analysis.originalSentence,
+                    phonetics = phoneticsTarget,
+                    recognizedSentence = analysis.recognizedSentence,
+                    analysis = analysis.analysis,
+                    mispronouncedPhonemes = analysis.mispronouncedPhonemes
+                )
+                SpeakingSessionManager.addOrUpdateResult(resultToSave)
+
+                binding.tvOriginalSentence.text = analysis.originalSentence
+                binding.tvPhoneticsTarget.text = phoneticsTarget
+                binding.tvRecognizedSentence.text = "Your pronunciation: ${analysis.recognizedSentence}"
+                
+                if (analysis.mispronouncedPhonemes.isNotEmpty()) {
+                    binding.cardMistakes.visibility = View.VISIBLE
+                    binding.tvMistakes.text = "Mistakes: ${analysis.mispronouncedPhonemes.joinToString(", ")}"
+                } else {
+                    binding.cardMistakes.visibility = View.GONE
+                }
+                
+                // ANALYSIS COMPLETE: Enable Next Button
+                updateNextButtonState(isEnabled = true)
+            }
+        }
+
         binding.tvScore.text = "Recognized Text"
         binding.tvFeedback.text = recognizedText
-        
-        val cleanTarget = targetText.lowercase().replace(Regex("[^a-z ]"), "").trim()
-        val cleanRecognized = recognizedText.lowercase().replace(Regex("[^a-z ]"), "").trim()
-        
-        if (cleanRecognized == cleanTarget) {
-            binding.tvScore.text = "Score: 100/100"
-            binding.tvFeedback.text = "Perfect! \"$recognizedText\""
-        } else {
-            binding.tvScore.text = "Score: 80/100"
-            binding.tvFeedback.text = "You said: \"$recognizedText\""
-        }
     }
 
     override fun onDestroy() {
