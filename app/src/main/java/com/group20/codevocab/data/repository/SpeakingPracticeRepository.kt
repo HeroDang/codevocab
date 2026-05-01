@@ -2,6 +2,8 @@ package com.group20.codevocab.data.repository
 
 import com.group20.codevocab.data.remote.SpeakingPracticeApiClient
 import com.group20.codevocab.data.remote.dto.*
+import com.group20.codevocab.model.ModuleItem
+import com.group20.codevocab.model.toModuleItem
 import kotlinx.coroutines.delay
 import retrofit2.Response
 
@@ -11,7 +13,7 @@ class SpeakingPracticeRepository {
 
     suspend fun getSpeakingSentences(userId: String, moduleId: String): List<SpeakingSentenceDto> {
         // Tạm thời fake data do server chưa hoạt động
-        delay(1000) // Giả lập độ trễ mạng
+        /*delay(1000) // Giả lập độ trễ mạng
         return listOf(
             SpeakingSentenceDto("How can I improve my coding skills?", "/haʊ kæn aɪ ɪmˈpruːv maɪ ˈkəʊdɪŋ skɪlz/"),
             SpeakingSentenceDto("I am learning Android development with Kotlin.", "/aɪ æm ˈlɜːrnɪŋ ˈændrɔɪd dɪˈveləpmənt wɪð ˈkɒtlɪn/"),
@@ -23,10 +25,10 @@ class SpeakingPracticeRepository {
             //SpeakingSentenceDto("What is your favorite part of coding?", "/wɒt ɪz jɔːr ˈfeɪvərɪt pɑːrt əv ˈkəʊdɪŋ/"),
             //SpeakingSentenceDto("I enjoy solving complex problems.", "/aɪ ɪnˈdʒɔɪ ˈsɒlvɪŋ ˈkɒmpleks ˈprɒbləmz/"),
             //SpeakingSentenceDto("Learning a new language is always exciting.", "/ˈlɜːrnɪŋ ə njuː ˈlæŋɡwɪdʒ ɪz ˈɔːlweɪz ɪkˈsaɪtɪŋ/")
-        )
+        )*/
         
         // Code gốc gọi API khi server sẵn sàng:
-        /*return try {
+        return try {
             val request = SpeakingPracticeRequest(userId, moduleId)
             val response = apiAi.getSpeakingSentences(request)
             if (response.status == "success") {
@@ -37,7 +39,7 @@ class SpeakingPracticeRepository {
         } catch (e: Exception) {
             e.printStackTrace()
             throw e
-        }*/
+        }
     }
 
     suspend fun analyzeSpeaking(request: SpeakingAnalysisRequest): SpeakingAnalysisResponse {
@@ -110,5 +112,9 @@ class SpeakingPracticeRepository {
             e.printStackTrace()
             throw e
         }
+    }
+
+    suspend fun getModulesWithParentId(): List<ModuleWithParentIdDto> {
+        return apiPostgresql.getModulesWithParentId()
     }
 }

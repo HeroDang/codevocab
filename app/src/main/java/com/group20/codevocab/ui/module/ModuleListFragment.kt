@@ -14,12 +14,19 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.group20.codevocab.R
+import com.group20.codevocab.data.remote.ApiClient
+import com.group20.codevocab.data.remote.dto.ModuleWithParentIdDto
+import com.group20.codevocab.data.repository.AuthRepository
+import com.group20.codevocab.data.repository.SpeakingPracticeRepository
 import com.group20.codevocab.databinding.FragmentModuleListBinding
 import com.group20.codevocab.model.ModuleItem
 import com.group20.codevocab.ui.pronunciation.PronunciationActivity
 import com.group20.codevocab.viewmodel.ModuleViewModel
 import com.group20.codevocab.viewmodel.ModuleViewModelFactory
+import com.group20.codevocab.viewmodel.ModuleWithParentIdState
 import com.group20.codevocab.viewmodel.ModulesState
+import com.group20.codevocab.viewmodel.SpeakingPracticeViewModel
+import com.group20.codevocab.viewmodel.SpeakingPracticeViewModelFactory
 import kotlinx.coroutines.launch
 
 class ModuleListFragment : Fragment() {
@@ -27,6 +34,8 @@ class ModuleListFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var viewModel: ModuleViewModel
+
+    private lateinit var speakingViewModel: SpeakingPracticeViewModel
     private lateinit var adapter: ModuleListAdapter
     private var currentModules: List<ModuleItem> = emptyList()
 
@@ -43,6 +52,12 @@ class ModuleListFragment : Fragment() {
 
         val factory = ModuleViewModelFactory(requireContext())
         viewModel = ViewModelProvider(this, factory)[ModuleViewModel::class.java]
+
+        val authRepository = AuthRepository(ApiClient.api)
+        val speakingRepository = SpeakingPracticeRepository()
+        val speakingFactory =
+            SpeakingPracticeViewModelFactory(speakingRepository, authRepository)
+        speakingViewModel = ViewModelProvider(this, speakingFactory)[SpeakingPracticeViewModel::class.java]
 
         // Setup Menu
         binding.btnMenu.setOnClickListener { view ->
@@ -102,7 +117,7 @@ class ModuleListFragment : Fragment() {
         popup.show()
     }
 
-    private fun showModuleSelectionDialog() {
+    private fun showModuleSelectionDialog1() {
         if (currentModules.isEmpty()) {
             Toast.makeText(requireContext(), "No modules available", Toast.LENGTH_SHORT).show()
             return
@@ -112,12 +127,60 @@ class ModuleListFragment : Fragment() {
         var selectedModuleIndex = 0
 
         AlertDialog.Builder(requireContext())
-            .setTitle("Chọn Module để luyện nói")
+            .setTitle("Pick a module for speaking practice")
             .setSingleChoiceItems(moduleNames, 0) { _, which ->
                 selectedModuleIndex = which
             }
             .setPositiveButton("Practice") { _, _ ->
                 val selectedModule = currentModules[selectedModuleIndex]
+                val intent = Intent(requireContext(), SpeakingActivity::class.java).apply {
+                    putExtra("module_id", selectedModule.id)
+                    putExtra("module_name", selectedModule.name)
+                }
+                startActivity(intent)
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun showModuleSelectionDialog() {
+        // 1. Gọi API lấy danh sách module với parent id
+        speakingViewModel.getModulesWithParentId()
+
+        // 2. Quan sát trạng thái moduleState
+        viewLifecycleOwner.lifecycleScope.launch {
+            speakingViewModel.moduleState.collect { state ->
+                when (state) {
+                    is ModuleWithParentIdState.Loading -> {
+                        // Có thể hiện một Loading Dialog nhỏ ở đây
+                    }
+                    is ModuleWithParentIdState.Success -> {
+                        val modules = state.modules
+                        if (modules.isNotEmpty()) {
+                            renderSelectionDialog(modules)
+                        } else {
+                            Toast.makeText(requireContext(), "No modules available", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    is ModuleWithParentIdState.Error -> {
+                        Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun renderSelectionDialog(modules: List<ModuleWithParentIdDto>) {
+        val moduleNames = modules.map { it.name }.toTypedArray()
+        var selectedModuleIndex = 0
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Chọn Module để luyện nói")
+            .setSingleChoiceItems(moduleNames, 0) { _, which ->
+                selectedModuleIndex = which
+            }
+            .setPositiveButton("Practice") { _, _ ->
+                val selectedModule = modules[selectedModuleIndex]
                 val intent = Intent(requireContext(), SpeakingActivity::class.java).apply {
                     putExtra("module_id", selectedModule.id)
                     putExtra("module_name", selectedModule.name)

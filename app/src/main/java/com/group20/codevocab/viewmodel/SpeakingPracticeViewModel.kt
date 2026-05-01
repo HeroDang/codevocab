@@ -2,6 +2,7 @@ package com.group20.codevocab.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.group20.codevocab.data.remote.dto.ModuleWithParentIdDto
 import com.group20.codevocab.data.remote.dto.SpeakingAnalysisRequest
 import com.group20.codevocab.data.remote.dto.SpeakingSentenceDto
 import com.group20.codevocab.data.remote.dto.UserProfileResponse
@@ -20,6 +21,12 @@ sealed class SpeakingPracticeState {
     data class Error(val message: String) : SpeakingPracticeState()
 }
 
+sealed class ModuleWithParentIdState {
+    data object Loading : ModuleWithParentIdState()
+    data class Success(val modules: List<ModuleWithParentIdDto>) : ModuleWithParentIdState()
+    data class Error(val message: String) : ModuleWithParentIdState()
+}
+
 class SpeakingPracticeViewModel(
     private val repository: SpeakingPracticeRepository,
     private val authRepository: AuthRepository
@@ -33,6 +40,9 @@ class SpeakingPracticeViewModel(
 
     private val _updatePhonemesResult = MutableStateFlow<Response<UserProfileResponse>?>(null)
     val updatePhonemesResult: StateFlow<Response<UserProfileResponse>?> = _updatePhonemesResult
+
+    private val _moduleState = MutableStateFlow<ModuleWithParentIdState>(ModuleWithParentIdState.Loading)
+    val moduleState: StateFlow<ModuleWithParentIdState> = _moduleState
 
     fun loadSentences(moduleId: String) {
         val userId = authRepository.getUserId() ?: ""
@@ -89,6 +99,18 @@ class SpeakingPracticeViewModel(
         } catch (e: Exception) {
             e.printStackTrace()
             false
+        }
+    }
+
+    fun getModulesWithParentId() {
+        viewModelScope.launch {
+            _moduleState.value = ModuleWithParentIdState.Loading
+            try {
+                val modules = repository.getModulesWithParentId()
+                _moduleState.value = ModuleWithParentIdState.Success(modules)
+            } catch (e: Exception) {
+                _moduleState.value = ModuleWithParentIdState.Error(e.message ?: "Failed to load modules")
+            }
         }
     }
 }

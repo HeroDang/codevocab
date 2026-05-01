@@ -75,3 +75,15 @@ data class PhoneticErrorDto(
     @SerializedName("note")
     val note: String
 )
+
+data class ModuleWithParentIdDto(
+    val id: String,
+    val name: String,
+    val description: String,
+    @SerializedName("module_type")
+    val moduleType: String,
+    @SerializedName("is_public")
+    val isPublic: Boolean,
+    @SerializedName("created_at")
+    val createdAt: String
+)

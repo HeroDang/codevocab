@@ -17,26 +17,26 @@ fun isEmulator(): Boolean {
 }
 
 object ApiConfig {
-    // Main Backend URLs
-    private const val EMULATOR_URL = "http://10.0.2.2:8000/"
-    private const val REAL_DEVICE_URL = "http://192.168.1.18:8000/"
+    // Host configurations
+    private const val EMULATOR_HOST = "10.0.2.2"
+    private const val REAL_DEVICE_HOST = "192.168.1.210"
 
-    // OCR Service URLs
-    private const val EMULATOR_OCR_URL = "http://10.0.2.2:8001/"
-    private const val REAL_DEVICE_OCR_URL = "http://192.168.1.18:8001/"
+    // Ports
+    private const val PORT_MAIN = "8000"
+    private const val PORT_OCR = "8001"
+    private const val PORT_AI = "8002"
 
-    // Main Backend URLs
-    private const val EMULATOR_AI_URL = "http://10.0.2.2:8002/"
-    private const val REAL_DEVICE_AI_URL = "http://192.168.1.18:8002/"
+    // Helper to get the current host based on environment
+    private val currentHost: String
+        get() = if (isEmulator()) EMULATOR_HOST else REAL_DEVICE_HOST
 
-    // Dynamic Base URL for the main backend
+    // Dynamic Base URLs
     val BASE_URL: String
-        get() = if (isEmulator()) EMULATOR_URL else REAL_DEVICE_URL
+        get() = "http://$currentHost:$PORT_MAIN/"
 
-    // Dynamic Base URL for the OCR service
     val OCR_BASE_URL: String
-        get() = if (isEmulator()) EMULATOR_OCR_URL else REAL_DEVICE_OCR_URL
+        get() = "http://$currentHost:$PORT_OCR/"
 
     val AI_BASE_URL: String
-        get() = if (isEmulator()) EMULATOR_AI_URL else REAL_DEVICE_AI_URL
+        get() = "http://$currentHost:$PORT_AI/"
 }
