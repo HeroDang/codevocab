@@ -91,9 +91,14 @@ fun WordAnalysisDto.toModel(): WordAnalysis {
     return WordAnalysis(
         word = this.word,
         status = this.status,
-        segments = this.segments.map { SpeakingSegment(it.text, it.isCorrect) },
-        phoneticError = this.phoneticError?.let {
-            PhoneticError(it.expected, it.actual, it.note)
+        segments = this.segments.map {
+            SpeakingSegment(
+                text = it.text,
+                isCorrect =  it.isCorrect,
+                phoneticError = it.phoneticError?.let {
+                    PhoneticError(it.expected, it.actual, it.note)
+                }
+            )
         }
     )
 }

@@ -41,6 +41,7 @@ class SpeakingSummaryActivity : AppCompatActivity() {
                 original = result.originalSentence,
                 phonetics = result.phonetics,
                 recognized = result.recognizedSentence,
+                analysis = result.analysis,
                 mistakes = result.mispronouncedPhonemes.joinToString(", ")
             )
         }

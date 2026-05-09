@@ -23,6 +23,7 @@ import com.group20.codevocab.model.SpeakingResult
 import com.group20.codevocab.ui.common.speaker.Speaker
 import com.group20.codevocab.ui.common.speaker.SpeakerFactory
 import com.group20.codevocab.utils.PreferenceManager
+import com.group20.codevocab.utils.PronunciationUtils
 import com.group20.codevocab.utils.SpeakingSessionManager
 import com.group20.codevocab.utils.SpeechToTextManager
 import com.group20.codevocab.viewmodel.SpeakingPracticeState
@@ -279,32 +280,48 @@ class SpeakingActivity : AppCompatActivity() {
             )
             
             binding.analysisProgressBar.visibility = View.GONE
-            binding.layoutAnalysisContent.visibility = View.VISIBLE
-            
-            analysisResult?.let { analysis ->
-                // Tạo SpeakingResult từ SpeakingAnalysisResult và phoneticsTarget
+
+            if (analysisResult != null) {
+                // TRƯỜNG HỢP THÀNH CÔNG
+                binding.layoutAnalysisContent.visibility = View.VISIBLE
+
                 val resultToSave = SpeakingResult(
-                    originalSentence = analysis.originalSentence,
+                    originalSentence = analysisResult.originalSentence,
                     phonetics = phoneticsTarget,
-                    recognizedSentence = analysis.recognizedSentence,
-                    analysis = analysis.analysis,
-                    mispronouncedPhonemes = analysis.mispronouncedPhonemes
+                    recognizedSentence = analysisResult.recognizedSentence,
+                    analysis = analysisResult.analysis,
+                    mispronouncedPhonemes = analysisResult.mispronouncedPhonemes
                 )
                 SpeakingSessionManager.addOrUpdateResult(resultToSave)
 
-                binding.tvOriginalSentence.text = analysis.originalSentence
+                //binding.tvOriginalSentence.text = analysisResult.originalSentence
+                binding.tvOriginalSentence.text = PronunciationUtils.getFormattedSentence(
+                    analysisResult.originalSentence,
+                    analysisResult.analysis
+                )
                 binding.tvPhoneticsTarget.text = phoneticsTarget
-                binding.tvRecognizedSentence.text = "Your pronunciation: ${analysis.recognizedSentence}"
-                
-                if (analysis.mispronouncedPhonemes.isNotEmpty()) {
+                binding.tvRecognizedSentence.text = "Your pronunciation: ${analysisResult.recognizedSentence}"
+
+                if (analysisResult.mispronouncedPhonemes.isNotEmpty()) {
                     binding.cardMistakes.visibility = View.VISIBLE
-                    binding.tvMistakes.text = "Mistakes: ${analysis.mispronouncedPhonemes.joinToString(", ")}"
+                    binding.tvMistakes.text = "Mistakes: ${analysisResult.mispronouncedPhonemes.joinToString(", ")}"
                 } else {
-                    binding.cardMistakes.visibility = View.GONE
+                    // Thêm phản hồi khi phát âm đúng hoàn toàn (như đã thảo luận trước đó)
+                    binding.cardMistakes.visibility = View.VISIBLE
+                    binding.tvMistakes.text = "Perfect! You nailed it! ✨"
                 }
-                
-                // ANALYSIS COMPLETE: Enable Next Button
+
+                // Kích hoạt nút Next sau khi phân tích xong
                 updateNextButtonState(isEnabled = true)
+
+            } else {
+                // TRƯỜNG HỢP LỖI (analysisResult == null)
+                binding.cardScore.visibility = View.GONE // Ẩn toàn bộ thẻ kết quả vì không có dữ liệu
+                Toast.makeText(
+                    this@SpeakingActivity,
+                    "The pronunciation cannot be analyzed at this time. Please try again.",
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
 

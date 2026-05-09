@@ -4,12 +4,15 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.group20.codevocab.databinding.ItemSpeakingMistakeBinding
+import com.group20.codevocab.model.WordAnalysis
+import com.group20.codevocab.utils.PronunciationUtils
 
 data class SpeakingMistake(
     val index: Int,
     val original: String,
     val phonetics: String,
     val recognized: String,
+    val analysis: List<WordAnalysis>,
     val mistakes: String
 )
 
@@ -29,7 +32,8 @@ class SpeakingMistakeAdapter(private val items: List<SpeakingMistake>) :
         val item = items[position]
         holder.binding.apply {
             chipIndex.text = "Sentence ${item.index}"
-            tvOriginal.text = item.original
+            tvOriginal.text = PronunciationUtils.getFormattedSentence(
+                item.original, item.analysis)
             tvPhonetics.text = item.phonetics
             tvRecognized.text = "Your pronunciation: ${item.recognized}"
             tvMistakesList.text = "Mistakes: ${item.mistakes}"

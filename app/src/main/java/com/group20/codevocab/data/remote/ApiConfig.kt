@@ -19,7 +19,7 @@ fun isEmulator(): Boolean {
 object ApiConfig {
     // Host configurations
     private const val EMULATOR_HOST = "10.0.2.2"
-    private const val REAL_DEVICE_HOST = "192.168.1.210"
+    private const val REAL_DEVICE_HOST = "172.16.0.248"
 
     // Ports
     private const val PORT_MAIN = "8000"

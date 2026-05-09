@@ -56,15 +56,17 @@ data class WordAnalysisDto(
     val status: String, // "correct" | "incorrect"
     @SerializedName("segments")
     val segments: List<SegmentDto>,
-    @SerializedName("phonetic_error")
-    val phoneticError: PhoneticErrorDto?
+    //@SerializedName("phonetic_error")
+    //val phoneticError: PhoneticErrorDto?
 )
 
 data class SegmentDto(
     @SerializedName("text")
     val text: String,
     @SerializedName("is_correct")
-    val isCorrect: Boolean
+    val isCorrect: Boolean,
+    @SerializedName("phonetic_error")
+    val phoneticError: PhoneticErrorDto?
 )
 
 data class PhoneticErrorDto(

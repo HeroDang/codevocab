@@ -11,12 +11,13 @@ data class WordAnalysis(
     val word: String,
     val status: String, // "correct" | "incorrect"
     val segments: List<SpeakingSegment>,
-    val phoneticError: PhoneticError?
+    //val phoneticError: PhoneticError?
 )
 
 data class SpeakingSegment(
     val text: String,
-    val isCorrect: Boolean
+    val isCorrect: Boolean,
+    val phoneticError: PhoneticError?
 )
 
 data class PhoneticError(
