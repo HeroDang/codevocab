@@ -1,3 +1,13 @@
+import java.util.Properties
+import java.io.FileInputStream
+
+// Đọc file .env từ thư mục gốc của dự án
+val env = Properties()
+val envFile = project.rootProject.file(".env")
+if (envFile.exists()) {
+    env.load(FileInputStream(envFile))
+}
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -17,6 +27,11 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // Đưa các biến từ .env vào BuildConfig [cite: 7]
+        // Lưu ý:getProperty có thể trả về null nếu key không tồn tại, nên dùng chuỗi rỗng làm mặc định
+        buildConfigField("String", "EMULATOR_HOST", "\"${env.getProperty("EMULATOR_HOST") ?: ""}\"")
+        buildConfigField("String", "REAL_DEVICE_HOST", "\"${env.getProperty("REAL_DEVICE_HOST") ?: ""}\"")
     }
 
     buildTypes {
@@ -38,6 +53,9 @@ android {
     buildFeatures {
         viewBinding = true
         dataBinding = true
+
+        // Bật tính năng tạo file BuildConfig để code Kotlin có thể truy cập các biến trên [cite: 8]
+        buildConfig = true
     }
 }
 

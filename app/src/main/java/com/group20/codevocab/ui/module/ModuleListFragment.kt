@@ -39,6 +39,9 @@ class ModuleListFragment : Fragment() {
     private lateinit var adapter: ModuleListAdapter
     private var currentModules: List<ModuleItem> = emptyList()
 
+    // Thêm biến member để quản lý dialog
+    private var selectionDialog: AlertDialog? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -171,24 +174,32 @@ class ModuleListFragment : Fragment() {
     }
 
     private fun renderSelectionDialog(modules: List<ModuleWithParentIdDto>) {
+        // Đóng dialog cũ nếu đang hiển thị để tránh chồng lấp (gây lag)
+        selectionDialog?.dismiss()
+
         val moduleNames = modules.map { it.name }.toTypedArray()
         var selectedModuleIndex = 0
 
-        AlertDialog.Builder(requireContext())
-            .setTitle("Chọn Module để luyện nói")
+        selectionDialog = AlertDialog.Builder(requireContext())
+            .setTitle("Pick a module for speaking practice")
             .setSingleChoiceItems(moduleNames, 0) { _, which ->
                 selectedModuleIndex = which
             }
-            .setPositiveButton("Practice") { _, _ ->
+            .setPositiveButton("Practice") { dialog, _ ->
                 val selectedModule = modules[selectedModuleIndex]
                 val intent = Intent(requireContext(), SpeakingActivity::class.java).apply {
                     putExtra("module_id", selectedModule.id)
                     putExtra("module_name", selectedModule.name)
                 }
                 startActivity(intent)
+                dialog.dismiss() // Đóng ngay sau khi start activity
             }
-            .setNegativeButton("Cancel", null)
-            .show()
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss() // Thay vì null, hãy gọi dismiss() tường minh
+            }
+            .create()
+
+        selectionDialog?.show()
     }
 
     override fun onDestroyView() {

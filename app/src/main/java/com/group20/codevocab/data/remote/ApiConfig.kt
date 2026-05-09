@@ -1,6 +1,7 @@
 package com.group20.codevocab.data.remote
 
 import android.os.Build
+import com.group20.codevocab.BuildConfig
 
 fun isEmulator(): Boolean {
     return (
@@ -18,8 +19,12 @@ fun isEmulator(): Boolean {
 
 object ApiConfig {
     // Host configurations
-    private const val EMULATOR_HOST = "10.0.2.2"
-    private const val REAL_DEVICE_HOST = "172.16.0.248"
+    // private const val EMULATOR_HOST = "10.0.2.2"
+    // private const val REAL_DEVICE_HOST = "172.16.0.248"
+
+    // Lấy giá trị từ BuildConfig thay vì hardcode
+    private val EMULATOR_HOST = BuildConfig.EMULATOR_HOST
+    private val REAL_DEVICE_HOST = BuildConfig.REAL_DEVICE_HOST
 
     // Ports
     private const val PORT_MAIN = "8000"
